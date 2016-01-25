@@ -1,0 +1,42 @@
+var path = require("path");
+
+var applicationName = "<%= applicationName + '.js'%>",
+  source = "<%= appPath %>",
+  scriptsSrc = "<%= scriptsPath %>",
+  libSrc = "<%= libPath %>",
+  destination = "<%= distPath %>",
+  scriptsDest = destination + "scripts/",
+  packageLibDest = "<%= packageLibPath %>";
+
+
+module.exports = {
+  entry: {
+    app: [path.resolve(scriptsSrc + applicationName)]
+  },
+  output: {
+    path: scriptsDest,
+    publicPath: "/",
+    filename: applicationName
+  },
+  resolve: {
+    root: [path.resolve(libSrc)],
+    alias: {
+      "license": path.resolve(scriptsSrc + "license.js")<% if (useTypeInfo) { %>,
+      "yfiles-typeinfo": path.resolve(scriptsSrc + "yfiles-typeinfo.js")<% } %>
+    }
+  },
+  module: {
+    loaders: [<% if (useBabel) { %>{
+      test: /\.js$/,
+      exclude: /node_modules|bower_components|lib|license\.js<% if (useTypeInfo) { %>|yfiles-typeinfo\.js<% } %>/,
+      loader: "babel",
+      query: {
+        presets: ["es2015"]
+      }
+    }, <% } %>{
+      test: /\.css$/,
+      loader: "style-loader!css-loader"
+    }]
+  },
+  plugins: []
+};

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= title %></title>
+
+  <link type="text/css" rel="stylesheet" href="styles/yfiles.css">
+
+  <style>
+    html, body, #graphControl {
+      width: 100%;
+      height: 100%;
+      padding: 0;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+<div id="graphControl"></div>
+
+<% if (useTypeInfo && !useGruntBundling) { %>
+<!-- Adding type information support during application development. -->
+<script src="scripts/yfiles-typeinfo.js"></script>
+
+<% } %><% if (!useGruntBundling) { %><script src="lib/yfiles/es5-shim.js"></script><% } %>
+<% if (!useWebpack) { %><script src="scripts/license.js"></script><% } %>
+<% if (useBrowserify || useWebpack) { %><script src="scripts/<%= applicationName %>.js"></script>
+<% } else if (loadingType === "AMD") {
+  if (useGruntBundling) {
+%><script src="scripts/require.js"></script><%
+  } else {
+%><script src="../bower_components/requirejs/require.js"></script><%
+  } %>
+
+<script>
+  require.config({baseUrl: "<%= libPath %>"});
+  // load the license and the required modules
+  require([
+    "scripts/<%= applicationName %>.js"<% if (!useGruntBundling) { modules.forEach(function (module){ %>,
+    "<%= module %>"<% }); } %>
+  ], function (<%= module %>) {
+    new <%= module %>.<%= applicationName %>();
+  });
+</script><% } else {
+if (!useGruntBundling) { %>
+<script src="<%= libPath %>yfiles/lang.js"></script>
+<% modules.forEach(function (module) { %>
+<script src="<%= libPath %><%= module %>.mapping.js"></script>
+<script src="<%= libPath %><%= module %>.impl.js"></script>
+<script src="<%= libPath %><%= module %>.js"></script>
+<% }); } else { %>
+<script src="<%= libPath %>yfiles.js"></script>
+<% } %>
+<script src="scripts/<%= applicationName %>.js"></script>
+<script>
+  new (yfiles.module("<%= module %>")).<%= applicationName %>();
+</script>
+<% } %>
+</body>
+</html>

@@ -1,0 +1,16 @@
+var defaultPage = "<%= applicationName %>.html";
+
+var express = require("express");
+var app = express();
+var open = require("open");
+
+app.use("/", express.static("<%= distPath %>"));
+
+var port = 3000;
+var server = app.listen(port, function() {
+
+  console.log("Dev server listening at localhost:" + port);
+
+  // open the page in a browser
+  open("http://localhost:" + port + "/" + defaultPage);
+});

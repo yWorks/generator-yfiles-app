@@ -1,0 +1,33 @@
+<% if (useWebpack || useBrowserify) {
+     for (var i = 0; i < modules.length - 1; i++) {
+%>require("<%= (useBrowserify?'./':'') + modules[i] %>");
+<%   }
+%>var yfiles = require("<%= (useBrowserify?'./':'') + modules[modules.length - 1] %>");
+<% } else {
+%>(function(r){(function(f){if("function"==typeof define&&define.amd){define([<% if (useGruntBundling) { %>"yfiles"<% } else { %>"yfiles/lang","yfiles/core-lib"<% } %>],f);}else{f(<% if (!useGruntBundling) { %>r.yfiles.lang,<% } %>r.yfiles);}}(function(<% if (!useGruntBundling) { %>lang,<% } %>yfiles){
+<% } -%>
+<% // indent by two spaces if necessary
+   var s = useWebpack || useBrowserify ? "" : "  ";%>
+yfiles.module("<%= module %>", function(exports) {
+
+<%=s%>  /**
+<%=s%>   * <% if(description) { %><%= description %><% } else { %>A yfiles class.<% } %>
+<%=s%>   * @class <%= module %>.<%= name %>
+<%=s%>   */
+<%=s%>exports.<%= name %> = new yfiles.ClassDefinition(function () {
+<%=s%>  /** @lends {<%= module %>.<%= name %>.prototype} */
+<%=s%>  return {
+<%=s%>    <% if (content) { %><%- content %><%
+%><%=s%>       <% } else { %>'constructor': function () {
+<%=s%>
+<%=s%>     }<%
+%><%=s%>    <% } %>
+<%=s%>  };
+<%=s%>})
+<%=s%>
+});
+
+<% if (postClassContent) { %><%- postClassContent %><% } %>
+
+<% if (!(useWebpack || useBrowserify)) { %>return yfiles.module("<%= module %>");
+}));})("undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:this);<% } %>

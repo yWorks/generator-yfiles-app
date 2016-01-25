@@ -1,0 +1,49 @@
+{
+  "name": "generator-yfiles-app",
+  "version": "0.8.0",
+  "description": "A generator that scaffolds a yFiles for HTML powered application. Requires local yFiles package.",
+  "homepage": "http://www.yworks.com",
+  "author": {
+    "name": "Lukas Hollaender",
+    "email": "lukas.hollaender@yworks.com",
+    "url": "https://github.com/HackbrettXXX"
+  },
+  "files": [
+    "generators"
+  ],
+  "main": "generators/app/index.js",
+  "keywords": [
+    "yeoman-generator"
+  ],
+  "dependencies": {
+    "yeoman-generator": "^0.21.1",
+    "chalk": "^1.0.0",
+    "yosay": "^1.0.2",
+    "deep-extend": "latest",
+    "generator-node": "latest",
+    "lodash": "latest"
+  },
+  "devDependencies": {
+    "babel-plugin-uglify": "^1.0.2",
+    "eslint-config-xo-space": "^0.7.0",
+    "gulp": "^3.9.0",
+    "gulp-eslint": "^1.0.0",
+    "gulp-exclude-gitignore": "^1.0.0",
+    "gulp-istanbul": "^0.10.3",
+    "gulp-mocha": "^2.0.0",
+    "gulp-nsp": "^2.1.0",
+    "gulp-plumber": "^1.0.0",
+    "yeoman-assert": "^2.0.0"
+  },
+  "eslintConfig": {
+    "extends": "xo-space",
+    "env": {
+      "mocha": true
+    }
+  },
+  "repository": "https://github.com/yWorks/generator-yfiles-app",
+  "scripts": {
+    "prepublish": "gulp prepublish",
+    "test": "gulp"
+  }
+}
