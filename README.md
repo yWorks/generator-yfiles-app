@@ -1,5 +1,5 @@
 # generator-yfiles-app [![NPM version][npm-image]][npm-url]
-> Scaffold yFiles web applications
+> A yeoman generator that scaffolds a yFiles for HTML powered application. Requires local yFiles package.
 
 ## Installation
 
