@@ -16,7 +16,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask("default", [
     "clean:all",
-    "copy:nonJsSource",<% if (gruntBabel) { %>
+    "copy:nonJsSource",<% if (useBabel) { %>
     "babel:dist",<% } %>
     "package",
     <% if (useWebpack) {
@@ -29,7 +29,8 @@ module.exports = function (grunt) {
 
   <% if (useWebpack) {
   %>grunt.registerTask("build-dev", "Leaves out time expensive packaging", [
-    "clean:all",
+    "clean:all",<% if (useBabel) { %>
+    "babel:dist",<% } %>
     "copy:nonJsSource",
     "webpack:build-dev"
   ]);<%
@@ -50,7 +51,7 @@ module.exports = function (grunt) {
         ],
         files: [{
           expand: true,
-          cwd: <% if (gruntBabel) { %>packageLibDest<% } else { %>scriptsSrc<% } %>,
+          cwd: <% if (useBabel) { %>packageLibDest<% } else { %>scriptsSrc<% } %>,
           src: ["**/*.js", "!**/license.js"],<%
         if (useBrowserify || useWebpack) { %>
           dest: packageLibDest
@@ -150,7 +151,9 @@ module.exports = function (grunt) {
           script: "server.js"
         }
       }
-    },
+    }<%
+    }
+    if (useBabel) { %>,
     babel: {
       options: {
         sourceMap: true,
@@ -159,10 +162,10 @@ module.exports = function (grunt) {
       },
       dist: {
         files: [{
-        expand: true,
-        cwd: scriptsSrc,
-        src: ["**.js"],
-        dest: packageLibDest
+          expand: true,
+          cwd: scriptsSrc,
+          src: ["**.js"],
+          dest: packageLibDest
         }]
       }
     }<% } %>

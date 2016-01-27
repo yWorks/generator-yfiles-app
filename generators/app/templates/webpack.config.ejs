@@ -26,14 +26,7 @@ module.exports = {
     }
   },
   module: {
-    loaders: [<% if (useBabel) { %>{
-      test: /\.js$/,
-      exclude: /node_modules|bower_components|lib|license\.js<% if (useTypeInfo) { %>|yfiles-typeinfo\.js<% } %>/,
-      loader: "babel",
-      query: {
-        presets: ["es2015"]
-      }
-    }, <% } %>{
+    loaders: [{
       test: /\.css$/,
       loader: "style-loader!css-loader"
     }]

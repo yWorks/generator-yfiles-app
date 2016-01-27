@@ -198,8 +198,7 @@ module.exports = yeoman.generators.Base.extend({
       useGruntBundling: this.props.useGruntBundling,
       useBrowserify: this.props.useBrowserify,
       useWebpack: this.props.useWebpack,
-      useBabel: this.props.useBabel,
-      gruntBabel: this.props.useBabel && !this.props.useWebpack
+      useBabel: this.props.useBabel
     };
 
 
@@ -298,15 +297,6 @@ module.exports = yeoman.generators.Base.extend({
         }
       });
 
-      if (this.props.useBabel) {
-        extend(pkg, {
-          devDependencies: {
-            "babel-core": "^6.4.0",
-            "babel-loader": "^6.2.1"
-          }
-        });
-      }
-
       this.fs.copyTpl(
         this.templatePath("webpack.config.ejs"),
         this.destinationPath("webpack.config.js"),
@@ -319,7 +309,6 @@ module.exports = yeoman.generators.Base.extend({
           "dev-server": "grunt dev-server"
         },
         devDependencies: {
-          "grunt-babel": "^6.0.0",
           "express": "^4.13.4",
           "grunt-contrib-watch": "^0.6.1",
           "grunt-express-server": "^0.5.1",
@@ -332,6 +321,16 @@ module.exports = yeoman.generators.Base.extend({
         this.destinationPath("server.js"),
         vars
       )
+    }
+
+    if (this.props.useBabel) {
+      extend(pkg, {
+        devDependencies: {
+          "grunt-babel": "^6.0.0",
+          "babel-core": "^6.4.0",
+          "babel-loader": "^6.2.1"
+        }
+      });
     }
 
     this.fs.writeJSON(this.destinationPath("package.json"), pkg);
