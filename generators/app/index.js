@@ -91,7 +91,10 @@ module.exports = yeoman.generators.Base.extend({
       choices: function (props) {
         return props.buildTool.indexOf("Grunt") < 0 ?
           advancedOptions
-          : advancedOptions.concat([{name: "babel", checked: false}]);
+          : advancedOptions.concat([
+          {name: "babel", checked: false},
+          {name: "TypeScript & DefinitelyTyped (tsd)", checked: false}
+        ]);
       },
       store: true
     }];
@@ -99,15 +102,19 @@ module.exports = yeoman.generators.Base.extend({
     this.prompt(prompts, function (props) {
       this.props = props;
 
-      this.props.useTypeInfo = props.advancedOptions.indexOf("Use yfiles-typeinfo.js") >= 0;
+      this.props.useTypeScript = props.advancedOptions.indexOf("TypeScript & DefinitelyTyped (tsd)") >= 0;
+      this.props.useTypeInfo = props.advancedOptions.indexOf("Use yfiles-typeinfo.js") >= 0 && !this.props.useTypeScript;
       this.props.useNpmAndGit = props.advancedOptions.indexOf("npm & git") >= 0;
       this.props.useBrowserify = props.buildTool === "Grunt + Browserify";
       this.props.useWebpack = props.buildTool === "Grunt + Webpack";
-      this.props.useBabel = props.advancedOptions.indexOf("babel") >= 0;
+      this.props.useBabel = props.advancedOptions.indexOf("babel") >= 0 && !this.props.useTypeScript;
 
       this.props.useGruntBundling = props.buildTool === "Grunt" || this.props.useBrowserify || this.props.useWebpack;
 
       this.licensePath || (this.licensePath = props.licensePath);
+      this.props.language = this.props.useTypeScript ? "typescript" : "javascript";
+
+      this.props.loadingType = this.props.useTypeScript ? "AMD" : props.loadingType;
 
       this.props.modules = utils.joinArrays(this.minimumModules, props.modules);
       if (props.loadingType === "AMD" || this.props.useGruntBundling) {
@@ -130,6 +137,8 @@ module.exports = yeoman.generators.Base.extend({
 
     this.config.set("buildTool", this.props.buildTool);
 
+    this.config.set("language", this.props.language);
+
     this.config.save();
   },
 
@@ -146,12 +155,14 @@ module.exports = yeoman.generators.Base.extend({
           : this.props.useWebpack ?
           ["license", "yfiles/es5-shim"].concat(this.props.useTypeInfo ? ["yfiles-typeinfo"] : [], this.props.modules)
           : ["yfiles/lang", "yfiles/core-lib"],
-        content: this.fs.read(this.templatePath("applicationContent.ejs")),
+        content: this.fs.read(this.templatePath(path.join(this.props.language), "applicationContent.ejs")),
         appPath: this.config.get("appPath"),
         scriptsPath: this.config.get("scriptsPath"),
         libPath: this.config.get("libPath"),
         stylesPath: this.config.get("stylesPath"),
-        postClassContent: this.props.useBrowserify || this.props.useWebpack ?
+        postClassContent: this.props.language === "typescript" ?
+        "new " + this.props.module + "." + this.props.applicationName + "();" :
+          this.props.useBrowserify || this.props.useWebpack ?
           "new (yfiles.module(\"" + this.props.module + "\"))." + this.props.applicationName + "();" : ""
       }
     });
@@ -199,7 +210,8 @@ module.exports = yeoman.generators.Base.extend({
       useBrowserify: this.props.useBrowserify,
       useWebpack: this.props.useWebpack,
       useBabel: this.props.useBabel,
-      gruntBabel: this.props.useBabel && !this.props.useWebpack
+      gruntBabel: this.props.useBabel && !this.props.useWebpack,
+      language: this.props.language
     };
 
 
@@ -231,7 +243,6 @@ module.exports = yeoman.generators.Base.extend({
         this.destinationPath(path.join(scriptsPath, "yfiles-typeinfo.js"))
       );
     }
-
 
 
     vars.libPath = utils.unixPath(libPath);
@@ -319,13 +330,16 @@ module.exports = yeoman.generators.Base.extend({
           "dev-server": "grunt dev-server"
         },
         devDependencies: {
-          "grunt-babel": "^6.0.0",
           "express": "^4.13.4",
           "grunt-contrib-watch": "^0.6.1",
           "grunt-express-server": "^0.5.1",
           "open": "^0.0.5"
         }
       });
+
+      if (this.props.useBabel) {
+        pkg.devDependencies["grunt-babel"] = "^6.0.0";
+      }
 
       this.fs.copyTpl(
         this.templatePath("server.ejs"),
@@ -334,18 +348,46 @@ module.exports = yeoman.generators.Base.extend({
       )
     }
 
+    if (this.props.useTypeScript) {
+      this.fs.copyTpl(
+        this.templatePath("typescript/modules.ejs"),
+        this.destinationPath(path.join(scriptsPath, "modules.js")),
+        vars
+      );
+      extend(pkg, {
+        devDependencies: {
+          "grunt-typescript": "^0.8.0"
+        }
+      });
+    }
+
     this.fs.writeJSON(this.destinationPath("package.json"), pkg);
   },
 
   install: function () {
+    var runGrunt = function () {
+      if (this.props.useGruntBundling) {
+        this.log(chalk.green("\nFinished your scaffold. Running 'grunt' for you...\n"));
+        this.spawnCommand("grunt");
+      }
+    }.bind(this);
+
     this.installDependencies({
       bower: !(this.props.useWebpack || this.props.useBrowserify || this.props.loadingType === "script-tags"),
       callback: function () {
-        if (this.props.useGruntBundling) {
-          this.log(chalk.green("\nFinished your scaffold. Running 'grunt' for you...\n"));
-          this.spawnCommand("grunt");
+        if (this.props.useTypeScript) {
+          this.npmInstall("tsd", {"global": true}, function () {
+            this.log(chalk.green("Initializing DefinitelyTyped"));
+            this.spawnCommandSync("tsd", ["init"]);
+            this.spawnCommand("tsd", ["install", "yfiles"], {"save": true});
+            runGrunt();
+          }.bind(this));
+        } else {
+          runGrunt()
         }
       }.bind(this)
     });
+
+
   }
 });

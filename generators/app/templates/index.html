@@ -24,12 +24,22 @@
 <% } %><% if (!useGruntBundling) { %><script src="lib/yfiles/es5-shim.js"></script><% } %>
 <% if (!useWebpack) { %><script src="scripts/license.js"></script><% } %>
 <% if (useBrowserify || useWebpack) { %><script src="scripts/<%= applicationName %>.js"></script>
-<% } else if (loadingType === "AMD") {
-  if (useGruntBundling) {
+<% } else if (useGruntBundling && language === "typescript") {
+%><script src="scripts/require.js"></script>
+<script>
+  require.config({baseUrl: "lib/"});
+  // load the license and the required modules
+  require([
+    "yfiles",
+    "scripts/modules.js"
+  ]);
+</script><%
+} else if (loadingType === "AMD") {
+    if (useGruntBundling) {
 %><script src="scripts/require.js"></script><%
-  } else {
+    } else {
 %><script src="../bower_components/requirejs/require.js"></script><%
-  } %>
+    } %>
 
 <script>
   require.config({baseUrl: "<%= libPath %>"});

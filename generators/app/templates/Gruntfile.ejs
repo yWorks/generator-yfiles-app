@@ -16,7 +16,8 @@ module.exports = function (grunt) {
 
   grunt.registerTask("default", [
     "clean:all",
-    "copy:nonJsSource",<% if (gruntBabel) { %>
+    "copy:nonJsSource",<% if (language === "typescript") { %>
+    "typescript:base",<% } else if (gruntBabel) { %>
     "babel:dist",<% } %>
     "package",
     <% if (useWebpack) {
@@ -30,7 +31,8 @@ module.exports = function (grunt) {
   <% if (useWebpack) {
   %>grunt.registerTask("build-dev", "Leaves out time expensive packaging", [
     "clean:all",
-    "copy:nonJsSource",
+    "copy:nonJsSource",<% if (language === "typescript") { %>
+    "typescript:base",<% } %>
     "webpack:build-dev"
   ]);<%
   } %>
@@ -50,19 +52,22 @@ module.exports = function (grunt) {
         ],
         files: [{
           expand: true,
-          cwd: <% if (gruntBabel) { %>packageLibDest<% } else { %>scriptsSrc<% } %>,
-          src: ["**/*.js", "!**/license.js"],<%
-        if (useBrowserify || useWebpack) { %>
-          dest: packageLibDest
+          cwd: <% if (gruntBabel || language === "typescript") { %>packageLibDest<% } else { %>scriptsSrc<% } %>,
+          src: ["**/*.js", "!**/license.js"],
+          dest: <% if ((language === "typescript" && useWebpack || useBrowserify) || useWebpack || useBrowserify) { %>packageLibDest<% } else { %>scriptsDest<% } %>
         }<%
-        } else { %>
-          dest: scriptsDest
-        }, {
+        if (!(useBrowserify || useWebpack) || language === "typescript") { %>, {
           expand: true,
           cwd: "./bower_components/requirejs/",
           src: ["require.js"],
           dest: scriptsDest
-        }<% } %>],
+        }<% }
+        if (language === "typescript") { %>, {
+          expand: true,
+          cwd: scriptsSrc,
+          src: ["**/*.js"<% if (!useWebpack) { %>, "!**/license.js"<% } %>%>],
+          dest: <% if (useWebpack ||useBrowserify) { %>packageLibDest<% } else { %>scriptsDest<% } %>
+        }<% } %>%>],
         obfuscate: true,
         optimize: true<% if (!(useBrowserify || useWebpack)) { %>,
         createModulesBundle: true<% } %>
@@ -84,7 +89,7 @@ module.exports = function (grunt) {
           // copy resources
           expand: true,
           cwd: source,
-          src: ["**", "!**/*.js", "!lib**", "!lib/yfiles**"],
+          src: ["**", "!**/*.js", <% if (language === "typescript") { %>"!**/*.ts*", <% } %>"!lib**", "!lib/yfiles**"],
           dest: destination
         }]
       }<% if (!useWebpack) { %>,
@@ -101,7 +106,7 @@ module.exports = function (grunt) {
       // extend modifies the original object, so start with a new one
       build: extend({}, webpackConfig, {
         entry: {
-          app: [path.resolve(packageLibDest + applicationName)]
+          app: [path.resolve(packageLibDest + <% if (language === "typescript") { %>"modules.js"<% } else { %>applicationName<% } %>)]
         },
         resolve: {
           root: [path.resolve(packageLibDest)]
@@ -116,7 +121,7 @@ module.exports = function (grunt) {
       start: {
         keepAlive: true
       }
-    }<% } else {%>
+    }<% } else { %>
     browserify: {
       dist: {
         <% if (!useBrowserify) {
@@ -129,7 +134,7 @@ module.exports = function (grunt) {
         src: [packageLibDest + "yfiles/modules-bundle.js"],
         dest: destination + "lib/yfiles.js"<%
         } else {
-        %>src: [packageLibDest + applicationName],
+        %>src: [packageLibDest + <% if (language === "typescript") { %>"modules.js"<% } else { %>applicationName<% } %>],
         dest: scriptsDest + applicationName<%
         } %>
       }
@@ -150,7 +155,18 @@ module.exports = function (grunt) {
           script: "server.js"
         }
       }
-    },
+    }<% } if (language === "typescript") { %>,
+    typescript: {
+      base: {
+        src: [scriptsSrc + "**/*.ts"],
+        dest: packageLibDest,
+        options: {
+          module: <% if (useWebpack || useBrowserify) { %>"commonjs"<% } else { %>"amd"<% } %>,
+          target: "es5",
+          removeComments: true
+        }
+      }
+    }<% } else if (useBabel && !useWebpack) { %>,
     babel: {
       options: {
         sourceMap: true,
