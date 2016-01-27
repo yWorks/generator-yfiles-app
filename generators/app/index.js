@@ -84,29 +84,16 @@ module.exports = yeoman.generators.Base.extend({
           checked: this.minimumModules.indexOf(mod) >= 0
         };
       }.bind(this))
-    }, /*{
-     type: "confirm",
-     name: "advanced",
-     message: "Show advanced options?",
-     default: false
-     }, */{
-      type: "checkbox",
-      name: "advancedOptions",
-      message: "What else do you want?",
-      choices: advancedOptions,
-      store: true,
-      when: function (props) {
-        return props.buildTool.indexOf("Grunt") < 0;
-      }
     }, {
       type: "checkbox",
       name: "advancedOptions",
       message: "What else do you want?",
-      choices: advancedOptions.concat([{name: "babel", checked: false}]),
-      store: true,
-      when: function (props) {
-        return props.buildTool.indexOf("Grunt") >= 0;
-      }
+      choices: function (props) {
+        return props.buildTool.indexOf("Grunt") < 0 ?
+          advancedOptions
+          : advancedOptions.concat([{name: "babel", checked: false}]);
+      },
+      store: true
     }];
 
     this.prompt(prompts, function (props) {
@@ -222,12 +209,6 @@ module.exports = yeoman.generators.Base.extend({
       vars
     );
 
-    //this.fs.copyTpl(
-    //  this.templatePath((this.props.useBrowserify || this.props.useWebpack? "browserify-webpack/" : "") + "application.js"),
-    //  this.destinationPath(path.join(scriptsPath, this.props.applicationName + ".js")),
-    //  vars
-    //);
-
     this.fs.copy(
       path.join(this.props.yfilesPath, "lib"),
       this.destinationPath(libPath)
@@ -258,10 +239,6 @@ module.exports = yeoman.generators.Base.extend({
     var pkg = this.fs.readJSON(this.destinationPath("package.json"), {});
 
     if (!(this.props.useWebpack || this.props.useBrowserify || this.props.loadingType === "script-tags")) {
-      //this.fs.copy(
-      //  path.join(this.props.yfilesPath, "demos/demo-framework/require.js"),
-      //  this.destinationPath(path.join(scriptsPath, "require.js"))
-      //);
       var bower = this.fs.readJSON(this.destinationPath("bower.json"), {});
       extend(bower, {
         "name": this.props.applicationName,
@@ -296,11 +273,6 @@ module.exports = yeoman.generators.Base.extend({
         devDependencies: devDependencies
       });
 
-      //this.fs.copy(
-      //  path.join(this.props.yfilesPath, "deployment/grunt-yfiles-deployment"),
-      //  this.destinationPath("deployment/grunt-yfiles-deployment")
-      //);
-
       this.fs.copyTpl(
         this.templatePath("Gruntfile.ejs"),
         this.destinationPath("Gruntfile.js"),
@@ -330,7 +302,7 @@ module.exports = yeoman.generators.Base.extend({
         extend(pkg, {
           devDependencies: {
             "babel-core": "^6.4.0",
-            "babel-loader": "^6.2.1",
+            "babel-loader": "^6.2.1"
           }
         });
       }
@@ -340,6 +312,7 @@ module.exports = yeoman.generators.Base.extend({
         this.destinationPath("webpack.config.js"),
         vars
       );
+
     } else {
       extend(pkg, {
         scripts: {
@@ -365,17 +338,14 @@ module.exports = yeoman.generators.Base.extend({
   },
 
   install: function () {
-    if (this.props.useWebpack || this.props.useBrowserify || this.props.loadingType === "script-tags") {
-      this.npmInstall();
-    } else {
-      this.installDependencies();
-    }
-  },
-
-  end: function () {
-    if (this.props.useGruntBundling) {
-      this.log(chalk.green("\nFinished your scaffold. Running 'grunt' for you...\n"));
-      this.spawnCommand("grunt");
-    }
+    this.installDependencies({
+      bower: !(this.props.useWebpack || this.props.useBrowserify || this.props.loadingType === "script-tags"),
+      callback: function () {
+        if (this.props.useGruntBundling) {
+          this.log(chalk.green("\nFinished your scaffold. Running 'grunt' for you...\n"));
+          this.spawnCommand("grunt");
+        }
+      }.bind(this)
+    });
   }
 });
