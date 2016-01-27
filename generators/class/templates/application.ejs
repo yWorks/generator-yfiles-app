@@ -6,25 +6,24 @@
 <% } else {
 %>(function(r){(function(f){if("function"==typeof define&&define.amd){define([<% if (useGruntBundling) { %>"yfiles"<% } else { %>"yfiles/lang","yfiles/core-lib"<% } %>],f);}else{f(<% if (!useGruntBundling) { %>r.yfiles.lang,<% } %>r.yfiles);}}(function(<% if (!useGruntBundling) { %>lang,<% } %>yfiles){
 <% } -%>
-<% // indent by two spaces if necessary
-   var s = useWebpack || useBrowserify ? "" : "  ";%>
+
 yfiles.module("<%= module %>", function(exports) {
 
-<%=s%>  /**
-<%=s%>   * <% if(description) { %><%= description %><% } else { %>A yfiles class.<% } %>
-<%=s%>   * @class <%= module %>.<%= name %>
-<%=s%>   */
-<%=s%>exports.<%= name %> = new yfiles.ClassDefinition(function () {
-<%=s%>  /** @lends {<%= module %>.<%= name %>.prototype} */
-<%=s%>  return {
-<%=s%>    <% if (content) { %><%- content %><%
-%><%=s%>       <% } else { %>'constructor': function () {
-<%=s%>
-<%=s%>     }<%
-%><%=s%>    <% } %>
-<%=s%>  };
-<%=s%>})
-<%=s%>
+  /**
+   * <% if(description) { %><%= description %><% } else { %>A yfiles class.<% } %>
+   * @class <%= module %>.<%= name %>
+   */
+  exports.<%= name %> = new yfiles.ClassDefinition(function () {
+    /** @lends {<%= module %>.<%= name %>.prototype} */
+    return {
+      <% if (content) { %><%- content %><%
+      } else { %>'constructor': function () {
+
+      }<%
+      } %>
+    };
+  })
+
 });
 
 <% if (postClassContent) { %><%- postClassContent %><% } %>
