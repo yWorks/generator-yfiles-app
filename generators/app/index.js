@@ -51,7 +51,7 @@ module.exports = yeoman.generators.Base.extend({
     }, {
       type: "input",
       name: "licensePath",
-      message: "Path of license file",
+      message: "Path of license file (e.g. 'path/to/license.js')",
       store: true,
       when: function (props) {
         return !(this.fs.exists(this.licensePath = path.join(props.yfilesPath, "yWorks.yFilesHTML.DevelopmentLicense.js"))
@@ -107,7 +107,7 @@ module.exports = yeoman.generators.Base.extend({
 
       this.props.useGruntBundling = props.buildTool === "Grunt" || this.props.useBrowserify || this.props.useWebpack;
 
-      this.licensePath || (this.licensePath = props.licensePath);
+      this.fs.exists(this.licensePath) || (this.licensePath = props.licensePath);
 
       this.props.modules = utils.joinArrays(this.minimumModules, props.modules);
       if (props.loadingType === "AMD" || this.props.useGruntBundling) {
