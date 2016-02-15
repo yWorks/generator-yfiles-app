@@ -3,6 +3,7 @@ var yeoman = require("yeoman-generator");
 var chalk = require("chalk");
 var yosay = require("yosay");
 var path = require("path");
+var fs = require("fs");
 var extend = require("deep-extend");
 var yfilesModules = require("./yfiles-modules.json");
 var _ = require("lodash");
@@ -34,20 +35,26 @@ module.exports = yeoman.generators.Base.extend({
       filter: function (name) {
         name = utils.camelCase(name);
         return name.charAt(0).toUpperCase() + name.slice(1);
-      }
+      },
+      validate: utils.isValidName
     }, {
       type: "input",
       name: "module",
       message: "Module name",
       default: "application",
       store: true,
-      filter: utils.camelCase
+      filter: utils.camelCase,
+      validate: utils.isValidName
     }, {
       type: "input",
       name: "yfilesPath",
       message: "Path of yFiles for HTML package",
       default: "./",
-      store: true
+      store: true,
+      validate: function (p) {
+        return !fs.existsSync(p) ? "This path does not exist" :
+          !fs.existsSync(path.join(p, "lib", "yfiles")) ? "Not a valid yfiles package" : true;
+      }
     }, {
       type: "input",
       name: "licensePath",

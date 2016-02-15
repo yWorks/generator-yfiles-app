@@ -54,5 +54,9 @@ module.exports = {
     return name.trim().replace(/\s+(\w)/g, function (_, letter) {
       return letter.toUpperCase();
     });
+  },
+
+  isValidName: function (name) {
+    return /[^a-zA-Z_$ ]/.test(name) ? "This is not a valid name, only [a-zA-Z_$ ] are allowed." : true;
   }
 };
