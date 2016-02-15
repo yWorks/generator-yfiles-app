@@ -18,6 +18,12 @@ module.exports = yeoman.generators.Base.extend({
       desc: "Module name"
     });
 
+    this.option("language", {
+      type: String,
+      required: false,
+      desc: "TypeScript or JavaScript"
+    });
+
     this.option("buildTool", {
       type: String,
       required: false,
@@ -119,6 +125,10 @@ module.exports = yeoman.generators.Base.extend({
     var stylesPath = this.options.stylesPath || this.config.get("stylesPath") || path.join(appPath, "styles");
 
     var buildTool = this.options.buildTool || this.config.get("buildTool") || "none";
+
+    var language = this.options.language || this.config.get("language") || "javascript";
+
+    var indent = language === "typescript" ? "    " : "      "; // ts: 4 spaces, js: 6 spaces
     var vars = {
       name: this.options.name || this.props.name,
       appPath: utils.unixPath(appPath),
@@ -129,14 +139,14 @@ module.exports = yeoman.generators.Base.extend({
       useGruntBundling: buildTool.toLowerCase().indexOf("grunt") >= 0,
       useBrowserify: buildTool.toLowerCase().indexOf("browserify") >= 0,
       useWebpack: buildTool.toLowerCase().indexOf("webpack") >= 0,
-      content: this.options.content && this.options.content.replace(/(\n|\r\n)/gm, "$1      "),
+      content: this.options.content && this.options.content.replace(/(\n|\r\n)/gm, "$1" + indent),
       postClassContent: this.options.postClassContent && this.options.postClassContent.replace(/(\n|\r\n)/gm, "$1    "),
       description: this.options.description
     };
 
     this.fs.copyTpl(
-      this.templatePath("application.ejs"),
-      this.destinationPath(path.join(scriptsPath, vars.name + ".js")),
+      this.templatePath(path.join(language, "application.ejs")),
+      this.destinationPath(path.join(scriptsPath, vars.name + (language === "typescript" ? ".ts" : ".js"))),
       vars
     );
   }

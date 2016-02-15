@@ -1,0 +1,12 @@
+/// <reference path="../../typings/tsd.d.ts" />
+
+export module <%- module %> {
+  /**
+   * <% if (description) { %><%= description %><% } else { %>A yfiles class.<% } %>
+   */
+  export class <%- name %> {
+    <% if (content) { %><%-content %><% } %>
+  }
+}
+
+<% if (postClassContent) { %><%- postClassContent %><% } %>
