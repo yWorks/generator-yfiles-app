@@ -270,8 +270,7 @@ module.exports = yeoman.generators.Base.extend({
         "grunt-contrib-clean": "^0.6.0",
         "grunt-contrib-copy": "^0.8.0",
         "grunt-yfiles-deployment": path.join(this.props.yfilesPath, "deployment/grunt-yfiles-deployment"),
-        "load-grunt-tasks": "^3.2.0",
-        "babel-preset-es2015": "^6.3.13"
+        "load-grunt-tasks": "^3.2.0"
       };
       this.props.useWebpack || (devDependencies["grunt-browserify"] = "^3.8.0");
 
@@ -342,7 +341,8 @@ module.exports = yeoman.generators.Base.extend({
         devDependencies: {
           "grunt-babel": "^6.0.0",
           "babel-core": "^6.4.0",
-          "babel-loader": "^6.2.1"
+          "babel-loader": "^6.2.1",
+          "babel-preset-es2015": "^6.3.13"
         }
       });
     }
