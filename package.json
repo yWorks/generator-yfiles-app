@@ -1,12 +1,12 @@
 {
   "name": "generator-yfiles-app",
-  "version": "0.8.1",
+  "version": "0.9.0",
   "description": "A generator that scaffolds a yFiles for HTML powered application. Requires local yFiles package.",
   "homepage": "http://www.yworks.com",
   "author": {
-    "name": "Lukas Hollaender",
-    "email": "lukas.hollaender@yworks.com",
-    "url": "https://github.com/HackbrettXXX"
+    "name": "yFiles for HTML Support Team",
+    "email": "yfileshtml@yworks.com",
+    "url": "https://www.yworks.com/yfileshtml"
   },
   "files": [
     "generators"
@@ -41,9 +41,5 @@
       "mocha": true
     }
   },
-  "repository": "https://github.com/yWorks/generator-yfiles-app",
-  "scripts": {
-    "prepublish": "gulp prepublish",
-    "test": "gulp"
-  }
+  "repository": "https://github.com/yWorks/generator-yfiles-app"
 }
