@@ -379,7 +379,7 @@ module.exports = yeoman.generators.Base.extend({
           this.npmInstall("tsd", {"global": true}, function () {
             this.log(chalk.green("Initializing DefinitelyTyped"));
             this.spawnCommandSync("tsd", ["init"]);
-            this.spawnCommand("tsd", ["install", "yfiles"], {"save": true});
+            this.spawnCommandSync("tsd", ["install", "yfiles", "--save"]);
             runGrunt();
           }.bind(this));
         } else {
