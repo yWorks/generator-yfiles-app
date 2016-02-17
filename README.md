@@ -1,5 +1,5 @@
 # generator-yfiles-app [![NPM version][npm-image]][npm-url]
-> A yeoman generator that scaffolds a yFiles for HTML powered application. Requires local yFiles package.
+> A yeoman generator that scaffolds a [yFiles for HTML](http://www.yworks.com/yfileshtml) powered application. Requires a local yFiles for HTML package which can be [obtained and evaluated here](https://www.yworks.com/products/yfiles-for-html/evaluate).
 
 ## Installation
 
@@ -64,10 +64,6 @@ Further information can be found [here](http://docs.yworks.com/yfileshtmlv2/inde
 Additionally TypeScript definition manager ([tsd](http://definitelytyped.org/tsd/)) will be installed, which allows you to easily download and reference Typescript definition files.
 
 Choosing TypeScript will disable Babel.
-
-## Getting To Know Yeoman
-
-Yeoman has a heart of gold. He&#39;s a person with feelings and opinions, but he&#39;s very easy to work with. If you think he&#39;s too opinionated, he can be easily convinced. Feel free to [learn more about him](http://yeoman.io/).
 
 ## License
 MIT © [yWorks GmbH](http://www.yworks.com)
