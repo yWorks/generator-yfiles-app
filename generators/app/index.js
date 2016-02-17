@@ -22,6 +22,8 @@ module.exports = yeoman.generators.Base.extend({
       "Welcome to the " + chalk.cyan("yFiles") + "-application generator!"
     ));
 
+    this.log(chalk.green("Take a look at the README for further information how to use this generator."));
+
     var advancedOptions = [
       {name: "Use yfiles-typeinfo.js", checked: true},
       {name: "npm & git", checked: true}
@@ -84,7 +86,7 @@ module.exports = yeoman.generators.Base.extend({
     }, {
       type: "checkbox",
       name: "modules",
-      message: "What modules do you want to use?",
+      message: "Which modules do you want to use?",
       choices: utils.flattenTree(yfilesModules, "yfiles/complete").map(function (mod) {
         return {
           name: mod,
