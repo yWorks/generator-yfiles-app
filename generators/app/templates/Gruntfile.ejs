@@ -54,11 +54,9 @@ module.exports = function (grunt) {
         files: [{
           expand: true,
           cwd: <% if (useBabel || language === "typescript") { %>packageLibDest<% } else { %>scriptsSrc<% } %>,
-          src: ["**/*.js", "!**/license.js"]<%
-        if (useBrowserify || useWebpack) { %>,
-          dest: <% if ((language === "typescript" && useWebpack || useBrowserify) || useWebpack || useBrowserify) { %>packageLibDest<% } else { %>scriptsDest<% }
-        } %>
-        }<%
+          src: ["**/*.js", "!**/license.js"],
+          dest: <% if ((language === "typescript" && useWebpack || useBrowserify) || useWebpack || useBrowserify) { %>packageLibDest<% } else { %>scriptsDest<% } %>
+        }<% // TODO: copy systemjs files
         if (!(useBrowserify || useWebpack) || language === "typescript") { %>, {
           expand: true,
           cwd: "./bower_components/requirejs/",
