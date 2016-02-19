@@ -23,8 +23,38 @@
 
 <% } %><% if (!useGruntBundling) { %><script src="lib/yfiles/es5-shim.js"></script><% } %>
 <% if (!useWebpack) { %><script src="scripts/license.js"></script><% } %>
-<% if (useBrowserify || useWebpack) { %><script src="scripts/<%= applicationName %>.js"></script>
-<% } else if (useGruntBundling && language === "typescript") {
+<%
+
+
+if (useBrowserify || useWebpack) { %><script src="scripts/<%= applicationName %>.js"></script>
+<% }
+
+else if (loadingType === "systemjs") { %>
+<script src="<%= useGruntBundling ? "lib/system.js/" : "../bower_components/system.js/dist/" %>system.js"></script>
+<script>
+window.define = System.amdDefine;
+window.require = System.amdRequire;
+System.config({
+  map: {
+    yfiles: "<%= libPath %>yfiles"
+  },
+  defaultJSExtensions: true
+});
+<% if (language === "typescript") { %>
+System.import("yfiles");
+System.import("scripts/modules");
+<% } else { if (!useGruntBundling) { %>
+  Promise.all([
+    <% modules.forEach(function (module) { %>System.import("<%= module %>"),
+  <%  }); %>System.import("scripts/<%= applicationName %>")
+])<% } else { %>System.import("scripts/<%= applicationName %>")<% } %>.then(function () {
+  new (yfiles.module("<%= module %>")).<%= applicationName %>();
+});<% } %>
+</script><%
+}
+
+
+else if (useGruntBundling && language === "typescript") {
 %><script src="scripts/require.js"></script>
 <script>
   require.config({baseUrl: "lib/"});
@@ -34,7 +64,10 @@
     "scripts/modules.js"
   ]);
 </script><%
-} else if (loadingType === "AMD") {
+}
+
+
+else if (loadingType === "AMD") {
     if (useGruntBundling) {
 %><script src="scripts/require.js"></script><%
     } else {
@@ -50,20 +83,25 @@
   ], function (<%= module %>) {
     new <%= module %>.<%= applicationName %>();
   });
-</script><% } else {
-if (!useGruntBundling) { %>
+</script><% }
+
+
+else {
+  if (!useGruntBundling) { %>
 <script src="<%= libPath %>yfiles/lang.js"></script>
 <% modules.forEach(function (module) { %>
 <script src="<%= libPath %><%= module %>.mapping.js"></script>
 <script src="<%= libPath %><%= module %>.impl.js"></script>
 <script src="<%= libPath %><%= module %>.js"></script>
-<% }); } else { %>
+<% });
+  } else { %>
 <script src="<%= libPath %>yfiles.js"></script>
 <% } %>
 <script src="scripts/<%= applicationName %>.js"></script>
 <script>
   new (yfiles.module("<%= module %>")).<%= applicationName %>();
 </script>
-<% } %>
+<%
+} %>
 </body>
 </html>

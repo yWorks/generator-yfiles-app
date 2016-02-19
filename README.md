@@ -49,7 +49,11 @@ You can choose between those build tools:
 Further information about the available tasks can be found in the generated READMEs.
 
 #### Module loading method
-Decide whether you want to load the library via [AMD require](http://requirejs.org/docs/whyamd.html) or via \<script\>-tags.
+Decide whether you want to load the library via
+ * [AMD require](http://requirejs.org/docs/whyamd.html),
+ * [systemjs](https://github.com/systemjs/systemjs) or
+ * \<script\>-tags.
+This option will not be available when Webpack or Browserify have been selected as build tool, as the resulting package is included via \<script\>-tag.
 
 #### Which modules do you want to use?
 Choose which yFiles modules your app will need. For an overview of these take a look at the Developer's Guide's [module section](http://docs.yworks.com/yfileshtmlv2/index.html#/dguide/modules).

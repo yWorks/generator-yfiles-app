@@ -77,7 +77,7 @@ module.exports = yeoman.generators.Base.extend({
       type: "list",
       name: "loadingType",
       message: "Module loading method",
-      choices: ["AMD", "script-tags"],
+      choices: ["AMD", "script-tags", "systemjs"],
       default: "AMD",
       store: true,
       when: function (props) {
@@ -123,9 +123,9 @@ module.exports = yeoman.generators.Base.extend({
       this.fs.exists(this.licensePath) || (this.licensePath = props.licensePath);
       this.props.language = this.props.useTypeScript ? "typescript" : "javascript";
 
-      this.props.loadingType = this.props.useTypeScript ? "AMD" : props.loadingType;
+      this.props.loadingType = this.props.useTypeScript && props.loadingType === "script-tags" ? "AMD" : props.loadingType;
       this.props.modules = utils.joinArrays(this.minimumModules, props.modules);
-      if (props.loadingType === "AMD" || this.props.useGruntBundling) {
+      if (props.loadingType === "AMD" || props.loadingType === "systemjs" || this.props.useGruntBundling) {
         this.props.modules = utils.removeChildren(this.props.modules, yfilesModules);
       } else {
         this.props.modules = utils.insertChildren(this.props.modules, yfilesModules).reverse();
@@ -264,9 +264,15 @@ module.exports = yeoman.generators.Base.extend({
         "main": (this.props.useGruntBundling ? distPath : appPath) + this.props.applicationName,
         "version": pkg.version || "0.0.0",
         "dependencies": {
-          "requirejs": "^2.1.22"
         }
       });
+
+      if (this.props.loadingType === "AMD") {
+        bower.dependencies["requirejs"] = "^2.1.22";
+      } else {
+        bower.dependencies["system.js"] = "systemjs/systemjs";
+      }
+
       this.fs.writeJSON(this.destinationPath("bower.json"), bower)
     }
 
