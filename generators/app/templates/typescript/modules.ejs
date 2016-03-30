@@ -5,5 +5,7 @@ require("<%- (useBrowserify?'./':'') + modules[i] %>");<%
     } %>
 require("<%- (useBrowserify?'./':'') + applicationName %>");<%
 } else {
-%>require(["yfiles", "<%- "scripts/" + applicationName + ".js" %>"]);<%
+%>require(["yfiles", "<%- "scripts/" + applicationName + ".js" %>"], function (yfiles, module) {
+  new module.<%- module %>.<%- applicationName %>();
+});<%
 } %>

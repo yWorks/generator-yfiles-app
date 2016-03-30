@@ -168,7 +168,7 @@ module.exports = yeoman.generators.Base.extend({
         scriptsPath: this.config.get("scriptsPath"),
         libPath: this.config.get("libPath"),
         stylesPath: this.config.get("stylesPath"),
-        postClassContent: this.props.language === "typescript" ?
+        postClassContent: this.props.language === "typescript" && (this.props.useBrowserify || this.props.useWebpack) ?
         "new " + this.props.module + "." + this.props.applicationName + "();" :
           this.props.useBrowserify || this.props.useWebpack ?
           "new (yfiles.module(\"" + this.props.module + "\"))." + this.props.applicationName + "();" : ""
@@ -223,7 +223,7 @@ module.exports = yeoman.generators.Base.extend({
 
 
     this.fs.copyTpl(
-      this.templatePath("index.html"),
+      this.templatePath("index.ejs"),
       this.destinationPath(path.join(appPath, this.props.applicationName + ".html")),
       vars
     );
