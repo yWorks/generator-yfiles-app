@@ -128,7 +128,7 @@ module.exports = yeoman.generators.Base.extend({
 
     var language = this.options.language || this.config.get("language") || "javascript";
 
-    var indent = language === "typescript" ? "    " : "      "; // ts: 4 spaces, js: 6 spaces
+    var indent = language === "es6" ? "  " : language === "typescript" ? "    " : "      "; // es6: 2 spaces, ts: 4 spaces, js: 6 spaces
     var vars = {
       name: this.options.name || this.props.name,
       appPath: utils.unixPath(appPath),

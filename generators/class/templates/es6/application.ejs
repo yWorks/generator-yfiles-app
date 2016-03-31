@@ -1,0 +1,15 @@
+<% for (var i = 0; i < modules.length - 1; i++) {
+%>import "<%- (useBrowserify?'./':'') + modules[i] %>";
+<% } if (modules.length > 0) { %>import * as yfiles from "<%- (useBrowserify?'./':'') + modules[modules.length - 1] %>";<% } %>
+
+/**
+ * <% if(description) { %><%- description %><% } else { %>A yfiles class.<% } %>
+ */
+class <%- name %> {
+  <% if (content) { %><%- content %><%
+  } else { %>constructor () {
+
+  }<% } %>
+}
+
+<% if (postClassContent) { %><%- postClassContent %><% } %>

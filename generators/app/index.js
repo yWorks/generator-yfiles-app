@@ -101,7 +101,7 @@ module.exports = yeoman.generators.Base.extend({
         return props.buildTool.indexOf("Grunt") < 0 ?
           advancedOptions
           : advancedOptions.concat([
-          {name: "babel", checked: false},
+          {name: "ECMAScript 6 & babel", checked: false},
           {name: "TypeScript & DefinitelyTyped (tsd)", checked: false}
         ]);
       },
@@ -116,12 +116,12 @@ module.exports = yeoman.generators.Base.extend({
       this.props.useNpmAndGit = props.advancedOptions.indexOf("npm & git") >= 0;
       this.props.useBrowserify = props.buildTool === "Grunt + Browserify";
       this.props.useWebpack = props.buildTool === "Grunt + Webpack";
-      this.props.useBabel = props.advancedOptions.indexOf("babel") >= 0 && !this.props.useTypeScript;
+      this.props.useBabel = props.advancedOptions.indexOf("ECMAScript 6 & babel") >= 0 && !this.props.useTypeScript;
 
       this.props.useGruntBundling = props.buildTool === "Grunt" || this.props.useBrowserify || this.props.useWebpack;
 
       this.fs.exists(this.licensePath) || (this.licensePath = props.licensePath);
-      this.props.language = this.props.useTypeScript ? "typescript" : "javascript";
+      this.props.language = this.props.useTypeScript ? "typescript" : this.props.useBabel ? "es6" : "javascript";
 
       this.props.loadingType = this.props.useTypeScript && props.loadingType === "script-tags" ? "AMD" : props.loadingType;
       this.props.modules = utils.joinArrays(this.minimumModules, props.modules);
@@ -158,18 +158,22 @@ module.exports = yeoman.generators.Base.extend({
         description: "A simple yFiles application that creates a GraphControl and enables basic input gestures.",
         buildTool: this.props.buildTool,
         useTypeInfo: true,
-        dependencies: this.props.useBrowserify ?
-          (this.props.useTypeInfo ? ["yfiles-typeinfo.js"] : []).concat(this.props.modules)
+        dependencies: this.props.language === "es6" && !(this.props.useBrowserify || this.props.useWebpack) ?
+          (this.props.loadingType === "script-tags" ? [] : ["yfiles"])
+          : this.props.useBrowserify ?
+          (this.props.useTypeInfo && this.props.language !== "es6" ? ["yfiles-typeinfo.js"] : []).concat(this.props.modules)
           : this.props.useWebpack ?
-          ["license", "yfiles/es5-shim"].concat(this.props.useTypeInfo ? ["yfiles-typeinfo"] : [], this.props.modules)
+          ["license", "yfiles/es5-shim"].concat(this.props.useTypeInfo  && this.props.language !== "es6" ? ["yfiles-typeinfo"] : [], this.props.modules)
           : ["yfiles/lang", "yfiles/core-lib"],
         content: this.fs.read(this.templatePath(path.join(this.props.language), "applicationContent.ejs")),
         appPath: this.config.get("appPath"),
         scriptsPath: this.config.get("scriptsPath"),
         libPath: this.config.get("libPath"),
         stylesPath: this.config.get("stylesPath"),
-        postClassContent: this.props.language === "typescript" && (this.props.useBrowserify || this.props.useWebpack) ?
-        "new " + this.props.module + "." + this.props.applicationName + "();" :
+        postClassContent: this.props.language === "es6" ?
+          "new " + this.props.applicationName + "();" :
+          this.props.language === "typescript" && (this.props.useBrowserify || this.props.useWebpack) ?
+          "new " + this.props.module + "." + this.props.applicationName + "();" :
           this.props.useBrowserify || this.props.useWebpack ?
           "new (yfiles.module(\"" + this.props.module + "\"))." + this.props.applicationName + "();" : ""
       }
@@ -360,6 +364,10 @@ module.exports = yeoman.generators.Base.extend({
           "babel-preset-es2015": "^6.3.13"
         }
       });
+
+      if (!(this.props.useWebpack || this.props.useBrowserify)) {
+        pkg.devDependencies["babel-plugin-transform-es2015-modules-amd"] = "^6.6.5";
+      }
     }
 
     if (this.props.useTypeScript) {

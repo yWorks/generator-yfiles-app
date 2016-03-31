@@ -16,16 +16,18 @@ module.exports = function (grunt) {
 
   grunt.registerTask("default", [
     "clean:all",
-    "copy:nonJsSource",<% if (language === "typescript") { %>
+    "copy:nonJsSource",<%
+    if (useTypeInfo && language === "es6") { %>
+    "copy:typeinfo",<% }
+    if (language === "typescript") { %>
     "typescript:base",<% } else if (useBabel) { %>
     "babel:dist",<% } %>
     "package",
     <% if (useWebpack) {
     %>"webpack:build"<%
     } else {
-    %>"copy:license",
-    <% if (loadingType === "systemjs") {
-    %>"copy:systemjs",<% } %>
+    %>"copy:license",<% if (loadingType === "systemjs") { %>
+    "copy:systemjs",<% } %>
     "browserify"<%
     } %>
   ]);
@@ -34,7 +36,10 @@ module.exports = function (grunt) {
   %>grunt.registerTask("build-dev", "Leaves out time expensive packaging", [
     "clean:all",<% if (useBabel) { %>
     "babel:dist",<% } %>
-    "copy:nonJsSource",<% if (language === "typescript") { %>
+    "copy:nonJsSource",<%
+    if (useTypeInfo && language === "es6") { %>
+    "copy:typeinfo",<% }
+    if (language === "typescript") { %>
     "typescript:base",<% } %>
     "webpack:build-dev"
   ]);<%
@@ -70,8 +75,8 @@ module.exports = function (grunt) {
           src: ["**/*.js"<% if (!useWebpack) { %>, "!**/license.js"<% } %>%>],
           dest: <% if (useWebpack ||useBrowserify) { %>packageLibDest<% } else { %>scriptsDest<% } %>
         }<% } %>],
-        obfuscate: true,
-        optimize: true<% if (!(useBrowserify || useWebpack)) { %>,
+        <% if (!useBabel) { %>obfuscate: true,<% }
+        %>optimize: true<% if (!(useBrowserify || useWebpack)) { %>,
         createModulesBundle: true<% } %>
       },
       build: {
@@ -108,6 +113,13 @@ module.exports = function (grunt) {
         cwd: "./bower_components/system.js/dist",
         src: ["*.js"],
         dest: destination + "lib/system.js"
+      }<% }
+      if (useTypeInfo && language === "es6") { %>,
+      typeinfo: {
+        expand: true,
+        cwd: scriptsSrc,
+        src: "yfiles-typeinfo.js",
+        dest: scriptsDest
       }<% } %>
     },<% if (useWebpack) { %>
     webpack: {
@@ -180,7 +192,8 @@ module.exports = function (grunt) {
       options: {
         sourceMap: true,
         presets: ["es2015"]<% if (useTypeInfo) { %>,
-        ignore: /yfiles-typeinfo\.js/<% } %>
+        ignore: /yfiles-typeinfo\.js/<% } if (!(useWebpack || useBrowserify) && loadingType !== "script-tags") { %>,
+        plugins: ["transform-es2015-modules-amd"]<% } %>
       },
       dist: {
         files: [{

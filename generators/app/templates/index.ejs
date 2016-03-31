@@ -27,6 +27,7 @@
 
 
 if (useBrowserify || useWebpack) { %><script src="scripts/<%= applicationName %>.js"></script>
+<% if (language === "es6") { %><script src="scripts/yfiles-typeinfo.js"></script><% } %>
 <% }
 
 else if (loadingType === "systemjs") { %>
@@ -47,9 +48,12 @@ System.import("scripts/modules");
   Promise.all([
     <% modules.forEach(function (module) { %>System.import("<%= module %>"),
   <%  }); %>System.import("scripts/<%= applicationName %>")
-])<% } else { %>System.import("scripts/<%= applicationName %>")<% } %>.then(function () {
+])<% } else { %>System.import("scripts/<%= applicationName %>")<% } %><% if (language === "es6") { if (useTypeInfo) { %>.then(function () {
+  System.import("scripts/yfiles-typeinfo.js");
+})<% } } else { %>.then(function () {
   new (yfiles.module("<%= module %>")).<%= applicationName %>();
-});<% } %>
+})<% } %>;<%
+} %>
 </script><%
 }
 
@@ -73,16 +77,16 @@ else if (loadingType === "AMD") {
     } else {
 %><script src="../bower_components/requirejs/require.js"></script><%
     } %>
-
 <script>
   require.config({baseUrl: "<%= libPath %>"});
   // load the license and the required modules
-  require([
+  require([<% if (language === "es6") { %>
+    "scripts/yfiles-typeinfo.js",<% } %>
     "scripts/<%= applicationName %>.js"<% if (!useGruntBundling) { modules.forEach(function (module){ %>,
     "<%= module %>"<% }); } %>
-  ], function (<%= module %>) {
+  ]<% if (language !== "es6") { %>, function (<%= module %>) {
     new <%= module %>.<%= applicationName %>();
-  });
+  }<% } %>);
 </script><% }
 
 
@@ -96,11 +100,13 @@ else {
 <% });
   } else { %>
 <script src="<%= libPath %>yfiles.js"></script>
+<% }
+if (language === "es6") { %><script src="scripts/yfiles-typeinfo.js"></script>
 <% } %>
 <script src="scripts/<%= applicationName %>.js"></script>
-<script>
+<% if (language !== "es6") { %><script>
   new (yfiles.module("<%= module %>")).<%= applicationName %>();
-</script>
+</script><% } %>
 <%
 } %>
 </body>
