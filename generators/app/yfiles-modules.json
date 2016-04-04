@@ -1,6 +1,6 @@
 {
   "yfiles/complete": ["yfiles/layout", "yfiles/viewer", "yfiles/graph-layout-bridge"],
-  "yfiles/layout": ["yfiles/layout-multipage", "yfiles/layout-radial", "yfiles/layout-familytree", "yfiles/layout-partial", "yfiles/layout-orthogonal-compact", "yfiles/layout-circular"],
+  "yfiles/layout": ["yfiles/layout-multipage", "yfiles/layout-radial", "yfiles/layout-familytree", "yfiles/layout-partial", "yfiles/layout-orthogonal-compact", "yfiles/layout-circular", "yfiles/layout-misc", "yfiles/layout-seriesparallel"],
   "yfiles/graph-layout-bridge": ["yfiles/layout-core", "yfiles/graph-base"],
   "yfiles/viewer": ["yfiles/graph-style-extra", "yfiles/graph-style-control", "yfiles/graph-style-table", "yfiles/graph-input-table", "yfiles/graph-graphml", "yfiles/graph-folding", "yfiles/graph-binding"],
   "yfiles/layout-multipage": ["yfiles/layout-partial"],
