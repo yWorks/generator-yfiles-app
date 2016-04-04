@@ -16,7 +16,8 @@ module.exports = {
       result.indexOf(node) >= 0 || result.push(node);
       queue = queue.concat(tree[node]);
     }
-    return result;
+	
+    return result.sort();
   },
 
   removeChildren: function (array, tree) {

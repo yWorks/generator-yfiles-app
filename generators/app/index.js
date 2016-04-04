@@ -11,7 +11,7 @@ var utils = require("../utils");
 
 module.exports = yeoman.generators.Base.extend({
   initializing: function () {
-    this.minimumModules = ["yfiles/graph-style-extra", "yfiles/graph-input"];
+    this.minimumModules = [];
   },
 
   prompting: function () {
