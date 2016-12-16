@@ -1,21 +1,22 @@
 initialize() {
-  // create a GraphControl
-  var graphControl = new yfiles.canvas.GraphControl.ForId("graphControl");
+  // create a GraphComponent
+  var graphComponent = new yfiles.view.GraphComponent('graphComponent');
 
   // create and configure a default node style
-  var nodeStyle = new yfiles.drawing.ShinyPlateNodeStyle.WithColor(yfiles.system.Colors.ORANGE);
-  nodeStyle.drawShadow = true;
-  graphControl.graph.nodeDefaults.style = nodeStyle;
+  graphComponent.graph.nodeDefaults.style = new yfiles.styles.ShinyPlateNodeStyle({
+    fill: yfiles.view.Fill.ORANGE,
+    drawShadow: true
+  });
 
   // get the IGraph
-  var graph = graphControl.graph;
+  var graph = graphComponent.graph;
   // create some nodes
-  graph.createNodeWithBounds(new yfiles.geometry.RectD(10, 10, 100, 100));
-  graph.createNodeWithBounds(new yfiles.geometry.RectD(150, 150, 100, 100));
-  graph.createNodeWithBounds(new yfiles.geometry.RectD(250, 250, 100, 100));
+  graph.createNode(new yfiles.geometry.Rect(10, 10, 100, 100));
+  graph.createNode(new yfiles.geometry.Rect(150, 150, 100, 100));
+  graph.createNode(new yfiles.geometry.Rect(250, 250, 100, 100));
 
   // create an input mode
-  graphControl.inputMode = new yfiles.input.GraphEditorInputMode();
+  graphComponent.inputMode = new yfiles.input.GraphEditorInputMode();
 }
 
 constructor() {

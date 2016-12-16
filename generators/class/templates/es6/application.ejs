@@ -1,15 +1,26 @@
-<% for (var i = 0; i < modules.length - 1; i++) {
-%>import "<%- (useBrowserify?'./':'') + modules[i] %>";
-<% } if (modules.length > 0) { %>import * as yfiles from "<%- (useBrowserify?'./':'') + modules[modules.length - 1] %>";<% } %>
+<% if (useWebpack || useBrowserify) {
+  moduleList.forEach(function(module, idx) {
+    if (idx === moduleList.length - 1) {
+%>const yfiles = require("<%= (useBrowserify?'./':'') + module %>");<%
+      if (useWebpack) {
+%>
+<%-licenseContent%>;<%
+      }
+    } else {
+%>require("<%= (useBrowserify?'./':'') + module %>");<%
+    }
+  });
+} else if (loadingType !== "script-tags") { %>define(['yfiles/view-component'], yfiles => {<% } %>
 
-/**
- * <% if(description) { %><%- description %><% } else { %>A yfiles class.<% } %>
- */
-class <%- name %> {
-  <% if (content) { %><%- content %><%
-  } else { %>constructor () {
+  /**
+   * <% if(description) { %><%- description %><% } else { %>A yfiles class.<% } %>
+   */
+  class <%- name %> {
+    <% if (content) { %><%- content %><%
+    } else { %>constructor () {
 
-  }<% } %>
-}
+    }<% } %>
+  }
 
-<% if (postClassContent) { %><%- postClassContent %><% } %>
+  <% if (postClassContent) { %><%- postClassContent %><% } %>
+<% if (loadingType !== "script-tags" && !(useWebpack || useBrowserify)) { %>});<% } %>

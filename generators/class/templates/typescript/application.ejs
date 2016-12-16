@@ -1,12 +1,11 @@
-/// <reference path="../../typings/tsd.d.ts" />
+<% moduleList.forEach(function(module, idx) { %>import <%= idx === 0 ? "yfiles" : "tmp" + idx%> = require("<%= module %>");
+<%})%>
 
-export module <%- module %> {
-  /**
-   * <% if (description) { %><%= description %><% } else { %>A yfiles class.<% } %>
-   */
-  export class <%- name %> {
-    <% if (content) { %><%-content %><% } %>
-  }
-  <% if (postClassContent) { %><%- postClassContent %><% } %>
+/**
+ * <% if (description) { %><%= description %><% } else { %>A yfiles class.<% } %>
+ */
+export class <%- name %> {
+  <% if (content) { %><%-content %><% } %>
 }
+<% if (postClassContent) { %><%- postClassContent %><% } %>
 

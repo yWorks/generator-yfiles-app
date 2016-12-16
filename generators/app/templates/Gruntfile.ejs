@@ -19,17 +19,17 @@ module.exports = function (grunt) {
     "copy:nonJsSource",<%
     if (useTypeInfo && language === "es6") { %>
     "copy:typeinfo",<% }
-    if (language === "typescript") { %>
-    "typescript:base",<% } else if (useBabel) { %>
+    if (useBabel) { %>
     "babel:dist",<% } %>
     "package",
     <% if (useWebpack) {
     %>"webpack:build"<%
     } else {
     %>"copy:license",<% if (loadingType === "systemjs") { %>
-    "copy:systemjs",<% } %>
+    "copy:systemjs",<% }
+    if (useBrowserify) {%>
     "browserify"<%
-    } %>
+    }} %>
   ]);
 
   <% if (useWebpack) {
@@ -55,7 +55,8 @@ module.exports = function (grunt) {
         libSrc: libSrc,
         libDest: packageLibDest,
         modules: [
-          "yfiles/es5-shim"<% modules.forEach(function (module) { %>,
+          "yfiles/es2015-shim",
+          "yfiles/lang"<% modules.forEach(function (module) { %>,
           "<%= module %>"<%}); %>
         ],
         files: [{
@@ -75,8 +76,8 @@ module.exports = function (grunt) {
           src: ["**/*.js"<% if (!useWebpack) { %>, "!**/license.js"<% } %>%>],
           dest: <% if (useWebpack ||useBrowserify) { %>packageLibDest<% } else { %>scriptsDest<% } %>
         }<% } %>],
-        <% if (!useBabel) { %>obfuscate: true,<% }
-        %>optimize: true<% if (!(useBrowserify || useWebpack)) { %>,
+        obfuscate: true,
+        optimize: true<% if (!(useBrowserify || useWebpack)) { %>,
         createModulesBundle: true<% } %>
       },
       build: {
@@ -190,10 +191,8 @@ module.exports = function (grunt) {
     }<% } else if (useBabel) { %>,
     babel: {
       options: {
-        sourceMap: true,
-        presets: ["es2015"]<% if (useTypeInfo) { %>,
-        ignore: /yfiles-typeinfo\.js/<% } if (!(useWebpack || useBrowserify) && loadingType !== "script-tags") { %>,
-        plugins: ["transform-es2015-modules-amd"]<% } %>
+        presets: [require.resolve('babel-preset-es2015')],
+        compact: false
       },
       dist: {
         files: [{

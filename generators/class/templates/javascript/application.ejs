@@ -1,11 +1,19 @@
 <% if (useWebpack || useBrowserify) {
-     for (var i = 0; i < modules.length - 1; i++) {
-%>require("<%= (useBrowserify?'./':'') + modules[i] %>");
-<%   }
-%>var yfiles = require("<%= (useBrowserify?'./':'') + modules[modules.length - 1] %>");
-<% } else {
-%>(function(r){(function(f){if("function"==typeof define&&define.amd){define([<% if (useGruntBundling) { %>"yfiles"<% } else { %>"yfiles/lang","yfiles/core-lib"<% } %>],f);}else{f(<% if (!useGruntBundling) { %>r.yfiles.lang,<% } %>r.yfiles);}}(function(<% if (!useGruntBundling) { %>lang,<% } %>yfiles){
-<% } -%>
+  moduleList.forEach(function(module, idx) {
+    if (idx === moduleList.length - 1) {
+%>var yfiles = require("<%= (useBrowserify?'./':'') + module %>");<%
+      if (useWebpack) {
+%>
+<%-licenseContent%>;<%
+      }
+    } else {
+%>require("<%= (useBrowserify?'./':'') + module %>");<%
+    }
+  });
+} else {
+%>(function(r){(function(f){if("function"==typeof define&&define.amd){define(['yfiles/lang','yfiles/view-component'],f);}else{f(r.yfiles.lang,r.yfiles);}}(function(lang,yfiles){
+<% } %>
+
 
 yfiles.module("<%= module %>", function(exports) {
 

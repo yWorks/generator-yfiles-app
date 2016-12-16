@@ -135,13 +135,16 @@ module.exports = yeoman.generators.Base.extend({
       scriptsPath: utils.unixPath(scriptsPath),
       module: this.options.module || this.props.module,
       modules: this.options.dependencies,
+      moduleList: this.config.get("modules"),
       useTypeInfo: this.options.useTypeInfo,
       useGruntBundling: buildTool.toLowerCase().indexOf("grunt") >= 0,
       useBrowserify: buildTool.toLowerCase().indexOf("browserify") >= 0,
       useWebpack: buildTool.toLowerCase().indexOf("webpack") >= 0,
       content: this.options.content && this.options.content.replace(/(\n|\r\n)/gm, "$1" + indent),
+      loadingType: this.options.loadingType,
       postClassContent: this.options.postClassContent && this.options.postClassContent.replace(/(\n|\r\n)/gm, "$1    "),
-      description: this.options.description
+      description: this.options.description,
+      licenseContent: this.config.get("licenseContent")
     };
 
     this.fs.copyTpl(

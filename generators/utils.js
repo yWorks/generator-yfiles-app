@@ -16,7 +16,7 @@ module.exports = {
       result.indexOf(node) >= 0 || result.push(node);
       queue = queue.concat(tree[node]);
     }
-	
+
     return result.sort();
   },
 
@@ -40,7 +40,8 @@ module.exports = {
 
   insertChildren: function (array, tree) {
     for (var i = 0; i < array.length; i++) {
-      array = array.concat(tree[array[i]]);
+      var key = array[i];
+        array = array.concat(tree[key]);
     }
     return array.filter(function (node, index, array) {
       return array.lastIndexOf(node) === index;

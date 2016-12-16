@@ -63,11 +63,10 @@ The generator will automatically optimize the requires.
  * **Use yfiles-typeinfo.js** Includes the yfiles-typeinfo.js file which provides runtime type checking during development time. It is recommended to exclude this file in releases.
 Further information can be found [here](http://docs.yworks.com/yfileshtmlv2/index.html#/dguide/DevelopmentSupport#DevelopmentSupport-Checks)
  * **npm & git** Runs the [node generator](https://github.com/yeoman/generator-node), which initializes a npm package and git.
- * **[babel](https://babeljs.io/)** Enables you to use ECMAScript 6 (Only available if you have chosen a build tool).
- * **[TypeScript](http://www.typescriptlang.org/) & [DefinitelyTyped (tsd)](http://definitelytyped.org/)** Use TypeScript instead of plain JavaScript (Only available if have chosen a build tool). 
-Additionally TypeScript definition manager ([tsd](http://definitelytyped.org/tsd/)) will be installed, which allows you to easily download and reference Typescript definition files.
+ * **ECMAScript 6 (+[babel](https://babeljs.io/))** Enables you to use ECMAScript 6 (Only available if you have chosen a build tool).
+ * **[TypeScript](http://www.typescriptlang.org/)** Use TypeScript instead of plain JavaScript (Only available if have chosen a build tool).
 
-Choosing TypeScript will disable Babel.
+Choosing TypeScript will disable ECMAScript (+Babel).
 
 ## License
 MIT © [yWorks GmbH](http://www.yworks.com)

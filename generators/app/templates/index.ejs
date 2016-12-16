@@ -6,7 +6,7 @@
   <link type="text/css" rel="stylesheet" href="styles/yfiles.css">
 
   <style>
-    html, body, #graphControl {
+    html, body, #graphComponent {
       width: 100%;
       height: 100%;
       padding: 0;
@@ -15,19 +15,19 @@
   </style>
 </head>
 <body>
-<div id="graphControl"></div>
+<div id="graphComponent"></div>
 
 <% if (useTypeInfo && !useGruntBundling) { %>
 <!-- Adding type information support during application development. -->
 <script src="scripts/yfiles-typeinfo.js"></script>
 
-<% } %><% if (!useGruntBundling) { %><script src="lib/yfiles/es5-shim.js"></script><% } %>
+<% } %><% if (!useGruntBundling) { %><script src="lib/yfiles/es2015-shim.js"></script><% } %>
 <% if (!useWebpack) { %><script src="scripts/license.js"></script><% } %>
 <%
 
 
 if (useBrowserify || useWebpack) { %><script src="scripts/<%= applicationName %>.js"></script>
-<% if (language === "es6") { %><script src="scripts/yfiles-typeinfo.js"></script><% } %>
+<% if (language === "es6" && useTypeInfo) { %><script src="scripts/yfiles-typeinfo.js"></script><% } %>
 <% }
 
 else if (loadingType === "systemjs") { %>
@@ -41,32 +41,38 @@ System.config({
   },
   defaultJSExtensions: true
 });
-<% if (language === "typescript") { %>
-System.import("yfiles");
-System.import("scripts/modules");
-<% } else { if (!useGruntBundling) { %>
+<% if (!(useBrowserify || useWebpack)) { %>
   Promise.all([
+    System.import("scripts/<%= applicationName %>"),
     <% modules.forEach(function (module) { %>System.import("<%= module %>"),
-  <%  }); %>System.import("scripts/<%= applicationName %>")
-])<% } else { %>System.import("scripts/<%= applicationName %>")<% } %><% if (language === "es6") { if (useTypeInfo) { %>.then(function () {
-  System.import("scripts/yfiles-typeinfo.js");
-})<% } } else { %>.then(function () {
+  <%  }); %>
+])<% } else { %>System.import("scripts/<%= applicationName %>")<% } %><% if (language === "es6" || language === "typescript") { %>.then(function (results) {
+  <% if (useTypeInfo) { %>System.import("scripts/yfiles-typeinfo.js"); <% } %>
+  <% if (language === "typescript") { %>new results[0].<%= applicationName %>();
+  <% } else { %>new results[0]();<% } %>
+})<% } else { %>.then(function () {
   new (yfiles.module("<%= module %>")).<%= applicationName %>();
-})<% } %>;<%
-} %>
+})<% } %>;
 </script><%
 }
 
 
-else if (useGruntBundling && language === "typescript") {
-%><script src="scripts/require.js"></script>
+else if (language === "typescript") {
+%><script src="../bower_components/requirejs/require.js"></script>
 <script>
-  require.config({baseUrl: "lib/"});
+  require.config({
+    baseUrl: './',
+    paths: {
+      'yfiles': '<%= libPath %>yfiles'
+    }
+  });
   // load the license and the required modules
   require([
-    "yfiles",
-    "scripts/modules.js"
-  ]);
+    './scripts/<%= applicationName %>.js',
+    './scripts/license.js',
+  ], function(<%= module %>) {
+    new <%= module %>.<%= applicationName %>();
+  });
 </script><%
 }
 
@@ -80,33 +86,31 @@ else if (loadingType === "AMD") {
 <script>
   require.config({baseUrl: "<%= libPath %>"});
   // load the license and the required modules
-  require([<% if (language === "es6") { %>
-    "scripts/yfiles-typeinfo.js",<% } %>
-    "scripts/<%= applicationName %>.js"<% if (!useGruntBundling) { modules.forEach(function (module){ %>,
+  require([
+    "scripts/<%= applicationName %>.js"<% if (!useBrowserify || !useWebpack) { modules.forEach(function (module){ %>,
     "<%= module %>"<% }); } %>
   ]<% if (language !== "es6") { %>, function (<%= module %>) {
     new <%= module %>.<%= applicationName %>();
-  }<% } %>);
+  }<% } else { %>, <%= applicationName %> => new <%= applicationName %>()<% } %>);
 </script><% }
 
 
 else {
-  if (!useGruntBundling) { %>
+  if (!useBrowserify || !useWebpack) {
+    if (loadingType === "script-tags") { %>
+<script src="<%= libPath %>yfiles/impl/lang.js"></script>
+<% } else { %>
 <script src="<%= libPath %>yfiles/lang.js"></script>
-<% modules.forEach(function (module) { %>
-<script src="<%= libPath %><%= module %>.mapping.js"></script>
-<script src="<%= libPath %><%= module %>.impl.js"></script>
-<script src="<%= libPath %><%= module %>.js"></script>
+<% } %>
+<% modules.forEach(function (module) { %><script src="<%= libPath %><%= module %>.js"></script>
 <% });
   } else { %>
 <script src="<%= libPath %>yfiles.js"></script>
-<% }
-if (language === "es6") { %><script src="scripts/yfiles-typeinfo.js"></script>
 <% } %>
 <script src="scripts/<%= applicationName %>.js"></script>
-<% if (language !== "es6") { %><script>
+<script><% if (language !== "es6") { %>
   new (yfiles.module("<%= module %>")).<%= applicationName %>();
-</script><% } %>
+<% } else { %>new <%= applicationName %>()<% } %></script>
 <%
 } %>
 </body>
