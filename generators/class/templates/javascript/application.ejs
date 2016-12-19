@@ -10,12 +10,14 @@
 %>require("<%= (useBrowserify?'./':'') + module %>");<%
     }
   });
-} else {
-%>(function(r){(function(f){if("function"==typeof define&&define.amd){define(['yfiles/lang','yfiles/view-component'],f);}else{f(r.yfiles.lang,r.yfiles);}}(function(lang,yfiles){
+} else if (loadingType === "AMD") {
+%>require.config({ paths: {yfiles: 'lib/yfiles'} });
+
+require([<%moduleList.forEach(function(module, idx) {if (idx === moduleList.length - 1) {%>'<%= module %>'<%} else {%>'<%= module %>', <%}})%>], function(yfiles) {<% }
+else if (loadingType === "systemjs") { %>
+var yfiles = require('<%= moduleList[0] %>');
 <% } %>
-
-
-yfiles.module("<%= module %>", function(exports) {
+<%if (loadingType === "AMD" && !(useWebpack || useBrowserify)) {%>var <%= module %> = <%}%>yfiles.module("<%= module %>", function(exports) {
 
   /**
    * <% if(description) { %><%= description %><% } else { %>A yfiles class.<% } %>
@@ -36,5 +38,5 @@ yfiles.module("<%= module %>", function(exports) {
 
 <% if (postClassContent) { %><%- postClassContent %><% } %>
 
-<% if (!(useWebpack || useBrowserify)) { %>return yfiles.module("<%= module %>");
-}));})("undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:this);<% } %>
+<% if (loadingType === "AMD" && !(useWebpack || useBrowserify)) { %>
+});<% } %>

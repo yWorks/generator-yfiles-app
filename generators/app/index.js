@@ -197,8 +197,10 @@ module.exports = yeoman.generators.Base.extend({
         libPath: this.config.get("libPath"),
         stylesPath: this.config.get("stylesPath"),
         loadingType: this.props.loadingType,
-        postClassContent: this.props.language === "es6" && this.props.loadingType !== "script-tags" ?
-          (this.props.useBrowserify || this.props.useWebpack) ? "new " + this.props.applicationName + "();" : "return " + this.props.applicationName + ";" :
+        postClassContent: this.props.language === "es6" ?
+          "new " + this.props.applicationName + "();" :
+          this.props.language === "javascript" && !(this.props.loadingType === "systemjs") && !(this.props.useBrowserify || this.props.useWebpack) ?
+          "new " + this.props.module + "." + this.props.applicationName + "();" :
           this.props.language === "typescript" && (this.props.useBrowserify || this.props.useWebpack) ?
           "new " + this.props.applicationName + "();" :
           this.props.useBrowserify || this.props.useWebpack ?

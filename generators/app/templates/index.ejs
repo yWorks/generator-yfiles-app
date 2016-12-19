@@ -82,17 +82,11 @@ else if (loadingType === "AMD") {
 %><script src="scripts/require.js"></script><%
     } else {
 %><script src="../bower_components/requirejs/require.js"></script><%
-    } %>
-<script>
-  require.config({baseUrl: "<%= libPath %>"});
-  // load the license and the required modules
-  require([
-    "scripts/<%= applicationName %>.js"<% if (!useBrowserify || !useWebpack) { modules.forEach(function (module){ %>,
-    "<%= module %>"<% }); } %>
-  ]<% if (language !== "es6") { %>, function (<%= module %>) {
-    new <%= module %>.<%= applicationName %>();
-  }<% } else { %>, <%= applicationName %> => new <%= applicationName %>()<% } %>);
-</script><% }
+    }
+%>
+
+<script src="scripts/<%= applicationName %>.js"></script>
+<% }
 
 
 else {
@@ -108,10 +102,6 @@ else {
 <script src="<%= libPath %>yfiles.js"></script>
 <% } %>
 <script src="scripts/<%= applicationName %>.js"></script>
-<script><% if (language !== "es6") { %>
-  new (yfiles.module("<%= module %>")).<%= applicationName %>();
-<% } else { %>new <%= applicationName %>()<% } %></script>
-<%
-} %>
+<% } %>
 </body>
 </html>
