@@ -61,11 +61,25 @@ module.exports = yeoman.generators.Base.extend({
       type: "input",
       name: "licensePath",
       message: "Path of license file (e.g. 'path/to/license.js')",
+      default: function(props) {
+        var licensePath = path.join(props.yfilesPath, "demos/resources/license.js");
+        if (this.fs.exists(licensePath)) {
+          return licensePath + "";
+        }
+        licensePath = path.join(props.yfilesPath, "license.js");
+        if (this.fs.exists(licensePath)) {
+          return licensePath + "";
+        }
+        licensePath = path.join(props.yfilesPath, "yWorks.yFilesHTML.DevelopmentLicense.js");
+        if (this.fs.exists(licensePath)) {
+          return licensePath + "";
+        }
+        return "";
+      }.bind(this),
       store: true,
-      when: function (props) {
-        return !(this.fs.exists(this.licensePath = path.join(props.yfilesPath, "yWorks.yFilesHTML.DevelopmentLicense.js"))
-        || this.fs.exists(this.licensePath = path.join(props.yfilesPath, "license.js")));
-      }.bind(this)
+      validate: function (p) {
+        return !fs.existsSync(p) ? "This path does not exist" : true;
+      }
     }, {
       type: "list",
       name: "buildTool",
@@ -135,8 +149,7 @@ module.exports = yeoman.generators.Base.extend({
       this.props.useNpmAndGit = props.advancedOptions.indexOf("npm & git") >= 0;
       this.props.useBabel = props.advancedOptions.indexOf("ECMAScript 6 & babel") >= 0 && !this.props.useTypeScript;
 
-
-      this.fs.exists(this.licensePath) || (this.licensePath = props.licensePath);
+      this.props.licensePath = props.licensePath;
       this.props.language = this.props.useTypeScript ? "typescript"
         : (props.advancedOptions.indexOf("ECMAScript 6") >= 0 || props.advancedOptions.indexOf("ECMAScript 6 & babel") >= 0) ? "es6"
           : "javascript";
@@ -153,7 +166,7 @@ module.exports = yeoman.generators.Base.extend({
       }
 
       this.props.licenseContent = /yfiles\.license\s*=\s*\{.*?}/g.exec(
-        this.fs.read(this.licensePath)
+        this.fs.read(this.props.licensePath)
           .replace(/[\n\r]/g, "")
           .replace(/\s*?"/g, '"')
       )[0];
@@ -273,7 +286,7 @@ module.exports = yeoman.generators.Base.extend({
 
     if (!(this.props.useWebpack)) {
       this.fs.copy(
-        this.licensePath,
+        this.props.licensePath,
         this.destinationPath(path.join(scriptsPath, "license.js"))
       );
     }
@@ -328,13 +341,14 @@ module.exports = yeoman.generators.Base.extend({
         }
       });
 
-      if (!(this.props.useGruntBundling || this.props.useWebpack)) {
+      if (!this.props.useGruntBundling) {
         this.fs.writeJSON(this.destinationPath("package.json"), pkg);
       }
     }
 
-    if (!(this.props.useGruntBundling || this.props.useWebpack))
+    if (!this.props.useGruntBundling) {
       return;
+    }
 
     if (this.props.useGruntBundling) {
       var devDependencies = {
@@ -449,12 +463,14 @@ module.exports = yeoman.generators.Base.extend({
       }
     }.bind(this);
 
-    this.installDependencies({
-      bower: !(this.props.useWebpack || this.props.useBrowserify || this.props.loadingType === "script-tags"),
-      callback: function () {
-        postInstall()
-      }.bind(this)
-    });
-
+    if (!(this.props.useWebpack || this.props.useBrowserify || this.props.loadingType === "script-tags") || this.props.useTypeScript || this.props.useGruntBundling) {
+      this.installDependencies({
+        bower: !(this.props.useWebpack || this.props.useBrowserify || this.props.loadingType === "script-tags"),
+        npm: this.props.useGruntBundling || this.props.useTypeScript,
+        callback: function () {
+          postInstall()
+        }.bind(this)
+      });
+    }
   }
 });
