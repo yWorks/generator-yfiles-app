@@ -165,11 +165,19 @@ module.exports = yeoman.generators.Base.extend({
         this.props.modules = utils.removeChildren(this.props.modules, yfilesModules);
       }
 
-      this.props.licenseContent = /yfiles\.license\s*=\s*\{.*?}/g.exec(
-        this.fs.read(this.props.licensePath)
-          .replace(/[\n\r]/g, "")
-          .replace(/\s*?"/g, '"')
-      )[0];
+      var global = {
+        yfiles: {},
+      };
+      try {
+        // wrap the file with a function
+        var getModules = new Function("global", this.fs.read(this.props.licensePath));
+        // and pass yfiles and lang to it
+        getModules.call(global, global);
+      } catch (e) {
+        console.log(e.message || e);
+      }
+
+      this.props.licenseContent = JSON.stringify(global.yfiles.license, null, 2);
 
       done();
     }.bind(this));

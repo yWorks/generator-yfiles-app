@@ -1,13 +1,16 @@
 <% if (useWebpack || useBrowserify) {
   moduleList.forEach(function(module, idx) {
     if (idx === moduleList.length - 1) {
-%>const yfiles = require("<%= (useBrowserify?'./':'') + module %>");<%
+%>const yfiles = require("<%= (useBrowserify?'./':'') + module %>");
+<%
       if (useWebpack) {
 %>
-<%-licenseContent%>;<%
+yfiles.license = <%-licenseContent%>;
+<%
       }
     } else {
-%>require("<%= (useBrowserify?'./':'') + module %>");<%
+%>require("<%= (useBrowserify?'./':'') + module %>");
+<%
     }
   });
 } else if (loadingType !== "script-tags") { if (loadingType === "AMD") { %>require.config({ paths: {yfiles: 'lib/yfiles'} });<% } %>
