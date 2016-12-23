@@ -3,11 +3,18 @@
 
 ## Installation
 
-First, install [Yeoman](http://yeoman.io) and generator-yfiles-app using [npm](https://www.npmjs.com/) (we assume you have pre-installed [node.js](https://nodejs.org/)).
+First, install [Yeoman](http://yeoman.io) and generator-yfiles-app using [npm](https://www.npmjs.com/) (we assume you have pre-installed [node.js](https://nodejs.org/)). 
+The current version scaffolds yFiles for HTML 2.0 projects.
 
 ```bash
 npm install -g yo
 npm install -g generator-yfiles-app
+```
+
+To scaffold a yFiles for HTML 1.3 project, please install v0.9.4 of the generator-yfiles-app, i.e:
+
+```bash
+npm install -g generator-yfiles-app@0.9.4
 ```
 
 Then generate your new project:
