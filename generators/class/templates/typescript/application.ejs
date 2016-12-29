@@ -1,6 +1,5 @@
-<% moduleList.forEach(function(module, idx) { %>import <%= idx === 0 ? "yfiles" : "tmp" + idx%> = require("<%= module %>");
+<% moduleList.forEach(function(module, idx) { %>import <%= idx === 0 ? "yfiles" : "tmp" + idx%> = require('<%= module %>');
 <%})%>
-
 /**
  * <% if (description) { %><%= description %><% } else { %>A yfiles class.<% } %>
  */

@@ -202,7 +202,7 @@ module.exports = yeoman.generators.Base.extend({
       options: {
         name: this.props.applicationName,
         module: this.props.module,
-        description: "A simple yFiles application that creates a GraphControl and enables basic input gestures.",
+        description: "A simple yFiles application that creates a GraphComponent and enables basic input gestures.",
         buildTool: this.props.buildTool,
         useTypeInfo: this.props.useTypeInfo,
         dependencies: this.props.language === "es6" && !(this.props.useBrowserify || this.props.useWebpack) ?

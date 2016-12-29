@@ -1,7 +1,7 @@
 <% if (useWebpack || useBrowserify) {
   moduleList.forEach(function(module, idx) {
     if (idx === moduleList.length - 1) {
-%>const yfiles = require("<%= (useBrowserify?'./':'') + module %>");
+%>const yfiles = require('<%= (useBrowserify?'./':'') + module %>');
 <%
       if (useWebpack) {
 %>
@@ -9,23 +9,21 @@ yfiles.license = <%-licenseContent%>;
 <%
       }
     } else {
-%>require("<%= (useBrowserify?'./':'') + module %>");
+%>require('<%= (useBrowserify?'./':'') + module %>');
 <%
     }
   });
-} else if (loadingType !== "script-tags") { if (loadingType === "AMD") { %>require.config({ paths: {yfiles: 'lib/yfiles'} });<% } %>
+} else if (loadingType === "systemjs") { %>
+var yfiles = require('<%= moduleList[0] %>');
+<% } %>
+/**
+ * <% if(description) { %><%- description %><% } else { %>A yfiles class.<% } %>
+ */
+class <%- name %> {
+  <% if (content) { %><%- content %><%
+  } else { %>constructor () {
 
-require([<%moduleList.forEach(function(module, idx) {if (idx === moduleList.length - 1) {%>'<%= module %>'<%} else {%>'<%= module %>', <%}})%>], yfiles => {<% } %>
+  }<% } %>
+}
 
-  /**
-   * <% if(description) { %><%- description %><% } else { %>A yfiles class.<% } %>
-   */
-  class <%- name %> {
-    <% if (content) { %><%- content %><%
-    } else { %>constructor () {
-
-    }<% } %>
-  }
-
-  <% if (postClassContent) { %><%- postClassContent %><% } %>
-<% if (loadingType !== "script-tags" && !(useWebpack || useBrowserify)) { %>});<% } %>
+<% if (postClassContent) { %><%- postClassContent %><% } %>

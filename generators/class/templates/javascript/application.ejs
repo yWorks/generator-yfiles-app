@@ -1,7 +1,7 @@
 <% if (useWebpack || useBrowserify) {
   moduleList.forEach(function(module, idx) {
     if (idx === moduleList.length - 1) {
-%>var yfiles = require("<%= (useBrowserify?'./':'') + module %>");
+%>var yfiles = require('<%= (useBrowserify?'./':'') + module %>');
 <%
       if (useWebpack) {
 %>
@@ -9,18 +9,14 @@ yfiles.license = <%-licenseContent%>;
 <%
       }
     } else {
-%>require("<%= (useBrowserify?'./':'') + module %>");
+%>require('<%= (useBrowserify?'./':'') + module %>');
 <%
     }
   });
-} else if (loadingType === "AMD") {
-%>require.config({ paths: {yfiles: 'lib/yfiles'} });
-
-require([<%moduleList.forEach(function(module, idx) {if (idx === moduleList.length - 1) {%>'<%= module %>'<%} else {%>'<%= module %>', <%}})%>], function(yfiles) {<% }
-else if (loadingType === "systemjs") { %>
+} else if (loadingType === "systemjs") { %>
 var yfiles = require('<%= moduleList[0] %>');
 <% } %>
-<%if (loadingType === "AMD" && !(useWebpack || useBrowserify)) {%>var <%= module %> = <%}%>yfiles.module("<%= module %>", function(exports) {
+yfiles.module('<%= module %>', function(exports) {
 
   /**
    * <% if(description) { %><%= description %><% } else { %>A yfiles class.<% } %>
@@ -40,6 +36,3 @@ var yfiles = require('<%= moduleList[0] %>');
 });
 
 <% if (postClassContent) { %><%- postClassContent %><% } %>
-
-<% if (loadingType === "AMD" && !(useWebpack || useBrowserify)) { %>
-});<% } %>

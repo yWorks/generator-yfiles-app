@@ -128,7 +128,32 @@ module.exports = yeoman.generators.Base.extend({
 
     var language = this.options.language || this.config.get("language") || "javascript";
 
-    var indent = language === "es6" ? "  " : language === "typescript" ? "    " : "      "; // es6: 2 spaces, ts: 4 spaces, js: 6 spaces
+    var useGruntBundling = buildTool.toLowerCase().indexOf("grunt") >= 0;
+    var useBrowserify = buildTool.toLowerCase().indexOf("browserify") >= 0;
+    var useWebpack = buildTool.toLowerCase().indexOf("webpack") >= 0;
+
+    var indent = "";
+    if (language === "es6") {
+      if (this.options.loadingType === "AMD" && !(useWebpack || useBrowserify)) {
+        // es6+AMD: 4 spaces
+        indent = "    ";
+      } else {
+        // es6: 2 spaces
+        indent = "  ";
+      }
+    } else if (language === "typescript") {
+      // ts: 2 spaces
+      indent = "  ";
+    } else if (language === "javascript") {
+      if (this.options.loadingType === "AMD" && !(useWebpack || useBrowserify)) {
+        // js+AMD: 8 spaces
+        indent = "        ";
+      } else {
+        // js: 6 spaces
+        indent = "      ";
+      }
+    }
+
     var vars = {
       name: this.options.name || this.props.name,
       appPath: utils.unixPath(appPath),
@@ -137,9 +162,9 @@ module.exports = yeoman.generators.Base.extend({
       modules: this.options.dependencies,
       moduleList: this.config.get("modules"),
       useTypeInfo: this.options.useTypeInfo,
-      useGruntBundling: buildTool.toLowerCase().indexOf("grunt") >= 0,
-      useBrowserify: buildTool.toLowerCase().indexOf("browserify") >= 0,
-      useWebpack: buildTool.toLowerCase().indexOf("webpack") >= 0,
+      useGruntBundling: useGruntBundling,
+      useBrowserify: useBrowserify,
+      useWebpack: useWebpack,
       content: this.options.content && this.options.content.replace(/(\n|\r\n)/gm, "$1" + indent),
       loadingType: this.options.loadingType,
       postClassContent: this.options.postClassContent && this.options.postClassContent.replace(/(\n|\r\n)/gm, "$1    "),
@@ -147,10 +172,18 @@ module.exports = yeoman.generators.Base.extend({
       licenseContent: this.config.get("licenseContent")
     };
 
-    this.fs.copyTpl(
-      this.templatePath(path.join(language, "application.ejs")),
-      this.destinationPath(path.join(scriptsPath, vars.name + (language === "typescript" ? ".ts" : ".js"))),
-      vars
-    );
+    if (language === "javascript" || language === "es6") {
+      this.fs.copyTpl(
+        this.templatePath(path.join(language, (vars.loadingType === "AMD" && !(vars.useWebpack || vars.useBrowserify)) ? "applicationAmd.ejs" : "application.ejs")),
+        this.destinationPath(path.join(scriptsPath, vars.name + ".js")),
+        vars
+      );
+    } else {
+      this.fs.copyTpl(
+        this.templatePath(path.join(language, "application.ejs")),
+        this.destinationPath(path.join(scriptsPath, vars.name + (language === "typescript" ? ".ts" : ".js"))),
+        vars
+      );
+    }
   }
 });
