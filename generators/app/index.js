@@ -10,14 +10,12 @@ var yfilesScriptModules = require("./yfiles-script-modules.json");
 var _ = require("lodash");
 var utils = require("../utils");
 
-module.exports = yeoman.generators.Base.extend({
+module.exports = yeoman.extend({
   initializing: function () {
     this.minimumModules = [];
   },
 
   prompting: function () {
-    var done = this.async();
-
     // Have Yeoman greet the user.
     this.log(yosay(
       "Welcome to the " + chalk.cyan("yFiles") + "-application generator!"
@@ -137,7 +135,7 @@ module.exports = yeoman.generators.Base.extend({
       store: true
     }];
 
-    this.prompt(prompts, function (props) {
+    return this.prompt(prompts).then(function(props) {
       this.props = props;
 
       this.props.useBrowserify = props.buildTool === "Grunt + Browserify";
@@ -178,10 +176,7 @@ module.exports = yeoman.generators.Base.extend({
       }
 
       this.props.licenseContent = JSON.stringify(global.yfiles.license, null, 2);
-
-      done();
     }.bind(this));
-
   },
 
   configuring: function () {
@@ -198,35 +193,33 @@ module.exports = yeoman.generators.Base.extend({
   },
 
   default: function () {
-    this.composeWith("yfiles-app:class", {
-      options: {
-        name: this.props.applicationName,
-        module: this.props.module,
-        description: "A simple yFiles application that creates a GraphComponent and enables basic input gestures.",
-        buildTool: this.props.buildTool,
-        useTypeInfo: this.props.useTypeInfo,
-        dependencies: this.props.language === "es6" && !(this.props.useBrowserify || this.props.useWebpack) ?
-          (this.props.loadingType === "script-tags" ? [] : ["yfiles"])
-          : this.props.useBrowserify ?
-          (this.props.useTypeInfo && this.props.language !== "es6" ? ["yfiles-typeinfo.js"] : []).concat(this.props.modules)
-          : this.props.useWebpack ?
-          ["license", "yfiles/es2015-shim"].concat(this.props.useTypeInfo  && this.props.language !== "es6" ? ["yfiles-typeinfo"] : [], this.props.modules)
-          : ["yfiles/lang", "yfiles/view-component"],
-        content: this.fs.read(this.templatePath(path.join(this.props.language), "applicationContent.ejs")),
-        appPath: this.config.get("appPath"),
-        scriptsPath: this.config.get("scriptsPath"),
-        libPath: this.config.get("libPath"),
-        stylesPath: this.config.get("stylesPath"),
-        loadingType: this.props.loadingType,
-        postClassContent: this.props.language === "es6" ?
-          "new " + this.props.applicationName + "();" :
-          this.props.language === "javascript" && !(this.props.loadingType === "systemjs") && !(this.props.useBrowserify || this.props.useWebpack) ?
-          "new " + this.props.module + "." + this.props.applicationName + "();" :
-          this.props.language === "typescript" && (this.props.useBrowserify || this.props.useWebpack) ?
-          "new " + this.props.applicationName + "();" :
-          this.props.useBrowserify || this.props.useWebpack ?
-          "new (yfiles.module(\"" + this.props.module + "\"))." + this.props.applicationName + "();" : ""
-      }
+    this.composeWith(require.resolve("../class/"), {
+      name: this.props.applicationName,
+      module: this.props.module,
+      description: "A simple yFiles application that creates a GraphComponent and enables basic input gestures.",
+      buildTool: this.props.buildTool,
+      useTypeInfo: this.props.useTypeInfo,
+      dependencies: this.props.language === "es6" && !(this.props.useBrowserify || this.props.useWebpack) ?
+        (this.props.loadingType === "script-tags" ? [] : ["yfiles"])
+        : this.props.useBrowserify ?
+        (this.props.useTypeInfo && this.props.language !== "es6" ? ["yfiles-typeinfo.js"] : []).concat(this.props.modules)
+        : this.props.useWebpack ?
+        ["license", "yfiles/es2015-shim"].concat(this.props.useTypeInfo  && this.props.language !== "es6" ? ["yfiles-typeinfo"] : [], this.props.modules)
+        : ["yfiles/lang", "yfiles/view-component"],
+      content: this.fs.read(this.templatePath(path.join(this.props.language), "applicationContent.ejs")),
+      appPath: this.config.get("appPath"),
+      scriptsPath: this.config.get("scriptsPath"),
+      libPath: this.config.get("libPath"),
+      stylesPath: this.config.get("stylesPath"),
+      loadingType: this.props.loadingType,
+      postClassContent: this.props.language === "es6" ?
+        "new " + this.props.applicationName + "();" :
+        this.props.language === "javascript" && !(this.props.loadingType === "systemjs") && !(this.props.useBrowserify || this.props.useWebpack) ?
+        "new " + this.props.module + "." + this.props.applicationName + "();" :
+        this.props.language === "typescript" && (this.props.useBrowserify || this.props.useWebpack) ?
+        "new " + this.props.applicationName + "();" :
+        this.props.useBrowserify || this.props.useWebpack ?
+        "new (yfiles.module(\"" + this.props.module + "\"))." + this.props.applicationName + "();" : ""
     });
 
     if (this.props.useNpmAndGit) {
