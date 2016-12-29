@@ -323,7 +323,7 @@ module.exports = yeoman.generators.Base.extend({
       });
 
       if (this.props.loadingType === "AMD") {
-        bower.dependencies["requirejs"] = "^2.1.22";
+        bower.dependencies["requirejs"] = "^2.3.2";
       } else {
         bower.dependencies["system.js"] = "systemjs/systemjs";
       }
@@ -344,8 +344,8 @@ module.exports = yeoman.generators.Base.extend({
 
       extend(pkg, {
         devDependencies: {
-          "typescript": "^2.0.3",
-          "typings": "^1.4.0"
+          "typescript": "^2.1.4",
+          "typings": "^2.1.0"
         }
       });
 
@@ -360,13 +360,16 @@ module.exports = yeoman.generators.Base.extend({
 
     if (this.props.useGruntBundling) {
       var devDependencies = {
-        "grunt": "^0.4.5",
-        "grunt-contrib-clean": "^0.6.0",
-        "grunt-contrib-copy": "^0.8.0",
+        "grunt": "^1.0.1",
+        "grunt-contrib-clean": "^1.0.0",
+        "grunt-contrib-copy": "^1.0.0",
         "grunt-yfiles-deployment": path.join(this.props.yfilesPath, "deployment/grunt-yfiles-deployment"),
-        "load-grunt-tasks": "^3.2.0"
+        "load-grunt-tasks": "^3.5.2"
       };
-      this.props.useWebpack || (devDependencies["grunt-browserify"] = "^3.8.0");
+
+      if (this.props.useBrowserify) {
+        devDependencies["grunt-browserify"] = "^5.0.0";
+      }
 
       extend(pkg, {
         scripts: {
@@ -390,13 +393,13 @@ module.exports = yeoman.generators.Base.extend({
         },
         devDependencies: {
           "deep-extend": "^0.4.1",
-          "file-loader": "^0.8.5",
-          "style-loader": "^0.13.0",
-          "css-loader": "^0.23.1",
-          "html-webpack-plugin": "^1.7.0",
-          "webpack": "^1.8.11",
-          "webpack-dev-server": "^1.8.2",
-          "grunt-webpack": "^1.0.11"
+          "file-loader": "^0.9.0",
+          "style-loader": "^0.13.1",
+          "css-loader": "^0.26.1",
+          "html-webpack-plugin": "^2.24.1",
+          "webpack": "^1.14.0",
+          "webpack-dev-server": "^1.16.2",
+          "grunt-webpack": "^1.0.18"
         }
       });
 
@@ -412,9 +415,9 @@ module.exports = yeoman.generators.Base.extend({
           "dev-server": "grunt dev-server"
         },
         devDependencies: {
-          "express": "^4.13.4",
-          "grunt-contrib-watch": "^0.6.1",
-          "grunt-express-server": "^0.5.1",
+          "express": "^4.14.0",
+          "grunt-contrib-watch": "^1.0.0",
+          "grunt-express-server": "^0.5.3",
           "open": "^0.0.5"
         }
       });
@@ -434,15 +437,15 @@ module.exports = yeoman.generators.Base.extend({
       extend(pkg, {
         devDependencies: {
           "grunt-babel": "^6.0.0",
-          "babel-core": "^6.4.0",
-          "babel-loader": "^6.2.1",
-          "babel-preset-es2015": "^6.3.13",
+          "babel-core": "^6.21.0",
+          "babel-loader": "^6.2.10",
+          "babel-preset-es2015": "^6.18.0",
           "babel-plugin-transform-es2015-arrow-functions": "^6.8.0"
         }
       });
 
       if (!(this.props.useWebpack || this.props.useBrowserify)) {
-        pkg.devDependencies["babel-plugin-transform-es2015-modules-amd"] = "^6.6.5";
+        pkg.devDependencies["babel-plugin-transform-es2015-modules-amd"] = "^6.18.0";
       }
     }
 
