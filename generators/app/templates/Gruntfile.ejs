@@ -137,10 +137,10 @@ module.exports = function (grunt) {
     },
     "webpack-dev-server": {
       options: {
-        webpack: webpackConfig,
-        publicPath: "/dist"
+        webpack: webpackConfig
       },
       start: {
+        contentBase: "./dist/",
         keepAlive: true
       }
     }<% } else { %>
@@ -159,7 +159,18 @@ module.exports = function (grunt) {
         %>src: [packageLibDest + <% if (language === "typescript") { %>"modules.js"<% } else { %>applicationName<% } %>],
         dest: scriptsDest + applicationName<%
         } %>
-      }
+      }<% if (useBrowserify) { %>,
+      options:{
+        plugin: [
+          [
+            'remapify', [{
+              src: '**/*.js',
+              expose: 'yfiles',
+              cwd: __dirname + "/build/lib/yfiles"
+            }]
+          ]
+        ]
+      }<% } %>
     },
     watch: {
       scripts: {

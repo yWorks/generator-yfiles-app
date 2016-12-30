@@ -53,8 +53,6 @@ You can choose between those build tools:
  * **Grunt + [Browserify](http://browserify.org/)** Packages and minifies all JavaScript resources to a single file using Browserify.
  * **Grunt + [Webpack](https://github.com/webpack/webpack)** Packages all JavaScript resources to a single file using Webpack.
 
-Further information about the available tasks can be found in the generated READMEs.
-
 #### Module loading method
 Decide whether you want to load the library via
  * [AMD require](http://requirejs.org/docs/whyamd.html),
@@ -70,8 +68,9 @@ The generator will automatically optimize the requires.
  * **Use yfiles-typeinfo.js** Includes the yfiles-typeinfo.js file which provides runtime type checking during development time. It is recommended to exclude this file in releases.
 Further information can be found [here](http://docs.yworks.com/yfileshtmlv2/index.html#/dguide/DevelopmentSupport#DevelopmentSupport-Checks)
  * **npm & git** Runs the [node generator](https://github.com/yeoman/generator-node), which initializes a npm package and git.
- * **ECMAScript 6 (+[babel](https://babeljs.io/))** Enables you to use ECMAScript 6 (Only available if you have chosen a build tool).
- * **[TypeScript](http://www.typescriptlang.org/)** Use TypeScript instead of plain JavaScript (Only available if have chosen a build tool).
+ * **Visual Studio Code integration** Creates additional files required for [Visual Studio Codes'](https://code.visualstudio.com/) IntelliSense as well as a task runner if applicable.
+ * **ECMAScript 6 (+[babel](https://babeljs.io/))** Enables you to use ECMAScript 6 (only available if you have chosen a build tool).
+ * **[TypeScript](http://www.typescriptlang.org/)** Use TypeScript instead of plain JavaScript (only available if have chosen a build tool).
 
 Choosing TypeScript will disable ECMAScript (+Babel).
 

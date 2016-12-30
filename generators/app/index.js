@@ -24,7 +24,8 @@ module.exports = yeoman.extend({
     this.log(chalk.green("Take a look at the README for further information how to use this generator."));
 
     var advancedOptions = [
-      {name: "npm & git", checked: false}
+      {name: "npm & git", checked: false},
+      {name: "Visual Studio Code integration", checked: false}
     ];
 
     var prompts = [{
@@ -135,27 +136,28 @@ module.exports = yeoman.extend({
       store: true
     }];
 
-    return this.prompt(prompts).then(function(props) {
-      this.props = props;
+    return this.prompt(prompts).then(function(answers) {
+      this.props = answers;
 
-      this.props.useBrowserify = props.buildTool === "Grunt + Browserify";
-      this.props.useWebpack = props.buildTool === "Grunt + Webpack";
-      this.props.useGruntBundling = props.buildTool === "Grunt" || this.props.useBrowserify || this.props.useWebpack;
+      this.props.useBrowserify = answers.buildTool === "Grunt + Browserify";
+      this.props.useWebpack = answers.buildTool === "Grunt + Webpack";
+      this.props.useGruntBundling = answers.buildTool === "Grunt" || this.props.useBrowserify || this.props.useWebpack;
 
-      this.props.useTypeScript = props.advancedOptions.indexOf("TypeScript") >= 0;
-      this.props.useTypeInfo = props.advancedOptions.indexOf("Use yfiles-typeinfo.js") >= 0 && !this.props.useTypeScript && !this.props.useGruntBundling;
-      this.props.useNpmAndGit = props.advancedOptions.indexOf("npm & git") >= 0;
-      this.props.useBabel = props.advancedOptions.indexOf("ECMAScript 6 & babel") >= 0 && !this.props.useTypeScript;
+      this.props.useTypeScript = answers.advancedOptions.indexOf("TypeScript") >= 0;
+      this.props.useTypeInfo = answers.advancedOptions.indexOf("Use yfiles-typeinfo.js") >= 0 && !this.props.useTypeScript && !this.props.useGruntBundling;
+      this.props.useNpmAndGit = answers.advancedOptions.indexOf("npm & git") >= 0;
+      this.props.useBabel = answers.advancedOptions.indexOf("ECMAScript 6 & babel") >= 0 && !this.props.useTypeScript;
+      this.props.useVsCode = answers.advancedOptions.indexOf("Visual Studio Code integration") >= 0;
 
-      this.props.licensePath = props.licensePath;
+      this.props.licensePath = answers.licensePath;
       this.props.language = this.props.useTypeScript ? "typescript"
-        : (props.advancedOptions.indexOf("ECMAScript 6") >= 0 || props.advancedOptions.indexOf("ECMAScript 6 & babel") >= 0) ? "es6"
+        : (answers.advancedOptions.indexOf("ECMAScript 6") >= 0 || answers.advancedOptions.indexOf("ECMAScript 6 & babel") >= 0) ? "es6"
           : "javascript";
 
-      this.props.loadingType = this.props.useTypeScript && props.loadingType === "script-tags" ? "AMD" : props.loadingType;
-      this.props.modules = utils.joinArrays(this.minimumModules, props.modules);
+      this.props.loadingType = this.props.useTypeScript && answers.loadingType === "script-tags" ? "AMD" : answers.loadingType;
+      this.props.modules = utils.joinArrays(this.minimumModules, answers.modules);
 
-      if (props.loadingType === "script-tags") {
+      if (answers.loadingType === "script-tags") {
         this.props.modules = utils.insertChildren(this.props.modules, yfilesScriptModules).filter(function(module) {
           return module.indexOf("/impl/") >= 0;
         }).reverse();
@@ -225,16 +227,14 @@ module.exports = yeoman.extend({
     if (this.props.useNpmAndGit) {
       var readmeTpl = _.template(this.fs.read(this.templatePath("README.md")));
       this.composeWith("node:app", {
-        options: {
-          babel: false,
-          gulp: false,
-          travis: false,
-          boilerplate: false,
-          name: this.props.applicationName,
-          projectRoot: this.props.useGruntBundling ? "dist" : "app",
-          skipInstall: this.options.skipInstall,
-          readme: readmeTpl(this.props)
-        }
+        babel: false,
+        gulp: false,
+        travis: false,
+        boilerplate: false,
+        name: this.props.applicationName,
+        projectRoot: this.props.useGruntBundling ? "dist" : "app",
+        skipInstall: this.options.skipInstall,
+        readme: readmeTpl(this.props)
       }, {
         local: require("generator-node").app
       });
@@ -299,6 +299,54 @@ module.exports = yeoman.extend({
       );
     }
 
+    if (this.props.useVsCode) {
+      var jsconfig = this.fs.readJSON(this.destinationPath("jsconfig.json"), {});
+      jsconfig.exclude = [
+        "node_modules",
+        appPath + "/lib",
+        "dist",
+        "build"
+      ];
+      this.fs.writeJSON(this.destinationPath("jsconfig.json"), jsconfig);
+
+      if (this.props.useGruntBundling) {
+        var tasks = this.fs.readJSON(this.destinationPath("tasks.json"), {});
+        tasks.command = "grunt";
+        tasks.isShellCommand = true;
+        tasks.tasks = [
+          {
+            "taskName": "default",
+            "args": [],
+            "isBuildCommand": true,
+            "isWatching": false,
+            "problemMatcher": [
+              "$lessCompile",
+              "$tsc",
+              "$jshint"
+            ]
+          },
+          {
+            "taskName": "dev-server",
+            "args": [],
+            "isBuildCommand": false,
+            "isWatching": true
+          }
+        ];
+        this.fs.writeJSON(this.destinationPath(path.join(".vscode", "tasks.json")), tasks);
+      }
+
+      this.fs.copy(
+        path.join(this.props.yfilesPath, "ide-support/yfiles-api.d.ts"),
+        this.destinationPath(path.join(appPath, "typings/yfiles-api.d.ts"))
+      );
+
+      if (!this.props.useTypeScript) {
+        this.fs.copy(
+          this.templatePath("yfiles-amd-modules.d.ts"),
+          this.destinationPath(path.join(appPath, "typings/yfiles-amd-modules.d.ts"))
+        );
+      }
+    }
 
     vars.libPath = utils.unixPath(libPath);
 
@@ -327,10 +375,10 @@ module.exports = yeoman.extend({
     if (this.props.useTypeScript) {
       this.fs.copy(
         path.join(this.props.yfilesPath, "ide-support/yfiles-api.d.ts"),
-        this.destinationPath(path.join(scriptsPath, "yfiles-api.d.ts"))
+        this.destinationPath(path.join(appPath, "typings/yfiles-api.d.ts"))
       );
       this.fs.copyTpl(
-        this.templatePath(this.templatePath(path.join(this.props.language), "tsconfig.ejs")),
+        this.templatePath(path.join(this.props.language), "tsconfig.ejs"),
         this.destinationPath("tsconfig.json"),
         vars
       );
@@ -362,6 +410,7 @@ module.exports = yeoman.extend({
 
       if (this.props.useBrowserify) {
         devDependencies["grunt-browserify"] = "^5.0.0";
+        devDependencies["remapify"] = "^2.1.0";
       }
 
       extend(pkg, {
@@ -382,7 +431,8 @@ module.exports = yeoman.extend({
     if (this.props.useWebpack) {
       extend(pkg, {
         scripts: {
-          "build-dev": "grunt build-dev"
+          "build-dev": "grunt build-dev",
+          "dev-server": "grunt dev-server"
         },
         devDependencies: {
           "deep-extend": "^0.4.1",

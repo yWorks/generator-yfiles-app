@@ -1,7 +1,7 @@
 <% if (useWebpack || useBrowserify) {
   moduleList.forEach(function(module, idx) {
     if (idx === moduleList.length - 1) {
-%>var yfiles = require('<%= (useBrowserify?'./':'') + module %>');
+%>var yfiles = require('<%= module %>');
 <%
       if (useWebpack) {
 %>
@@ -9,7 +9,7 @@ yfiles.license = <%-licenseContent%>;
 <%
       }
     } else {
-%>require('<%= (useBrowserify?'./':'') + module %>');
+%>require('<%= module %>');
 <%
     }
   });
