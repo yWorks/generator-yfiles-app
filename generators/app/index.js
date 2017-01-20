@@ -226,7 +226,7 @@ module.exports = yeoman.extend({
 
     if (this.props.useNpmAndGit) {
       var readmeTpl = _.template(this.fs.read(this.templatePath("README.md")));
-      this.composeWith("node:app", {
+      this.composeWith(require.resolve('../../node_modules/generator-node/generators/app'), {
         babel: false,
         gulp: false,
         travis: false,
