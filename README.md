@@ -11,12 +11,6 @@ npm install -g yo
 npm install -g generator-yfiles-app
 ```
 
-To scaffold a yFiles for HTML 1.3 project, please install v0.9.4 of the generator-yfiles-app, i.e:
-
-```bash
-npm install -g generator-yfiles-app@0.9.4
-```
-
 Then generate your new project:
 
 ```bash
@@ -24,6 +18,20 @@ yo yfiles-app
 ```
 
 Simply answer a few questions and everything you need for your yFiles app is at the right place.
+
+## Scaffold previous yFiles for HTML versions
+
+To scaffold a **yFiles for HTML 1.3** project, please install v0.9.4 of the generator-yfiles-app, i.e:
+
+```bash
+npm install -g generator-yfiles-app@0.9.4
+```
+
+To scaffold a **yFiles for HTML 1.4** project, please install v0.9.5 of the generator-yfiles-app, i.e:
+
+```bash
+npm install -g generator-yfiles-app@0.9.5
+```
 
 ## About this generator
 
