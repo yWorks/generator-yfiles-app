@@ -1,10 +1,5 @@
 module.exports = function (grunt) {
   require("load-grunt-tasks")(grunt);
-  <% if (useWebpack) {
-  %>var webpackConfig = require("./webpack.config.js");
-  var path = require("path");
-  var extend = require("deep-extend");<%
-  } %>
 
   var applicationName = "<%= applicationName + '.js'%>",
     source = "<%= appPath %>",
@@ -15,35 +10,19 @@ module.exports = function (grunt) {
     packageLibDest = "<%= packageLibPath %>";
 
   grunt.registerTask("default", [
-    "clean:all",
-    "copy:nonJsSource",<%
+    "clean:all",<% if(!useWebpack) {%>
+    "copy:nonJsSource",<% } %><%
     if (useTypeInfo && language === "es6") { %>
     "copy:typeinfo",<% }
     if (useBabel) { %>
     "babel:dist",<% } %>
-    "package",
-    <% if (useWebpack) {
-    %>"webpack:build"<%
-    } else {
-    %>"copy:license",<% if (loadingType === "systemjs") { %>
+    "package"<% if(!useWebpack) {%>,
+    "copy:license",<% if (loadingType === "systemjs") { %>
     "copy:systemjs",<% }
     if (useBrowserify) {%>
     "browserify"<%
     }} %>
   ]);
-
-  <% if (useWebpack) {
-  %>grunt.registerTask("build-dev", "Leaves out time expensive packaging", [
-    "clean:all",<% if (useBabel) { %>
-    "babel:dist",<% } %>
-    "copy:nonJsSource",<%
-    if (useTypeInfo && language === "es6") { %>
-    "copy:typeinfo",<% }
-    if (language === "typescript") { %>
-    "typescript:base",<% } %>
-    "webpack:build-dev"
-  ]);<%
-  } %>
 
   grunt.registerTask("dev-server", "Starts a dev server.", [<% if (useWebpack) {
     %>"webpack-dev-server:start"<% } else { %>"express:dev", "watch"<% } %>]);
@@ -89,7 +68,7 @@ module.exports = function (grunt) {
       options: {force: true},
       // Remove all created files in the destination directories.
       all: [destination, packageLibDest]
-    },
+    }<% if (!useWebpack) {%>,
     copy: {
       // Copies non-JavaScript source code files to the destination.
       nonJsSource: {
@@ -122,28 +101,7 @@ module.exports = function (grunt) {
         src: "yfiles-typeinfo.js",
         dest: scriptsDest
       }<% } %>
-    },<% if (useWebpack) { %>
-    webpack: {
-      "build-dev": webpackConfig,
-      // extend modifies the original object, so start with a new one
-      build: extend({}, webpackConfig, {
-        entry: {
-          app: [path.resolve(packageLibDest + <% if (language === "typescript") { %>"modules.js"<% } else { %>applicationName<% } %>)]
-        },
-        resolve: {
-          root: [path.resolve(packageLibDest)]
-        }
-      })
     },
-    "webpack-dev-server": {
-      options: {
-        webpack: webpackConfig
-      },
-      start: {
-        contentBase: "./dist/",
-        keepAlive: true
-      }
-    }<% } else { %>
     browserify: {
       dist: {
         <% if (!useBrowserify) {

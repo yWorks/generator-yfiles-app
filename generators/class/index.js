@@ -62,13 +62,13 @@ module.exports = yeoman.extend({
     if (language === "javascript" || language === "es6") {
       this.fs.copyTpl(
         this.templatePath(path.join(language, (vars.loadingType === "AMD" && !(vars.useWebpack || vars.useBrowserify)) ? "applicationAmd.ejs" : "application.ejs")),
-        this.destinationPath(path.join(scriptsPath, vars.name + ".js")),
+        this.destinationPath(path.join(scriptsPath, "app.js")),
         vars
       );
     } else {
       this.fs.copyTpl(
         this.templatePath(path.join(language, "application.ejs")),
-        this.destinationPath(path.join(scriptsPath, vars.name + (language === "typescript" ? ".ts" : ".js"))),
+        this.destinationPath(path.join(scriptsPath, "app" + (language === "typescript" ? ".ts" : ".js"))),
         vars
       );
     }

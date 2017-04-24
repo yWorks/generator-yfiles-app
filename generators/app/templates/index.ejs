@@ -26,7 +26,7 @@
 <%
 
 
-if (useBrowserify || useWebpack) { %><script src="scripts/<%= applicationName %>.js"></script>
+if (useBrowserify || useWebpack) { %><script src="dist/bundle.js"></script>
 <% if (language === "es6" && useTypeInfo) { %><script src="scripts/yfiles-typeinfo.js"></script><% } %>
 <% }
 

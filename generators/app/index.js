@@ -270,7 +270,7 @@ module.exports = yeoman.extend({
 
     this.fs.copyTpl(
       this.templatePath("index.ejs"),
-      this.destinationPath(path.join(appPath, this.props.applicationName + ".html")),
+      this.destinationPath(path.join(appPath, "index.html")),
       vars
     );
 
@@ -384,6 +384,10 @@ module.exports = yeoman.extend({
       );
 
       extend(pkg, {
+        scripts: {
+          build: "tsc",
+          watch: "tsc -w"
+        },
         devDependencies: {
           "typescript": "^2.1.4",
           "typings": "^2.1.0"
@@ -408,15 +412,20 @@ module.exports = yeoman.extend({
         "load-grunt-tasks": "^3.5.2"
       };
 
+      var scripts = {
+        obfuscate: "grunt"
+      };
+
+      if (this.props.useTypeScript) {
+        scripts.production = "npm run build && npm run obfuscate";
+      }
       if (this.props.useBrowserify) {
         devDependencies["grunt-browserify"] = "^5.0.0";
         devDependencies["remapify"] = "^2.1.0";
       }
 
       extend(pkg, {
-        scripts: {
-          build: this.props.useTypeScript ? "tsc && grunt" : "grunt"
-        },
+        scripts: scripts,
         devDependencies: devDependencies
       });
 
@@ -431,18 +440,13 @@ module.exports = yeoman.extend({
     if (this.props.useWebpack) {
       extend(pkg, {
         scripts: {
-          "build-dev": "grunt build-dev",
-          "dev-server": "grunt dev-server"
+          "production": "npm run obfuscate && webpack --env=prod",
+          "dev": "webpack --env=dev",
+          "start": "webpack-dev-server --env=dev --open"
         },
         devDependencies: {
-          "deep-extend": "^0.4.1",
-          "file-loader": "^0.9.0",
-          "style-loader": "^0.13.1",
-          "css-loader": "^0.26.1",
-          "html-webpack-plugin": "^2.24.1",
-          "webpack": "^1.14.0",
-          "webpack-dev-server": "^1.16.2",
-          "grunt-webpack": "^1.0.18"
+          "webpack": "^2.4.1",
+          "webpack-dev-server": "^2.4.2"
         }
       });
 
@@ -498,19 +502,8 @@ module.exports = yeoman.extend({
   install: function () {
     var postInstall = function () {
       if (this.props.useGruntBundling) {
-        this.log(chalk.green("\nFinished your scaffold. Running 'grunt' for you...\n"));
-        if (this.props.useTypeScript) {
-          this.spawnCommand("tsc").on('exit', function(err) {
-            if (err) {
-              this.log.error('tsc failed. Error: ' + err);
-            } else {
-              // run grunt after tsc
-              this.spawnCommand("grunt");
-            }
-          }.bind(this));
-        } else {
-          this.spawnCommand("grunt");
-        }
+        this.log(chalk.green("\nFinished your scaffold. Running 'npm run-script dev' for you...\n"));
+        this.spawnCommand("npm",["run-script","dev"]);
       } else if (this.props.useTypeScript) {
         this.log(chalk.green("\nFinished your scaffold. Running 'tsc' for you...\n"));
         this.spawnCommand("tsc");

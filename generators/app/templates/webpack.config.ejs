@@ -1,35 +1,42 @@
+'use strict';
 var path = require("path");
 
-var applicationName = "<%= applicationName + '.js'%>",
-  source = "<%= appPath %>",
-  scriptsSrc = "<%= scriptsPath %>",
-  libSrc = "<%= libPath %>",
-  destination = "<%= distPath %>",
-  scriptsDest = destination + "scripts/",
-  packageLibDest = "<%= packageLibPath %>";
+module.exports = function(env) {
 
+  var isDev = env === 'dev';
 
-module.exports = {
-  entry: {
-    app: [path.resolve(scriptsSrc + applicationName)]
-  },
-  output: {
-    path: scriptsDest,
-    publicPath: "/",
-    filename: applicationName
-  },
-  resolve: {
-    root: [path.resolve(libSrc)],
+  var scriptsSrc = "<%= scriptsPath %>",
+    libSrc = isDev ? "<%= libPath %>" : "build/lib/",
+    appSrc = isDev ? scriptsSrc + 'app.js' : "build/app.js",
+    destination = "app/dist/";
+
+  return {
+
+    entry: {
+      app: [path.resolve(appSrc)]
+    },
+
+    <% if (useTypeInfo) { %>
     alias: {
-      "license": path.resolve(scriptsSrc + "license.js")<% if (useTypeInfo) { %>,
-      "yfiles-typeinfo": path.resolve(scriptsSrc + "yfiles-typeinfo.js")<% } %>
+      "yfiles-typeinfo": path.resolve(scriptsSrc + "yfiles-typeinfo.js")
     }
-  },
-  module: {
-    loaders: [{
-      test: /\.css$/,
-      loader: "style-loader!css-loader"
-    }]
-  },
-  plugins: []
+    <% } %>
+
+    resolve: {
+      modules: ['node_modules', path.resolve(libSrc)],
+    },
+
+    output: {
+      path: path.resolve(__dirname, destination),
+      publicPath: "dist",
+      filename: 'bundle.js'
+    },
+
+    devServer: {
+      contentBase: [path.join(__dirname, './app')],
+      compress: true,
+      port: 9003
+    }
+  };
+
 };
