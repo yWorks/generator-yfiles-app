@@ -101,6 +101,7 @@ module.exports = yeoman.extend({
       type: "checkbox",
       name: "modules",
       message: "Which modules do you want to use?",
+      store: true,
       choices: utils.flattenTree(yfilesModules, "yfiles/complete").map(function (mod) {
         return {
           name: mod,
@@ -118,7 +119,8 @@ module.exports = yeoman.extend({
           ]);
         } else if (props.buildTool.indexOf("Grunt + Webpack") >= 0) {
           return advancedOptions.concat([
-            {name: "ECMAScript 6 & babel", checked: false}
+            {name: "ECMAScript 6 & babel", checked: false},
+            {name: "TypeScript", checked: false}
           ]);
         } else if (props.buildTool.indexOf("Grunt") >= 0) {
           return advancedOptions.concat([
@@ -147,7 +149,9 @@ module.exports = yeoman.extend({
       this.props.useTypeScript = answers.advancedOptions.indexOf("TypeScript") >= 0;
       this.props.useTypeInfo = answers.advancedOptions.indexOf("Use yfiles-typeinfo.js") >= 0 && !this.props.useTypeScript && !this.props.useGruntBundling;
       this.props.useNpmAndGit = answers.advancedOptions.indexOf("npm & git") >= 0;
-      this.props.useBabel = answers.advancedOptions.indexOf("ECMAScript 6 & babel") >= 0 && !this.props.useTypeScript;
+
+      // For TypeScript AND Webpack, we need babel for the production (obfuscated) build (ts to es6 => babel to es5 => deployment tool => bundle)
+      this.props.useBabel = (answers.advancedOptions.indexOf("ECMAScript 6 & babel") >= 0 && !this.props.useTypeScript) || (this.props.useTypeScript && this.props.useWebpack);
       this.props.useVsCode = answers.advancedOptions.indexOf("Visual Studio Code integration") >= 0;
 
       this.props.licensePath = answers.licensePath;
@@ -249,15 +253,31 @@ module.exports = yeoman.extend({
     var libPath = path.join(appPath, "lib");
     var stylesPath = path.join(appPath, "styles");
     var distPath = "dist/";
+    var babelDest = "build/es5";
+
+    // If we don't bundle at all, the deployment tool should output directly to dist/.
+    // Else, the deployment tool should output the intermediate result to build/obf, where it will be picked
+    // up by the bundling tool.
+    var useBundlingTool = this.props.useBrowserify || this.props.useWebpack;
+    var obfDest = useBundlingTool ? 'build/obf/' : distPath;
+
+    // If babel is involved, it should always write to build/es5.
+    // This means that the deployment tool should pick up the app sources from
+    // - build/es5, if babel is part of the chain
+    // - app/scripts, if babel is not part of the chain (TypeScript output will be placed beside the original sources in app/scripts).
+    var obfSource = this.props.useBabel ? babelDest : utils.unixPath(scriptsPath);
 
     var vars = {
+      obfSource: obfSource,
+      obfDest: obfDest,
+      babelDest: babelDest,
+      useBundlingTool: useBundlingTool,
       title: this.props.applicationName,
       loadingType: this.props.loadingType,
       applicationName: this.props.applicationName,
       libPath: "lib/",
       appPath: utils.unixPath(appPath),
       scriptsPath: utils.unixPath(scriptsPath),
-      packageLibPath: this.props.useBrowserify ? "build/lib/" : distPath + "lib/",
       distPath: distPath,
       module: this.props.module,
       modules: this.props.modules,
@@ -265,8 +285,9 @@ module.exports = yeoman.extend({
       useGruntBundling: this.props.useGruntBundling,
       useBrowserify: this.props.useBrowserify,
       useWebpack: this.props.useWebpack,
+      useTypeScript: this.props.useTypeScript,
       useBabel: this.props.useBabel,
-      language: this.props.language,
+      language: this.props.language
     };
 
     this.fs.copyTpl(
@@ -374,7 +395,7 @@ module.exports = yeoman.extend({
       this.fs.writeJSON(this.destinationPath("bower.json"), bower)
     }
 
-    if (this.props.useTypeScript) {
+    if (this.props.useTypeScript && !this.props.useWebpack) {
       this.fs.copy(
         path.join(this.props.yfilesPath, "ide-support/yfiles-api.d.ts"),
         this.destinationPath(path.join(appPath, "typings/yfiles-api.d.ts"))
@@ -439,7 +460,7 @@ module.exports = yeoman.extend({
 
     }
 
-    if (this.props.useWebpack) {
+    if (this.props.useWebpack && !this.props.useTypeScript) {
       extend(pkg, {
         scripts: {
           "production": "npm run obfuscate && webpack --env=prod",
@@ -458,6 +479,45 @@ module.exports = yeoman.extend({
         vars
       );
 
+    } else if(this.props.useWebpack && this.props.useTypeScript) {
+
+      this.fs.copy(
+        path.join(this.props.yfilesPath, "ide-support/yfiles-api.d.ts"),
+        this.destinationPath(path.join(appPath, "typings/yfiles-api.d.ts"))
+      );
+
+      this.fs.copyTpl(
+        this.templatePath(path.join(this.props.language), "tsconfig.ejs"),
+        this.destinationPath("tsconfig.json"),
+        vars
+      );
+
+      this.fs.copyTpl(
+        this.templatePath("webpack.config.ejs"),
+        this.destinationPath("webpack.config.js"),
+        vars
+      );
+
+      extend(pkg, {
+        scripts: {
+          "babel": "babel --presets=es2015 app/scripts -d build/es5",
+          "production": "tsc && npm run babel && npm run obfuscate && webpack --env=prod",
+          "dev": "webpack --env=dev",
+          "start": "webpack-dev-server --env=dev --open"
+        },
+        devDependencies: {
+          "ts-loader": "^2.0.3",
+          "typescript": "^2.1.4",
+          "typings": "^2.1.0",
+          "webpack": "^2.4.1",
+          "webpack-dev-server": "^2.4.2"
+        }
+      });
+
+      if (!this.props.useGruntBundling) {
+        this.fs.writeJSON(this.destinationPath("package.json"), pkg);
+      }
+
     } else {
       extend(pkg, {
         scripts: {
@@ -471,10 +531,6 @@ module.exports = yeoman.extend({
         }
       });
 
-      if (this.props.useBabel) {
-        pkg.devDependencies["grunt-babel"] = "^6.0.0";
-      }
-
       this.fs.copyTpl(
         this.templatePath("server.ejs"),
         this.destinationPath("server.js"),
@@ -485,11 +541,8 @@ module.exports = yeoman.extend({
     if (this.props.useBabel) {
       extend(pkg, {
         devDependencies: {
-          "grunt-babel": "^6.0.0",
-          "babel-core": "^6.21.0",
-          "babel-loader": "^6.2.10",
-          "babel-preset-es2015": "^6.18.0",
-          "babel-plugin-transform-es2015-arrow-functions": "^6.8.0"
+          "babel-cli": "^6.24.1",
+          "babel-preset-es2015": "^6.24.1"
         }
       });
 

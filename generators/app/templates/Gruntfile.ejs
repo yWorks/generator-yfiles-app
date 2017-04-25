@@ -1,21 +1,16 @@
 module.exports = function (grunt) {
   require("load-grunt-tasks")(grunt);
 
-  var applicationName = "<%= applicationName + '.js'%>",
-    source = "<%= appPath %>",
-    scriptsSrc = "<%= scriptsPath %>",
-    libSrc = "<%= libPath %>",
-    destination = "<%= distPath %>",
-    scriptsDest = destination + "scripts/",
-    packageLibDest = "<%= packageLibPath %>";
+  var scriptsSrc = "<%= obfSource %>";
+  var libSrc = "<%= libPath %>";
+  var destination = "<%= obfDest %>";
+  var packageLibDest = destination + "lib/";
 
   grunt.registerTask("default", [
     "clean:all",<% if(!useWebpack) {%>
     "copy:nonJsSource",<% } %><%
     if (useTypeInfo && language === "es6") { %>
-    "copy:typeinfo",<% }
-    if (useBabel) { %>
-    "babel:dist",<% } %>
+    "copy:typeinfo",<% } %>
     "package"<% if(!useWebpack) {%>,
     "copy:license",<% if (loadingType === "systemjs") { %>
     "copy:systemjs",<% }
@@ -23,10 +18,9 @@ module.exports = function (grunt) {
     "browserify"<%
     }} %>
   ]);
-
-  grunt.registerTask("dev-server", "Starts a dev server.", [<% if (useWebpack) {
-    %>"webpack-dev-server:start"<% } else { %>"express:dev", "watch"<% } %>]);
-
+  <% if (!useWebpack) {%>
+  grunt.registerTask("dev-server", "Starts a dev server.", "express:dev", "watch"]);
+  <% } %>
   grunt.initConfig({
     pkg: grunt.file.readJSON("package.json"),
     package: {
@@ -40,24 +34,23 @@ module.exports = function (grunt) {
         ],
         files: [{
           expand: true,
-          cwd: <% if (useBabel || language === "typescript") { %>packageLibDest<% } else { %>scriptsSrc<% } %>,
+          cwd: scriptsSrc,
           src: ["**/*.js", "!**/license.js"],
-          dest: <% if ((language === "typescript" && useWebpack || useBrowserify) || useWebpack || useBrowserify) { %>packageLibDest<% } else { %>scriptsDest<% } %>
+          dest: destination
         }<% if (!(useBrowserify || useWebpack) || language === "typescript") { %>, {
           expand: true,
           cwd: "./bower_components/requirejs/",
           src: ["require.js"],
-          dest: scriptsDest
+          dest: destination
         }<% }
         if (language === "typescript") { %>, {
           expand: true,
           cwd: scriptsSrc,
           src: ["**/*.js"<% if (!useWebpack) { %>, "!**/license.js"<% } %>%>],
-          dest: <% if (useWebpack ||useBrowserify) { %>packageLibDest<% } else { %>scriptsDest<% } %>
+          dest: destination
         }<% } %>],
         obfuscate: true,
-        optimize: true<% if (!(useBrowserify || useWebpack)) { %>,
-        createModulesBundle: true<% } %>
+        optimize: true
       },
       build: {
         // This empty target is required for technical reasons. Don't remove it.

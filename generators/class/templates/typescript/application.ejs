@@ -1,5 +1,11 @@
 <% moduleList.forEach(function(module, idx) { %>import <%= idx === 0 ? "yfiles" : "tmp" + idx%> = require('<%= module %>');
 <%})%>
+<%
+if (useWebpack) {
+%>
+// Inline the license, so we have to reference just a single script bundle
+(<any>yfiles).license = <%-licenseContent%>;
+<%}%>
 /**
  * <% if (description) { %><%= description %><% } else { %>A yfiles class.<% } %>
  */

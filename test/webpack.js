@@ -2,7 +2,7 @@
 
 var path = require('path');
 var fs = require('fs');
-var chalk = require("chalk");
+var exec = require('child_process').exec;
 var helpers = require('yeoman-test');
 var assert = require('yeoman-assert');
 var opn = require('opn');
@@ -10,6 +10,7 @@ var opn = require('opn');
 var openIndexInBrowser = !!process.env.OPEN_IN_BROWSER;
 
 var localConfig = require('./getLocalConfig');
+var util = require('./util');
 
 var answers = {
   "applicationName":"testApp",
@@ -60,18 +61,15 @@ describe('yfiles:webpack', function () {
 
   describe('build result', function() {
     it('runs', function (done) {
+      util.maybeOpenInBrowser(this.dir,done);
+    });
+
+    it('succeeds to run production build', function (done) {
       var dir = this.dir;
-      if (openIndexInBrowser) {
-        var indexHtml = path.resolve(dir, 'app/index.html');
-        opn(indexHtml).then(function (childProcess) {
-          done();
-        }, function (err) {
-          console.log(err);
-          done();
-        })
-      } else {
-        done();
-      }
+      exec('npm run production', {cwd: dir}, function(error, stdout, stderr) {
+        assert.ok(error === null, "Production build failed: "+error);
+        util.maybeOpenInBrowser(dir,done);
+      });
     });
   });
 

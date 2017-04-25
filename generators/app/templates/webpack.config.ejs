@@ -6,8 +6,8 @@ module.exports = function(env) {
   var isDev = env === 'dev';
 
   var scriptsSrc = "<%= scriptsPath %>",
-    libSrc = isDev ? "<%= libPath %>" : "build/lib/",
-    appSrc = isDev ? scriptsSrc + 'app.js' : "build/app.js",
+    libSrc = isDev ? "<%= libPath %>" : "<%= obfDest %>lib/",
+    appSrc = isDev ? scriptsSrc + <% if (useTypeScript) { %>'app.ts'<% } else { %>'app.js'<% } %> : "<%= obfDest %>app.js",
     destination = "app/dist/";
 
   return {
@@ -15,13 +15,18 @@ module.exports = function(env) {
     entry: {
       app: [path.resolve(appSrc)]
     },
-
     <% if (useTypeInfo) { %>
     alias: {
       "yfiles-typeinfo": path.resolve(scriptsSrc + "yfiles-typeinfo.js")
     }
     <% } %>
-
+    <% if (useTypeScript) { %>
+    module: {
+      loaders: [
+        { test: /\.tsx?$/, loader: "ts-loader" }
+      ]
+    },
+    <% } %>
     resolve: {
       modules: ['node_modules', path.resolve(libSrc)],
     },
