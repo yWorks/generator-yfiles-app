@@ -16,18 +16,22 @@
     "yeoman-generator"
   ],
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "test-webpack": "cross-env OPEN_IN_BROWSER=true mocha test/webpack.js",
+    "test-typescript-nogrunt-amd": "cross-env OPEN_IN_BROWSER=true mocha test/typescript-nogrunt-amd.js"
   },
   "dependencies": {
-    "yeoman-generator": "^1.0.1",
     "chalk": "^1.1.3",
-    "yosay": "^1.2.1",
     "deep-extend": "latest",
     "generator-node": "latest",
-    "lodash": "latest"
+    "lodash": "latest",
+    "to-slug-case": "^1.0.0",
+    "yeoman-generator": "^1.0.1",
+    "yosay": "^1.2.1"
   },
   "devDependencies": {
     "babel-plugin-uglify": "^1.0.2",
+    "cross-env": "^4.0.0",
     "eslint-config-xo-space": "^0.7.0",
     "gulp": "^3.9.0",
     "gulp-eslint": "^1.0.0",
@@ -37,6 +41,7 @@
     "gulp-nsp": "^2.1.0",
     "gulp-plumber": "^1.0.0",
     "mocha": "^3.3.0",
+    "opn": "^4.0.2",
     "yeoman-assert": "^2.2.2",
     "yeoman-test": "^1.6.0"
   },

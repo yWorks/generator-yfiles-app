@@ -5,6 +5,7 @@ var yosay = require("yosay");
 var path = require("path");
 var fs = require("fs");
 var extend = require("deep-extend");
+var toSlugCase = require('to-slug-case')
 var yfilesModules = require("./yfiles-modules.json");
 var yfilesScriptModules = require("./yfiles-script-modules.json");
 var _ = require("lodash");
@@ -355,12 +356,13 @@ module.exports = yeoman.extend({
     if (!(this.props.useWebpack || this.props.useBrowserify || this.props.loadingType === "script-tags")) {
       var bower = this.fs.readJSON(this.destinationPath("bower.json"), {});
       extend(bower, {
-        "name": this.props.applicationName,
+        "name": toSlugCase(this.props.applicationName),
         "description": pkg.description || "",
-        "main": (this.props.useGruntBundling ? distPath : appPath) + this.props.applicationName,
+        "main": (this.props.useGruntBundling ? distPath : appPath)+"/"+this.props.applicationName,
         "version": pkg.version || "0.0.0",
         "dependencies": {
-        }
+        },
+        "private": true
       });
 
       if (this.props.loadingType === "AMD") {
@@ -503,10 +505,10 @@ module.exports = yeoman.extend({
     var postInstall = function () {
       if (this.props.useGruntBundling) {
         this.log(chalk.green("\nFinished your scaffold. Running 'npm run-script dev' for you...\n"));
-        this.spawnCommand("npm",["run-script","dev"]);
+        this.spawnCommandSync("npm",["run-script","dev"]);
       } else if (this.props.useTypeScript) {
         this.log(chalk.green("\nFinished your scaffold. Running 'tsc' for you...\n"));
-        this.spawnCommand("tsc");
+        this.spawnCommandSync("tsc");
       }
     }.bind(this);
 

@@ -2,7 +2,6 @@
 
 var path = require('path');
 var fs = require('fs');
-var chalk = require("chalk");
 var helpers = require('yeoman-test');
 var assert = require('yeoman-assert');
 var opn = require('opn');
@@ -12,24 +11,27 @@ var openIndexInBrowser = !!process.env.OPEN_IN_BROWSER;
 var localConfig = require('./getLocalConfig');
 
 var answers = {
-  "applicationName":"testApp",
-  "module":"testModule",
+  "applicationName": "testApp",
+  "module": "testModule",
   "yfilesPath": localConfig.yfilesPath,
-  "licensePath": path.resolve(localConfig.yfilesPath,'demos/resources/license.js'),
-  "buildTool":"Grunt + Webpack",
-  "modules":["yfiles/complete"],
-  "advancedOptions":[]
+  "licensePath": path.resolve(localConfig.yfilesPath, 'demos/resources/license.js'),
+  "buildTool": "none",
+  "loadingType": "AMD",
+  "modules": ["yfiles/complete"],
+  "advancedOptions": [
+    "Use yfiles-typeinfo.js", "TypeScript"
+  ]
 };
 
-describe('yfiles:webpack', function () {
+describe('yfiles:typescript', function () {
 
-  this.timeout(35000);
+  this.timeout(25000);
 
   before(function(done) {
     var that = this;
-    this.app = helpers
+    helpers
       .run(require.resolve('../generators/app'))
-      .withGenerators([[helpers.createDummyGenerator(),require.resolve('../generators/class')]])
+      .withGenerators([[helpers.createDummyGenerator(), require.resolve('../generators/class')]])
       .withOptions({
         'skip-welcome-message': true,
         'skip-message': true,
@@ -37,28 +39,31 @@ describe('yfiles:webpack', function () {
       })
       .withPrompts(answers).then(function(dir) {
         that.dir = dir;
+        console.log("temp dir", dir);
         done();
-      })
-  });
+      });
+    });
 
-  describe('check files', function() {
+  describe('check files', function () {
+
     it('generates base files', function () {
       assert.file([
-        'app/index.html',
-        'app/scripts/app.js',
-        'app/styles/yfiles.css',
-        'Gruntfile.js',
-        'package.json',
-        'webpack.config.js'
+        'app/index.html', 'app/scripts/app.ts', 'app/styles/yfiles.css', 'package.json', 'app/scripts/license.js'
       ]);
-      assert.noFile([
-        'app/scripts/license.js'
+      assert.noFile(['Gruntfile.js', 'webpack.config.js']);
+    })
+
+  });
+
+
+  describe('build result', function () {
+
+    it('installed bower files', function() {
+      assert.file([
+        'bower_components/requirejs/require.js'
       ]);
     });
 
-  });
-
-  describe('build result', function() {
     it('runs', function (done) {
       var dir = this.dir;
       if (openIndexInBrowser) {
