@@ -5,22 +5,13 @@ module.exports = function (grunt) {
   var libSrc = "<%= libPath %>";
   var destination = "<%= obfDest %>";
   var packageLibDest = destination + "lib/";
+  var scriptsDest = destination + "scripts/";
 
   grunt.registerTask("default", [
-    "clean:all",<% if(!useWebpack) {%>
-    "copy:nonJsSource",<% } %><%
-    if (useTypeInfo && language === "es6") { %>
-    "copy:typeinfo",<% } %>
-    "package"<% if(!useWebpack) {%>,
-    "copy:license",<% if (loadingType === "systemjs") { %>
-    "copy:systemjs",<% }
-    if (useBrowserify) {%>
-    "browserify"<%
-    }} %>
+    "clean:all",
+    "package"
   ]);
-  <% if (!useWebpack) {%>
-  grunt.registerTask("dev-server", "Starts a dev server.", "express:dev", "watch"]);
-  <% } %>
+
   grunt.initConfig({
     pkg: grunt.file.readJSON("package.json"),
     package: {
@@ -36,19 +27,14 @@ module.exports = function (grunt) {
           expand: true,
           cwd: scriptsSrc,
           src: ["**/*.js", "!**/license.js"],
-          dest: destination
-        }<% if (!(useBrowserify || useWebpack) || language === "typescript") { %>, {
+          dest: scriptsDest
+        }<% if (!(useBrowserify || useWebpack)) { %>, {
           expand: true,
           cwd: "./bower_components/requirejs/",
           src: ["require.js"],
-          dest: destination
-        }<% }
-        if (language === "typescript") { %>, {
-          expand: true,
-          cwd: scriptsSrc,
-          src: ["**/*.js"<% if (!useWebpack) { %>, "!**/license.js"<% } %>%>],
-          dest: destination
-        }<% } %>],
+          dest: scriptsDest
+        }<% } %>
+       ],
         obfuscate: true,
         optimize: true
       },
@@ -60,110 +46,7 @@ module.exports = function (grunt) {
       // Without the 'force' option, this task cannot delete files outside this file's subtree
       options: {force: true},
       // Remove all created files in the destination directories.
-      all: [destination, packageLibDest]
-    }<% if (!useWebpack) {%>,
-    copy: {
-      // Copies non-JavaScript source code files to the destination.
-      nonJsSource: {
-        files: [{
-          // copy resources
-          expand: true,
-          cwd: source,
-          src: ["**", "!**/*.js", <% if (language === "typescript") { %>"!**/*.ts*", <% } %>"!lib**", "!lib/yfiles**"],
-          dest: destination
-        }]
-      }<% if (!useWebpack) { %>,
-      license: {
-        // The license must not be obfuscated. Therefore, it is copied separately.
-        expand: true,
-        cwd: scriptsSrc,
-        src: ["license.js"],
-        dest: scriptsDest
-      }<% }
-      if (loadingType === "systemjs") { %>,
-      systemjs: {
-        expand: true,
-        cwd: "./bower_components/system.js/dist",
-        src: ["*.js"],
-        dest: destination + "lib/system.js"
-      }<% }
-      if (useTypeInfo && language === "es6") { %>,
-      typeinfo: {
-        expand: true,
-        cwd: scriptsSrc,
-        src: "yfiles-typeinfo.js",
-        dest: scriptsDest
-      }<% } %>
-    },
-    browserify: {
-      dist: {
-        <% if (!useBrowserify) {
-        %>options: {
-          browserifyOptions: {
-            standalone: "yfiles",
-            paths: packageLibDest
-          }
-        },
-        src: [packageLibDest + "yfiles/modules-bundle.js"],
-        dest: destination + "lib/yfiles.js"<%
-        } else {
-        %>src: [packageLibDest + <% if (language === "typescript") { %>"modules.js"<% } else { %>applicationName<% } %>],
-        dest: scriptsDest + applicationName<%
-        } %>
-      }<% if (useBrowserify) { %>,
-      options:{
-        plugin: [
-          [
-            'remapify', [{
-              src: '**/*.js',
-              expose: 'yfiles',
-              cwd: __dirname + "/build/lib/yfiles"
-            }]
-          ]
-        ]
-      }<% } %>
-    },
-    watch: {
-      scripts: {
-        files: [scriptsSrc + "**/*.js"],
-        tasks: ["default"],
-        options: {
-          spawn: false
-        }
-      }
-    },
-    express: {
-      options: {},
-      dev: {
-        options: {
-          script: "server.js"
-        }
-      }
-    }<% } if (language === "typescript") { %>,
-    typescript: {
-      base: {
-        src: [scriptsSrc + "**/*.ts"],
-        dest: packageLibDest,
-        options: {
-          module: <% if (useWebpack || useBrowserify) { %>"commonjs"<% } else { %>"amd"<% } %>,
-          target: "es5",
-          removeComments: true
-        }
-      }
-    }<% } else if (useBabel) { %>,
-    babel: {
-      options: {
-        presets: [require.resolve('babel-preset-es2015')],
-        compact: false
-      },
-      dist: {
-        files: [{
-          expand: true,
-          cwd: scriptsSrc,
-          src: ["**.js"],
-          dest: packageLibDest
-        }]
-      }
-    }<% } %>
+      all: [destination]
+    }
   });
 };

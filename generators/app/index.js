@@ -206,13 +206,6 @@ module.exports = yeoman.extend({
       description: "A simple yFiles application that creates a GraphComponent and enables basic input gestures.",
       buildTool: this.props.buildTool,
       useTypeInfo: this.props.useTypeInfo,
-      dependencies: this.props.language === "es6" && !(this.props.useBrowserify || this.props.useWebpack) ?
-        (this.props.loadingType === "script-tags" ? [] : ["yfiles"])
-        : this.props.useBrowserify ?
-        (this.props.useTypeInfo && this.props.language !== "es6" ? ["yfiles-typeinfo.js"] : []).concat(this.props.modules)
-        : this.props.useWebpack ?
-        ["license", "yfiles/es2015-shim"].concat(this.props.useTypeInfo  && this.props.language !== "es6" ? ["yfiles-typeinfo"] : [], this.props.modules)
-        : ["yfiles/lang", "yfiles/view-component"],
       content: this.fs.read(this.templatePath(path.join(this.props.language), "applicationContent.ejs")),
       appPath: this.config.get("appPath"),
       scriptsPath: this.config.get("scriptsPath"),
@@ -307,7 +300,7 @@ module.exports = yeoman.extend({
       this.destinationPath(path.join(stylesPath, "yfiles.css"))
     );
 
-    if (!(this.props.useWebpack)) {
+    if (!(this.props.useWebpack || this.props.useBrowserify)) {
       this.fs.copy(
         this.props.licensePath,
         this.destinationPath(path.join(scriptsPath, "license.js"))
@@ -346,12 +339,6 @@ module.exports = yeoman.extend({
               "$tsc",
               "$jshint"
             ]
-          },
-          {
-            "taskName": "dev-server",
-            "args": [],
-            "isBuildCommand": false,
-            "isWatching": true
           }
         ];
         this.fs.writeJSON(this.destinationPath(path.join(".vscode", "tasks.json")), tasks);
@@ -430,7 +417,6 @@ module.exports = yeoman.extend({
       var devDependencies = {
         "grunt": "^1.0.1",
         "grunt-contrib-clean": "^1.0.0",
-        "grunt-contrib-copy": "^1.0.0",
         "grunt-yfiles-deployment": path.join(this.props.yfilesPath, "deployment/grunt-yfiles-deployment"),
         "load-grunt-tasks": "^3.5.2"
       };
@@ -443,8 +429,14 @@ module.exports = yeoman.extend({
         scripts.production = "npm run build && npm run obfuscate";
       }
       if (this.props.useBrowserify) {
-        devDependencies["grunt-browserify"] = "^5.0.0";
-        devDependencies["remapify"] = "^2.1.0";
+        devDependencies.browserify = "^14.3.0";
+        devDependencies.watchify = "^3.9.0";
+        // Apparently, browserify and watchify can't create their output directories on their own, so we need mkdirp as well.
+        devDependencies.mkdirp =  "^0.5.1";
+
+        scripts.dev = "mkdirp app/dist && browserify app/scripts/app.js -o app/dist/bundle.js --poll=100 -v";
+        scripts.watch = "mkdirp app/dist && watchify app/scripts/app.js -o app/dist/bundle.js --poll=100 -v";
+        scripts.production = "npm run obfuscate && mkdirp app/dist && browserify build/obf/scripts/app.js -o app/dist/bundle.js";
       }
 
       extend(pkg, {
@@ -518,24 +510,6 @@ module.exports = yeoman.extend({
         this.fs.writeJSON(this.destinationPath("package.json"), pkg);
       }
 
-    } else {
-      extend(pkg, {
-        scripts: {
-          "dev-server": "grunt dev-server"
-        },
-        devDependencies: {
-          "express": "^4.14.0",
-          "grunt-contrib-watch": "^1.0.0",
-          "grunt-express-server": "^0.5.3",
-          "open": "^0.0.5"
-        }
-      });
-
-      this.fs.copyTpl(
-        this.templatePath("server.ejs"),
-        this.destinationPath("server.js"),
-        vars
-      )
     }
 
     if (this.props.useBabel) {

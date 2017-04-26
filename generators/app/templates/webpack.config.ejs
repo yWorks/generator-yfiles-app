@@ -7,7 +7,7 @@ module.exports = function(env) {
 
   var scriptsSrc = "<%= scriptsPath %>",
     libSrc = isDev ? "<%= libPath %>" : "<%= obfDest %>lib/",
-    appSrc = isDev ? scriptsSrc + <% if (useTypeScript) { %>'app.ts'<% } else { %>'app.js'<% } %> : "<%= obfDest %>app.js",
+    appSrc = isDev ? scriptsSrc + <% if (useTypeScript) { %>'app.ts'<% } else { %>'app.js'<% } %> : "<%= obfDest %>scripts/app.js",
     destination = "app/dist/";
 
   return {

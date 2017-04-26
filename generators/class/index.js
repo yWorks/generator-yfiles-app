@@ -41,13 +41,14 @@ module.exports = yeoman.extend({
       }
     }
 
+    var modules = this.config.get("modules");
+
     var vars = {
       name: this.options.name,
       appPath: utils.unixPath(appPath),
       scriptsPath: utils.unixPath(scriptsPath),
       module: this.options.module,
-      modules: this.options.dependencies,
-      moduleList: this.config.get("modules"),
+      moduleList: useBrowserify ? modules.map(function(module) { return '../lib/'+module}) : modules,
       useTypeInfo: this.options.useTypeInfo,
       useGruntBundling: useGruntBundling,
       useBrowserify: useBrowserify,
