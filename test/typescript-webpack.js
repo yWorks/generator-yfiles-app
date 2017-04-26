@@ -5,7 +5,7 @@ var fs = require('fs');
 var exec = require('child_process').exec;
 var helpers = require('yeoman-test');
 var assert = require('yeoman-assert');
-var openIndexInBrowser = !!process.env.OPEN_IN_BROWSER;
+var util = require('./util');
 var localConfig = require('./getLocalConfig');
 
 var answers = {
@@ -22,7 +22,7 @@ var answers = {
 
 describe('yfiles:typescript-webpack', function () {
 
-  this.timeout(35000);
+  this.timeout(45000);
 
   before(function(done) {
     var that = this;
@@ -57,35 +57,18 @@ describe('yfiles:typescript-webpack', function () {
 
   });
 
-
   describe('build result', function () {
-
-    it('installed bower files', function() {
-      assert.file([
-        'bower_components/requirejs/require.js'
-      ]);
-    });
 
     it('runs', function (done) {
       var dir = this.dir;
-      if (openIndexInBrowser) {
-        var indexHtml = path.resolve(dir, 'app/index.html');
-        opn(indexHtml).then(function (childProcess) {
-          done();
-        }, function (err) {
-          console.log(err);
-          done();
-        })
-      } else {
-        done();
-      }
+      util.maybeOpenInBrowser(dir,done);
     });
 
     it('succeeds to run production build', function (done) {
       var dir = this.dir;
       exec('npm run production', {cwd: dir}, function(error, stdout, stderr) {
         assert.ok(error === null, "Production build failed: "+stderr);
-
+        util.maybeOpenInBrowser(dir,done);
       });
     });
 
