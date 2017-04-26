@@ -144,10 +144,12 @@ module.exports = yeoman.extend({
 
       this.props.useBrowserify = answers.buildTool === "Grunt + Browserify";
       this.props.useWebpack = answers.buildTool === "Grunt + Webpack";
-      this.props.useGruntBundling = answers.buildTool === "Grunt" || this.props.useBrowserify || this.props.useWebpack;
+      this.props.useGrunt = answers.buildTool === "Grunt" || this.props.useBrowserify || this.props.useWebpack;
+
+      this.props.useBundlingTool = this.props.useBrowserify || this.props.useWebpack;
 
       this.props.useTypeScript = answers.advancedOptions.indexOf("TypeScript") >= 0;
-      this.props.useTypeInfo = answers.advancedOptions.indexOf("Use yfiles-typeinfo.js") >= 0 && !this.props.useTypeScript && !this.props.useGruntBundling;
+      this.props.useTypeInfo = answers.advancedOptions.indexOf("Use yfiles-typeinfo.js") >= 0 && !this.props.useTypeScript && !this.props.useGrunt;
       this.props.useNpmAndGit = answers.advancedOptions.indexOf("npm & git") >= 0;
 
       // For TypeScript AND Webpack, we need babel for the production (obfuscated) build (ts to es6 => babel to es5 => deployment tool => bundle)
@@ -230,7 +232,7 @@ module.exports = yeoman.extend({
         travis: false,
         boilerplate: false,
         name: this.props.applicationName,
-        projectRoot: this.props.useGruntBundling ? "dist" : "app",
+        projectRoot: this.props.useGrunt ? "dist" : "app",
         skipInstall: this.options.skipInstall,
         readme: readmeTpl(this.props)
       }, {
@@ -251,8 +253,7 @@ module.exports = yeoman.extend({
     // If we don't bundle at all, the deployment tool should output directly to dist/.
     // Else, the deployment tool should output the intermediate result to build/obf, where it will be picked
     // up by the bundling tool.
-    var useBundlingTool = this.props.useBrowserify || this.props.useWebpack;
-    var obfDest = useBundlingTool ? 'build/obf/' : distPath;
+    var obfDest = this.props.useBundlingTool ? 'build/obf/' : distPath;
 
     // If babel is involved, it should always write to build/es5.
     // This means that the deployment tool should pick up the app sources from
@@ -264,7 +265,7 @@ module.exports = yeoman.extend({
       obfSource: obfSource,
       obfDest: obfDest,
       babelDest: babelDest,
-      useBundlingTool: useBundlingTool,
+      useBundlingTool: this.props.useBundlingTool,
       title: this.props.applicationName,
       loadingType: this.props.loadingType,
       applicationName: this.props.applicationName,
@@ -275,7 +276,7 @@ module.exports = yeoman.extend({
       module: this.props.module,
       modules: this.props.modules,
       useTypeInfo: this.props.useTypeInfo,
-      useGruntBundling: this.props.useGruntBundling,
+      useGrunt: this.props.useGrunt,
       useBrowserify: this.props.useBrowserify,
       useWebpack: this.props.useWebpack,
       useTypeScript: this.props.useTypeScript,
@@ -300,7 +301,7 @@ module.exports = yeoman.extend({
       this.destinationPath(path.join(stylesPath, "yfiles.css"))
     );
 
-    if (!(this.props.useWebpack || this.props.useBrowserify)) {
+    if (this.props.loadingType === "script-tags") {
       this.fs.copy(
         this.props.licensePath,
         this.destinationPath(path.join(scriptsPath, "license.js"))
@@ -324,7 +325,7 @@ module.exports = yeoman.extend({
       ];
       this.fs.writeJSON(this.destinationPath("jsconfig.json"), jsconfig);
 
-      if (this.props.useGruntBundling) {
+      if (this.props.useGrunt) {
         var tasks = this.fs.readJSON(this.destinationPath("tasks.json"), {});
         tasks.command = "grunt";
         tasks.isShellCommand = true;
@@ -366,7 +367,7 @@ module.exports = yeoman.extend({
       extend(bower, {
         "name": toSlugCase(this.props.applicationName),
         "description": pkg.description || "",
-        "main": (this.props.useGruntBundling ? distPath : appPath)+"/"+this.props.applicationName,
+        "main": (this.props.useGrunt ? distPath : appPath)+"app.js",
         "version": pkg.version || "0.0.0",
         "dependencies": {
         },
@@ -404,16 +405,16 @@ module.exports = yeoman.extend({
         }
       });
 
-      if (!this.props.useGruntBundling) {
+      if (!this.props.useGrunt) {
         this.fs.writeJSON(this.destinationPath("package.json"), pkg);
       }
     }
 
-    if (!this.props.useGruntBundling) {
+    if (!this.props.useGrunt) {
       return;
     }
 
-    if (this.props.useGruntBundling) {
+    if (this.props.useGrunt) {
       var devDependencies = {
         "grunt": "^1.0.1",
         "grunt-contrib-clean": "^1.0.0",
@@ -421,9 +422,13 @@ module.exports = yeoman.extend({
         "load-grunt-tasks": "^3.5.2"
       };
 
-      var scripts = {
-        obfuscate: "grunt"
-      };
+      var scripts = {};
+      if(this.props.useBundlingTool) {
+        scripts.obfuscate = "grunt";
+      } else {
+        // if we don't bundle, running the deployment tool is already the final production step
+        scripts.production = "grunt";
+      }
 
       if (this.props.useTypeScript) {
         scripts.production = "npm run build && npm run obfuscate";
@@ -506,7 +511,7 @@ module.exports = yeoman.extend({
         }
       });
 
-      if (!this.props.useGruntBundling) {
+      if (!this.props.useGrunt) {
         this.fs.writeJSON(this.destinationPath("package.json"), pkg);
       }
 
@@ -530,7 +535,7 @@ module.exports = yeoman.extend({
 
   install: function () {
     var postInstall = function () {
-      if (this.props.useGruntBundling) {
+      if (this.props.useWebpack || this.props.useBrowserify) {
         this.log(chalk.green("\nFinished your scaffold. Running 'npm run-script dev' for you...\n"));
         this.spawnCommandSync("npm",["run-script","dev"]);
       } else if (this.props.useTypeScript) {
@@ -539,10 +544,10 @@ module.exports = yeoman.extend({
       }
     }.bind(this);
 
-    if (!(this.props.useWebpack || this.props.useBrowserify || this.props.loadingType === "script-tags") || this.props.useTypeScript || this.props.useGruntBundling) {
+    if (!(this.props.useWebpack || this.props.useBrowserify || this.props.loadingType === "script-tags") || this.props.useTypeScript || this.props.useGrunt) {
       this.installDependencies({
         bower: !(this.props.useWebpack || this.props.useBrowserify || this.props.loadingType === "script-tags"),
-        npm: this.props.useGruntBundling || this.props.useTypeScript,
+        npm: this.props.useGrunt || this.props.useTypeScript,
         callback: function () {
           postInstall()
         }.bind(this)

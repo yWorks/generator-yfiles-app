@@ -28,12 +28,9 @@ module.exports = function (grunt) {
           cwd: scriptsSrc,
           src: ["**/*.js", "!**/license.js"],
           dest: scriptsDest
-        }<% if (!(useBrowserify || useWebpack)) { %>, {
-          expand: true,
-          cwd: "./bower_components/requirejs/",
-          src: ["require.js"],
-          dest: scriptsDest
-        }<% } %>
+        }<%if(!(useBrowserify||useWebpack)) {%>,
+        {src: ['app/index.html'], dest: destination+'index.html'},
+        {src: ['app/styles/yfiles.css'], dest: destination+'styles/yfiles.css'}<% } %>
        ],
         obfuscate: true,
         optimize: true

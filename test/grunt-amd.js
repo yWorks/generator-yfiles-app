@@ -15,12 +15,13 @@ var answers = {
   "module":"testModule",
   "yfilesPath": localConfig.yfilesPath,
   "licensePath": path.resolve(localConfig.yfilesPath,'demos/resources/license.js'),
-  "buildTool":"Grunt + Browserify",
+  "buildTool":"Grunt",
+  "loadingType": "AMD",
   "modules":["yfiles/complete"],
   "advancedOptions":[]
 };
 
-describe('yfiles:browserify', function () {
+describe('yfiles:grunt-amd', function () {
 
   this.timeout(55000);
 
@@ -47,7 +48,8 @@ describe('yfiles:browserify', function () {
         'app/scripts/app.js',
         'app/styles/yfiles.css',
         'Gruntfile.js',
-        'package.json'
+        'package.json',
+        'bower.json'
       ]);
       assert.noFile([
         'app/scripts/license.js',
@@ -58,6 +60,13 @@ describe('yfiles:browserify', function () {
   });
 
   describe('build result', function() {
+
+    it('installed bower files', function() {
+      assert.file([
+        'bower_components/requirejs/require.js'
+      ]);
+    });
+
     it('runs', function (done) {
       util.maybeOpenInBrowser(this.dir,done);
     });

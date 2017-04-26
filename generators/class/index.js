@@ -15,7 +15,7 @@ module.exports = yeoman.extend({
 
     var language = this.options.language || this.config.get("language") || "javascript";
 
-    var useGruntBundling = buildTool.toLowerCase().indexOf("grunt") >= 0;
+    var useGrunt = buildTool.toLowerCase().indexOf("grunt") >= 0;
     var useBrowserify = buildTool.toLowerCase().indexOf("browserify") >= 0;
     var useWebpack = buildTool.toLowerCase().indexOf("webpack") >= 0;
 
@@ -50,7 +50,7 @@ module.exports = yeoman.extend({
       module: this.options.module,
       moduleList: useBrowserify ? modules.map(function(module) { return '../lib/'+module}) : modules,
       useTypeInfo: this.options.useTypeInfo,
-      useGruntBundling: useGruntBundling,
+      useGrunt: useGrunt,
       useBrowserify: useBrowserify,
       useWebpack: useWebpack,
       content: this.options.content && this.options.content.replace(/(\n|\r\n)/gm, "$1" + indent),

@@ -17,12 +17,12 @@
 <body>
 <div id="graphComponent"></div>
 
-<% if (useTypeInfo && !useGruntBundling) { %>
+<% if (useTypeInfo && !useGrunt) { %>
 <!-- Adding type information support during application development. -->
 <script src="scripts/yfiles-typeinfo.js"></script>
 
-<% } %><% if (!useGruntBundling) { %><script src="lib/yfiles/es2015-shim.js"></script><% } %>
-<% if (!useWebpack) { %><script src="scripts/license.js"></script><% } %>
+<% } %><% if (!useGrunt) { %><script src="lib/yfiles/es2015-shim.js"></script><% } %>
+<% if (loadingType === "script-tags") { %><script src="scripts/license.js"></script><% } %>
 <%
 
 
@@ -78,14 +78,8 @@ else if (language === "typescript") {
 
 
 else if (loadingType === "AMD") {
-    if (useGruntBundling) {
-%><script src="scripts/require.js"></script><%
-    } else {
-%><script src="../bower_components/requirejs/require.js"></script><%
-    }
-%>
-
-<script src="scripts/<%= applicationName %>.js"></script>
+%><script src="../bower_components/requirejs/require.js"></script>
+<script src="scripts/app.js"></script>
 <% }
 
 

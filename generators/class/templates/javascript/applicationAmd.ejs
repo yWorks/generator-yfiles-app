@@ -2,6 +2,8 @@ require.config({ paths: {yfiles: 'lib/yfiles'} });
 
 require([<%moduleList.forEach(function(module, idx) {if (idx === moduleList.length - 1) {%>'<%= module %>'<%} else {%>'<%= module %>', <%}})%>], function(yfiles) {
 
+  yfiles.license = <%-licenseContent%>;
+
   var <%= module %> = yfiles.module('<%= module %>', function(exports) {
 
     /**
