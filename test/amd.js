@@ -44,6 +44,7 @@ describe('AMD', function () {
         'bower.json'
       ]);
       assert.noFile([
+        'tsconfig.json',
         'package.json',
         'Gruntfile.js',
         'app/scripts/license.js',

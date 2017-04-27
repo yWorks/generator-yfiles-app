@@ -11,13 +11,13 @@ var defaultAnswers = require('./support/defaultPromtAnswers');
 
 var answers = Object.assign({},defaultAnswers, {
   "buildTool":"none",
-  "loadingType": "AMD",
+  "loadingType": "systemjs",
   "advancedOptions": [
     "Use yfiles-typeinfo.js", "TypeScript"
   ]
 });
 
-describe('TypeScript + AMD', function () {
+describe('TypeScript + SystemJS', function () {
 
   this.timeout(25000);
 
@@ -45,8 +45,9 @@ describe('TypeScript + AMD', function () {
         'app/index.html',
         'app/scripts/app.ts',
         'app/styles/yfiles.css',
-        'tsconfig.json',
-        'package.json'
+        'package.json',
+        'bower.json',
+        'tsconfig.json'
       ]);
       assert.noFile([
         'Gruntfile.js',
@@ -62,7 +63,13 @@ describe('TypeScript + AMD', function () {
 
     it('installed bower files', function() {
       assert.file([
-        'bower_components/requirejs/require.js'
+        'bower_components/system.js/dist/system.js'
+      ]);
+    });
+
+    it('created typescript output', function() {
+      assert.file([
+        'app/scripts/app.ts'
       ]);
     });
 

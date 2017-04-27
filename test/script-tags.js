@@ -51,6 +51,7 @@ describe('Script Tags', function () {
         'app/scripts/license.js',
         'webpack.config.js',
         'bower.json',
+        'tsconfig.json',
         'Gruntfile.js'
       ]);
     });

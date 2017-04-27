@@ -47,7 +47,8 @@ describe('Grunt + AMD', function () {
       ]);
       assert.noFile([
         'app/scripts/license.js',
-        'webpack.config.js'
+        'webpack.config.js',
+        'tsconfig.json'
       ]);
     });
 

@@ -48,6 +48,7 @@ describe('AMD + ES6', function () {
         'package.json'
       ]);
       assert.noFile([
+        'tsconfig.json',
         'app/scripts/license.js',
         'webpack.config.js',
         'Gruntfile.js'

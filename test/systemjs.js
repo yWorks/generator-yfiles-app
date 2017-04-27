@@ -51,6 +51,7 @@ describe('SystemJS', function () {
         'package.json',
         'app/scripts/license.js',
         'webpack.config.js',
+        'tsconfig.json',
         'Gruntfile.js'
       ]);
     });

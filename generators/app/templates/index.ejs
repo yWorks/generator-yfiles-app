@@ -31,9 +31,30 @@ if (useBundlingTool) { %><script src="dist/bundle.js"></script>
 
 else if (loadingType === "systemjs") { %>
 <script src="../bower_components/system.js/dist/system.js"></script>
+<% if(language === "typescript") {%>
+<script>
+  window.define = System.amdDefine;
+  window.require = System.amdRequire;
+  System.config({
+    // This option makes the app work from filesystem, but prevents
+    // loading of CHS modules - you probably don't want to use it for production.
+    meta: { '*': { scriptLoad: true } },
+    map: {
+      'yfiles': './lib/yfiles'
+    },
+    packages: {
+      'yfiles': {
+        defaultExtension: 'js',
+        format: 'amd'
+      }
+    },
+  });
+  System.import('scripts/app.js');
+</script>
+<% } else { %>
 <script src="scripts/app.js"></script>
 <%
-}
+}}
 
 
 else if (language === "typescript") {

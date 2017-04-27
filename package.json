@@ -23,6 +23,7 @@
     "test-amd": "cross-env OPEN_IN_BROWSER=true mocha test/amd.js",
     "test-amd-es6": "cross-env OPEN_IN_BROWSER=true mocha test/amd-es6.js",
     "test-systemjs": "cross-env OPEN_IN_BROWSER=true mocha test/systemjs.js",
+    "test-typescript-systemjs": "cross-env OPEN_IN_BROWSER=true mocha test/typescript-systemjs.js",
     "test-browserify": "cross-env OPEN_IN_BROWSER=true mocha test/browserify.js",
     "test-webpack": "cross-env OPEN_IN_BROWSER=true mocha test/webpack.js",
     "test-typescript-nogrunt-amd": "cross-env OPEN_IN_BROWSER=true mocha test/typescript-nogrunt-amd.js",

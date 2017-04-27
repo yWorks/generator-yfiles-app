@@ -45,6 +45,7 @@ describe('Typescript + Webpack', function () {
         'app/scripts/app.ts',
         'app/styles/yfiles.css',
         'package.json',
+        'tsconfig.json',
         'webpack.config.js',
         'Gruntfile.js'
       ]);

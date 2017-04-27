@@ -46,6 +46,7 @@ describe('Browserify', function () {
       ]);
       assert.noFile([
         'app/scripts/license.js',
+        'tsconfig.json',
         'webpack.config.js'
       ]);
     });
