@@ -15,7 +15,7 @@ var answers = Object.assign({},defaultAnswers, {
 });
 
 
-describe('yfiles:grunt-amd', function () {
+describe('AMD', function () {
 
   this.timeout(55000);
 

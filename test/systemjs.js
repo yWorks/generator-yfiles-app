@@ -18,7 +18,7 @@ var answers = Object.assign({},defaultAnswers, {
 
 console.log(JSON.stringify(answers,null,2));
 
-describe('yfiles:script-tags', function () {
+describe('SystemJS', function () {
 
   this.timeout(55000);
 

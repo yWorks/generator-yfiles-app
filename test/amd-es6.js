@@ -13,12 +13,12 @@ var answers = Object.assign({},defaultAnswers, {
   "loadingType": "AMD",
   "advancedOptions": [
     "Use yfiles-typeinfo.js",
-    "ECMAScript 6"
+    "ECMAScript 6 & babel"
   ]
 });
 
 
-describe('yfiles:amd-es6', function () {
+describe('AMD + ES6', function () {
 
   this.timeout(55000);
 
@@ -44,12 +44,12 @@ describe('yfiles:amd-es6', function () {
         'app/index.html',
         'app/scripts/app.js',
         'app/styles/yfiles.css',
-        'bower.json'
+        'bower.json',
+        'package.json'
       ]);
       assert.noFile([
         'app/scripts/license.js',
         'webpack.config.js',
-        'package.json',
         'Gruntfile.js'
       ]);
     });

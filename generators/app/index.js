@@ -26,7 +26,8 @@ module.exports = yeoman.extend({
 
     var advancedOptions = [
       {name: "npm & git", checked: false},
-      {name: "Visual Studio Code integration", checked: false}
+      {name: "Visual Studio Code integration", checked: false},
+      {name: "ECMAScript 6 & babel", checked: false}
     ];
 
     var prompts = [{
@@ -84,7 +85,7 @@ module.exports = yeoman.extend({
       type: "list",
       name: "buildTool",
       message: "Which build tool do you want to use?",
-      choices: ["none", "Grunt", "Grunt + Browserify", "Grunt + Webpack"],
+      choices: ["none", "Grunt", "Browserify", "webpack"],
       default: "none",
       store: true
     }, {
@@ -113,24 +114,17 @@ module.exports = yeoman.extend({
       name: "advancedOptions",
       message: "What else do you want?",
       choices: function (props) {
-        if (props.buildTool.indexOf("Grunt + Browserify") >= 0) {
+       if (props.buildTool.indexOf("webpack") >= 0) {
           return advancedOptions.concat([
-            {name: "ECMAScript 6 & babel", checked: false}
-          ]);
-        } else if (props.buildTool.indexOf("Grunt + Webpack") >= 0) {
-          return advancedOptions.concat([
-            {name: "ECMAScript 6 & babel", checked: false},
             {name: "TypeScript", checked: false}
           ]);
         } else if (props.buildTool.indexOf("Grunt") >= 0) {
           return advancedOptions.concat([
-            {name: "ECMAScript 6 & babel", checked: false},
             {name: "TypeScript", checked: false}
           ]);
         } else if (props.buildTool.indexOf("none") >= 0) {
           return advancedOptions.concat([
             {name: "Use yfiles-typeinfo.js", checked: true},
-            {name: "ECMAScript 6", checked: false},
             {name: "TypeScript", checked: false}
           ]);
         }
@@ -142,8 +136,8 @@ module.exports = yeoman.extend({
     return this.prompt(prompts).then(function(answers) {
       this.props = answers;
 
-      this.props.useBrowserify = answers.buildTool === "Grunt + Browserify";
-      this.props.useWebpack = answers.buildTool === "Grunt + Webpack";
+      this.props.useBrowserify = answers.buildTool === "Browserify";
+      this.props.useWebpack = answers.buildTool === "webpack";
       this.props.useGrunt = answers.buildTool === "Grunt" || this.props.useBrowserify || this.props.useWebpack;
 
       this.props.useBundlingTool = this.props.useBrowserify || this.props.useWebpack;
@@ -158,7 +152,7 @@ module.exports = yeoman.extend({
 
       this.props.licensePath = answers.licensePath;
       this.props.language = this.props.useTypeScript ? "typescript"
-        : (answers.advancedOptions.indexOf("ECMAScript 6") >= 0 || answers.advancedOptions.indexOf("ECMAScript 6 & babel") >= 0) ? "es6"
+        : answers.advancedOptions.indexOf("ECMAScript 6 & babel") >= 0 ? "es6"
           : "javascript";
 
       this.props.loadingType = this.props.useTypeScript && answers.loadingType === "script-tags" ? "AMD" : answers.loadingType;
@@ -355,6 +349,9 @@ module.exports = yeoman.extend({
 
     var pkg = this.fs.readJSON(this.destinationPath("package.json"), {});
 
+    //
+    // Write bower.json for require.js or system.js
+    //
     if (!(this.props.useWebpack || this.props.useBrowserify || this.props.loadingType === "script-tags")) {
       var bower = this.fs.readJSON(this.destinationPath("bower.json"), {});
       extend(bower, {
@@ -398,13 +395,6 @@ module.exports = yeoman.extend({
         }
       });
 
-      if (!this.props.useGrunt) {
-        this.fs.writeJSON(this.destinationPath("package.json"), pkg);
-      }
-    }
-
-    if (!this.props.useGrunt) {
-      return;
     }
 
     if (this.props.useGrunt) {
@@ -450,6 +440,9 @@ module.exports = yeoman.extend({
 
     }
 
+    //
+    // Webpack without Typescript
+    //
     if (this.props.useWebpack && !this.props.useTypeScript) {
       extend(pkg, {
         scripts: {
@@ -469,7 +462,12 @@ module.exports = yeoman.extend({
         vars
       );
 
-    } else if(this.props.useWebpack && this.props.useTypeScript) {
+    }
+
+    //
+    // Webpack + Typescript
+    //
+    else if(this.props.useWebpack && this.props.useTypeScript) {
 
       this.fs.copy(
         path.join(this.props.yfilesPath, "ide-support/yfiles-api.d.ts"),
@@ -490,7 +488,6 @@ module.exports = yeoman.extend({
 
       extend(pkg, {
         scripts: {
-          "babel": "babel --presets=es2015 app/scripts -d build/es5",
           "production": "tsc && npm run babel && npm run obfuscate && webpack --env=prod",
           "dev": "webpack --env=dev",
           "start": "webpack-dev-server --env=dev --open"
@@ -504,26 +501,32 @@ module.exports = yeoman.extend({
         }
       });
 
-      if (!this.props.useGrunt) {
-        this.fs.writeJSON(this.destinationPath("package.json"), pkg);
-      }
-
     }
 
     if (this.props.useBabel) {
+
+      var scripts =  {
+        "babel": "babel --ignore yfiles-typeinfo.js --presets=es2015 app/scripts -d build/es5"
+      };
+
+      if(!this.props.useBundlingTool) {
+        scripts.dev = "babel --watch --ignore yfiles-typeinfo.js --presets=es2015 app/scripts -d build/es5";
+      }
+
       extend(pkg, {
+        scripts: scripts,
         devDependencies: {
           "babel-cli": "^6.24.1",
           "babel-preset-es2015": "^6.24.1"
         }
       });
 
-      if (!(this.props.useWebpack || this.props.useBrowserify)) {
-        pkg.devDependencies["babel-plugin-transform-es2015-modules-amd"] = "^6.18.0";
-      }
     }
 
-    this.fs.writeJSON(this.destinationPath("package.json"), pkg);
+    if (this.props.useBrowserify || this.props.useBundlingTool || this.props.useGrunt || this.props.useBabel
+      || this.props.useTypeScript) {
+      this.fs.writeJSON(this.destinationPath("package.json"), pkg);
+    }
   },
 
   install: function () {
@@ -534,13 +537,16 @@ module.exports = yeoman.extend({
       } else if (this.props.useTypeScript) {
         this.log(chalk.green("\nFinished your scaffold. Running 'tsc' for you...\n"));
         this.spawnCommandSync("tsc");
+      } else if(this.props.useBabel) {
+        this.log(chalk.green("\nFinished your scaffold. Running 'npm run-script babel' for you...\n"));
+        this.spawnCommandSync("npm",["run-script","babel"]);
       }
     }.bind(this);
 
     if (!(this.props.useWebpack || this.props.useBrowserify || this.props.loadingType === "script-tags") || this.props.useTypeScript || this.props.useGrunt) {
       this.installDependencies({
         bower: !(this.props.useWebpack || this.props.useBrowserify || this.props.loadingType === "script-tags"),
-        npm: this.props.useGrunt || this.props.useTypeScript,
+        npm: this.props.useGrunt || this.props.useTypeScript || this.props.useBabel,
         callback: function () {
           postInstall()
         }.bind(this)

@@ -10,13 +10,13 @@ var util = require('./support/util');
 var defaultAnswers = require('./support/defaultPromtAnswers');
 
 var answers = Object.assign({},defaultAnswers, {
-  "buildTool":"Grunt + Webpack",
+  "buildTool":"webpack",
   "advancedOptions": [
     "TypeScript"
   ]
 });
 
-describe('yfiles:typescript-webpack', function () {
+describe('Typescript + Webpack', function () {
 
   this.timeout(45000);
 

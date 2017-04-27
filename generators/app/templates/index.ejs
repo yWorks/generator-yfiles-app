@@ -25,7 +25,7 @@
 <%
 
 
-if (useBrowserify || useWebpack) { %><script src="dist/bundle.js"></script>
+if (useBundlingTool) { %><script src="dist/bundle.js"></script>
 <% if (language === "es6" && useTypeInfo) { %><script src="scripts/yfiles-typeinfo.js"></script><% } %>
 <% }
 
@@ -53,14 +53,20 @@ else if (language === "typescript") {
 }
 
 
-else if (loadingType === "AMD") {
-%><script src="../bower_components/requirejs/require.js"></script>
+else if (loadingType === "AMD" && !useBundlingTool) {
+%><script src="../bower_components/requirejs/require.js"></script><%
+if(useBabel) {%>
+<script src="../build/es5/app.js"></script>
+<%
+} else { %>
 <script src="scripts/app.js"></script>
-<% }
+<%
+}
+}
 
 
 else {
-  if (!useBrowserify || !useWebpack) {
+  if (!useBundlingTool) {
     if (loadingType === "script-tags") { %>
 <script src="<%= libPath %>yfiles/impl/lang.js"></script>
 <% } else { %>

@@ -17,7 +17,7 @@ var answers = Object.assign({},defaultAnswers, {
   ]
 });
 
-describe('yfiles:typescript', function () {
+describe('TypeScript + AMD', function () {
 
   this.timeout(25000);
 

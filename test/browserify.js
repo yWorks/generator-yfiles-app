@@ -10,12 +10,12 @@ var util = require('./support/util');
 var defaultAnswers = require('./support/defaultPromtAnswers');
 
 var answers = Object.assign({},defaultAnswers, {
-  "buildTool":"Grunt + Browserify"
+  "buildTool":"Browserify"
 });
 
 console.log(JSON.stringify(answers,null,2));
 
-describe('yfiles:browserify', function () {
+describe('Browserify', function () {
 
   this.timeout(55000);
 
