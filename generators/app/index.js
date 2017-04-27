@@ -439,7 +439,7 @@ module.exports = yeoman.extend({
         // Apparently, browserify and watchify can't create their output directories on their own, so we need mkdirp as well.
         devDependencies.mkdirp =  "^0.5.1";
 
-        scripts.dev = "mkdirp app/dist && browserify app/scripts/app.js -o app/dist/bundle.js --poll=100 -v";
+        scripts.dev = "mkdirp app/dist && browserify app/scripts/app.js -o app/dist/bundle.js";
         scripts.watch = "mkdirp app/dist && watchify app/scripts/app.js -o app/dist/bundle.js --poll=100 -v";
         scripts.production = "npm run obfuscate && mkdirp app/dist && browserify build/obf/scripts/app.js -o app/dist/bundle.js";
       }

@@ -67,10 +67,7 @@ else if (language === "typescript") {
     }
   });
   // load the license and the required modules
-  require([
-    './scripts/app.js',
-    './scripts/license.js',
-  ], function(<%= module %>) {
+  require(['./scripts/app.js'], function(<%= module %>) {
     new <%= module %>.<%= applicationName %>();
   });
 </script><%

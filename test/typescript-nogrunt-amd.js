@@ -6,21 +6,16 @@ var helpers = require('yeoman-test');
 var assert = require('yeoman-assert');
 var opn = require('opn');
 
-var localConfig = require('./getLocalConfig');
-var util = require('./util');
+var util = require('./support/util');
+var defaultAnswers = require('./support/defaultPromtAnswers');
 
-var answers = {
-  "applicationName": "testApp",
-  "module": "testModule",
-  "yfilesPath": localConfig.yfilesPath,
-  "licensePath": path.resolve(localConfig.yfilesPath, 'demos/resources/license.js'),
-  "buildTool": "none",
+var answers = Object.assign({},defaultAnswers, {
+  "buildTool":"none",
   "loadingType": "AMD",
-  "modules": ["yfiles/complete"],
   "advancedOptions": [
     "Use yfiles-typeinfo.js", "TypeScript"
   ]
-};
+});
 
 describe('yfiles:typescript', function () {
 
@@ -47,9 +42,16 @@ describe('yfiles:typescript', function () {
 
     it('generates base files', function () {
       assert.file([
-        'app/index.html', 'app/scripts/app.ts', 'app/styles/yfiles.css', 'package.json', 'app/scripts/license.js'
+        'app/index.html',
+        'app/scripts/app.ts',
+        'app/styles/yfiles.css',
+        'package.json',
       ]);
-      assert.noFile(['Gruntfile.js', 'webpack.config.js']);
+      assert.noFile([
+        'Gruntfile.js',
+        'app/scripts/license.js',
+        'webpack.config.js'
+      ]);
     })
 
   });

@@ -1,11 +1,12 @@
-<% moduleList.forEach(function(module, idx) { %>import <%= idx === 0 ? "yfiles" : "tmp" + idx%> = require('<%= module %>');
-<%})%>
-<%
-if (useWebpack) {
-%>
-// Inline the license, so we have to reference just a single script bundle
+<% if(moduleList.length>0) { %>import yfiles = require('<%= moduleList[0]%>'); <%}%><% if(moduleList.length>1) {
+for(var i=1;i<moduleList.length;i++) {
+  %>
+import '<%= moduleList[i]%>';<%
+  }
+}%>
+
 (<any>yfiles).license = <%-licenseContent%>;
-<%}%>
+
 /**
  * <% if (description) { %><%= description %><% } else { %>A yfiles class.<% } %>
  */

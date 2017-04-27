@@ -7,20 +7,12 @@ var helpers = require('yeoman-test');
 var assert = require('yeoman-assert');
 var opn = require('opn');
 
-var openIndexInBrowser = !!process.env.OPEN_IN_BROWSER;
+var util = require('./support/util');
+var defaultAnswers = require('./support/defaultPromtAnswers');
 
-var localConfig = require('./getLocalConfig');
-var util = require('./util');
-
-var answers = {
-  "applicationName":"testApp",
-  "module":"testModule",
-  "yfilesPath": localConfig.yfilesPath,
-  "licensePath": path.resolve(localConfig.yfilesPath,'demos/resources/license.js'),
-  "buildTool":"Grunt + Webpack",
-  "modules":["yfiles/complete"],
-  "advancedOptions":[]
-};
+var answers = Object.assign({},defaultAnswers, {
+  "buildTool":"Grunt + Webpack"
+});
 
 describe('yfiles:webpack', function () {
 

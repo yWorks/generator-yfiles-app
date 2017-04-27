@@ -1,25 +1,19 @@
 'use strict';
 
-var path = require('path');
 var fs = require('fs');
 var exec = require('child_process').exec;
 var helpers = require('yeoman-test');
 var assert = require('yeoman-assert');
 var opn = require('opn');
 
-var localConfig = require('./getLocalConfig');
-var util = require('./util');
+var util = require('./support/util');
+var defaultAnswers = require('./support/defaultPromtAnswers');
 
-var answers = {
-  "applicationName":"testApp",
-  "module":"testModule",
-  "yfilesPath": localConfig.yfilesPath,
-  "licensePath": path.resolve(localConfig.yfilesPath,'demos/resources/license.js'),
+var answers = Object.assign({},defaultAnswers, {
   "buildTool":"Grunt",
-  "loadingType": "AMD",
-  "modules":["yfiles/complete"],
-  "advancedOptions":[]
-};
+  "loadingType": "AMD"
+});
+
 
 describe('yfiles:grunt-amd', function () {
 
