@@ -301,13 +301,6 @@ module.exports = yeoman.extend({
       this.destinationPath(path.join(stylesPath, "yfiles.css"))
     );
 
-    if (this.props.loadingType === "script-tags") {
-      this.fs.copy(
-        this.props.licensePath,
-        this.destinationPath(path.join(scriptsPath, "license.js"))
-      );
-    }
-
     if (this.props.useTypeInfo) {
       this.fs.copy(
         path.join(this.props.yfilesPath, "ide-support/yfiles-typeinfo.js"),

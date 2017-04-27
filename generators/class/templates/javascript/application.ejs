@@ -2,8 +2,6 @@
   moduleList.forEach(function(module, idx) {
     if (idx === moduleList.length - 1) {
 %>var yfiles = require('<%= module %>');
-
-yfiles.license = <%-licenseContent%>;
 <%
     } else {
 %>require('<%= module %>');
@@ -13,6 +11,9 @@ yfiles.license = <%-licenseContent%>;
 } else if (loadingType === "systemjs") { %>
 var yfiles = require('<%= moduleList[0] %>');
 <% } %>
+
+yfiles.license = <%-licenseContent%>;
+
 yfiles.module('<%= module %>', function(exports) {
 
   /**

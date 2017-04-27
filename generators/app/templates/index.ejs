@@ -22,7 +22,6 @@
 <script src="scripts/yfiles-typeinfo.js"></script>
 
 <% } %><% if (!useGrunt) { %><script src="lib/yfiles/es2015-shim.js"></script><% } %>
-<% if (loadingType === "script-tags") { %><script src="scripts/license.js"></script><% } %>
 <%
 
 
@@ -92,7 +91,7 @@ else {
   } else { %>
 <script src="<%= libPath %>yfiles.js"></script>
 <% } %>
-<script src="scripts/<%= applicationName %>.js"></script>
+<script src="scripts/app.js"></script>
 <% } %>
 </body>
 </html>
