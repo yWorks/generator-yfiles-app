@@ -402,7 +402,7 @@ module.exports = yeoman.extend({
       };
 
       var scripts = {};
-      if(this.props.useBundlingTool) {
+      if(this.props.useBundlingTool||this.props.useTypeScript) {
         scripts.obfuscate = "grunt";
       } else {
         // if we don't bundle, running the deployment tool is already the final production step

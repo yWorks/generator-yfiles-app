@@ -5,19 +5,20 @@ var fs = require('fs');
 var helpers = require('yeoman-test');
 var assert = require('yeoman-assert');
 var opn = require('opn');
+var exec = require('child_process').exec;
 
 var util = require('./support/util');
 var defaultAnswers = require('./support/defaultPromtAnswers');
 
 var answers = Object.assign({},defaultAnswers, {
-  "buildTool":"none",
-  "loadingType": "systemjs",
+  "buildTool":"Grunt",
+  "loadingType": "AMD",
   "advancedOptions": [
     "Use yfiles-typeinfo.js", "TypeScript"
   ]
 });
 
-describe('TypeScript + SystemJS', function () {
+describe('TypeScript + Grunt', function () {
 
   this.timeout(25000);
 
@@ -47,10 +48,10 @@ describe('TypeScript + SystemJS', function () {
         'app/styles/yfiles.css',
         'package.json',
         'bower.json',
-        'tsconfig.json'
+        'tsconfig.json',
+        'Gruntfile.js'
       ]);
       assert.noFile([
-        'Gruntfile.js',
         'app/scripts/license.js',
         'webpack.config.js'
       ]);
@@ -63,7 +64,7 @@ describe('TypeScript + SystemJS', function () {
 
     it('installed bower files', function() {
       assert.file([
-        'bower_components/system.js/dist/system.js'
+        'bower_components/requirejs/require.js'
       ]);
     });
 
@@ -76,6 +77,14 @@ describe('TypeScript + SystemJS', function () {
     it('runs', function (done) {
       var dir = this.dir;
       util.maybeOpenInBrowser(dir,done);
+    });
+
+    it('succeeds to run production build', function (done) {
+      var dir = this.dir;
+      exec('npm run production', {cwd: dir}, function(error, stdout, stderr) {
+        assert.ok(error === null, "Production build failed: "+error);
+        util.maybeOpenInBrowser(dir,done,'dist/index.html');
+      });
     });
   });
 
