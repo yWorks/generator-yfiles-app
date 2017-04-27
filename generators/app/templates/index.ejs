@@ -75,14 +75,9 @@ else if (language === "typescript") {
 
 
 else if (loadingType === "AMD" && !useBundlingTool) {
-%><script src="../bower_components/requirejs/require.js"></script><%
-if(useBabel) {%>
-<script src="../build/es5/app.js"></script>
-<%
-} else { %>
+%><script src="../bower_components/requirejs/require.js"></script>
 <script src="scripts/app.js"></script>
 <%
-}
 }
 
 

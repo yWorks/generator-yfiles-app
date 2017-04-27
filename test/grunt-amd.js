@@ -70,7 +70,7 @@ describe('Grunt + AMD', function () {
       var dir = this.dir;
       exec('npm run production', {cwd: dir}, function(error, stdout, stderr) {
         assert.ok(error === null, "Production build failed: "+error);
-        util.maybeOpenInBrowser(dir,done);
+        util.maybeOpenInBrowser(dir,done,'dist/index.html');
       });
     });
   });

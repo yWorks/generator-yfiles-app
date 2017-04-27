@@ -249,11 +249,7 @@ module.exports = yeoman.extend({
     // up by the bundling tool.
     var obfDest = this.props.useBundlingTool ? 'build/obf/' : distPath;
 
-    // If babel is involved, it should always write to build/es5.
-    // This means that the deployment tool should pick up the app sources from
-    // - build/es5, if babel is part of the chain
-    // - app/scripts, if babel is not part of the chain (TypeScript output will be placed beside the original sources in app/scripts).
-    var obfSource = this.props.useBabel ? babelDest : utils.unixPath(scriptsPath);
+    var obfSource = utils.unixPath(scriptsPath);
 
     var vars = {
       obfSource: obfSource,
@@ -506,11 +502,11 @@ module.exports = yeoman.extend({
     if (this.props.useBabel) {
 
       var scripts =  {
-        "babel": "babel --ignore yfiles-typeinfo.js --presets=es2015 app/scripts -d build/es5"
+        "babel": "babel -x \".es6\" --presets=es2015 app/scripts --out-dir app/scripts"
       };
 
       if(!this.props.useBundlingTool) {
-        scripts.dev = "babel --watch --ignore yfiles-typeinfo.js --presets=es2015 app/scripts -d build/es5";
+        scripts.dev = "babel -x \".es6\" --watch --presets=es2015 app/scripts --out-dir app/scripts";
       }
 
       extend(pkg, {

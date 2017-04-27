@@ -42,7 +42,7 @@ describe('AMD + ES6', function () {
     it('generates base files', function () {
       assert.file([
         'app/index.html',
-        'app/scripts/app.js',
+        'app/scripts/app.es6',
         'app/styles/yfiles.css',
         'bower.json',
         'package.json'
@@ -62,6 +62,12 @@ describe('AMD + ES6', function () {
     it('installed bower files', function() {
       assert.file([
         'bower_components/requirejs/require.js'
+      ]);
+    });
+
+    it('transpiled to es5', function() {
+      assert.file([
+        'app/scripts/app.js'
       ]);
     });
 

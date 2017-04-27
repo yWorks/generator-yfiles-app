@@ -73,7 +73,7 @@ module.exports = yeoman.extend({
 
       this.fs.copyTpl(
         this.templatePath(path.join(language, template)),
-        this.destinationPath(path.join(scriptsPath, "app.js")),
+        this.destinationPath(path.join(scriptsPath, language === "es6" ? "app.es6" : "app.js")),
         vars
       );
     } else {
