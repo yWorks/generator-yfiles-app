@@ -61,7 +61,7 @@ based on the yFiles for HTML package path. You may however want to specify a cus
 You can choose between those build tools:
  * **none**: No build file is provided and you can run your app directly without the need of a compile step.
  * **[Grunt](http://gruntjs.com/)**: Adds a production build step (`npm run production`) that obfuscates and minifies the application and library sources. For development, the 
- application can be started without a build step. 
+ application can be started directly without a build step. 
  * **[Browserify](http://browserify.org/)** Adds a production build step that obfuscates and minifies all JavaScript sources, 
  and bundles them to a single file using Browserify (`npm run production`). For development, a [Watchify](https://github.com/substack/watchify) build
  script is provided that enables fast turnaround times during development (`npm run watch`).
@@ -78,7 +78,7 @@ Decide whether you want to load the library via
 This option will not be available when wbpack or Browserify have been selected as build tool, as the resulting bundle is included via \<script\>-tag.
 
 #### Which modules do you want to use?
-Choose which yFiles modules your app will need. For an overview of these take a look at the Developer's Guide's [module section](http://docs.yworks.com/yfileshtmlv2/index.html#/dguide/modules).
+Choose which yFiles modules your app will need. For an overview of these take a look at the Developer's Guide's [module section](http://docs.yworks.com/yfileshtml/#/dguide/introduction-modules).
 The generator will automatically optimize the requires.
 
 #### What else do you want?
@@ -88,7 +88,10 @@ The generator will automatically optimize the requires.
  * **npm & git** Runs the [node generator](https://github.com/yeoman/generator-node), which initializes a npm package and git.
  * **Visual Studio Code integration** Creates additional files required for [Visual Studio Codes'](https://code.visualstudio.com/) IntelliSense as well as a task runner if applicable.
  * **ECMAScript 6 +[babel](https://babeljs.io/)** Write ECMAScript 6 sources, transpile to ECMAScript 5 with babel.
+  If no other build tool (Grunt/Browserify/Webpack) is involved, use the `npm run babel` script for one-time transpiling, or the 
+  `npm run dev` script for watch mode.  
  * **[TypeScript](http://www.typescriptlang.org/)** Use TypeScript instead of plain JavaScript.
+
 
 Choosing TypeScript will disable ECMAScript (+Babel).
 
