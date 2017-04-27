@@ -90,7 +90,9 @@ The generator will automatically optimize the requires.
  * **ECMAScript 6 +[babel](https://babeljs.io/)** Write ECMAScript 6 sources, transpile to ECMAScript 5 with babel.
   If no other build tool (Grunt/Browserify/Webpack) is involved, use the `npm run babel` script for one-time transpiling, or the 
   `npm run dev` script for watch mode.  
- * **[TypeScript](http://www.typescriptlang.org/)** Use TypeScript instead of plain JavaScript.
+ * **[TypeScript](http://www.typescriptlang.org/)** Use TypeScript instead of plain JavaScript. Unless you also chose webpack
+ (in which case TypeScript compilation will be part of the webpack bundling), use the `npm run build`
+ script for one-time compilation, or the `npm run watch` script for watch mode. 
 
 
 Choosing TypeScript will disable ECMAScript (+Babel).
