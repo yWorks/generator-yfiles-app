@@ -220,7 +220,7 @@ module.exports = yeoman.extend({
         "new " + this.props.module + "." + this.props.applicationName + "();" :
         this.props.language === "typescript" && (this.props.useBrowserify || this.props.useWebpack) ?
         "new " + this.props.applicationName + "();" :
-        this.props.useBrowserify || this.props.useWebpack ?
+        this.props.useBrowserify || this.props.useWebpack || this.props.loadingType === "systemjs"?
         "new (yfiles.module(\"" + this.props.module + "\"))." + this.props.applicationName + "();" : ""
     });
 

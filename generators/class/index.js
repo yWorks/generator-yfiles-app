@@ -61,8 +61,18 @@ module.exports = yeoman.extend({
     };
 
     if (language === "javascript" || language === "es6") {
+
+      var template;
+      if(vars.loadingType === "AMD" && !(vars.useWebpack || vars.useBrowserify)) {
+        template = "applicationAmd.ejs";
+      } else if(vars.loadingType === "systemjs") {
+        template = "applicationSystemJS.ejs";
+      } else {
+        template = "application.ejs";
+      }
+
       this.fs.copyTpl(
-        this.templatePath(path.join(language, (vars.loadingType === "AMD" && !(vars.useWebpack || vars.useBrowserify)) ? "applicationAmd.ejs" : "application.ejs")),
+        this.templatePath(path.join(language, template)),
         this.destinationPath(path.join(scriptsPath, "app.js")),
         vars
       );

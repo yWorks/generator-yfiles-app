@@ -30,29 +30,9 @@ if (useBrowserify || useWebpack) { %><script src="dist/bundle.js"></script>
 <% }
 
 else if (loadingType === "systemjs") { %>
-<script src="<%= useGruntBundling ? "lib/system.js/" : "../bower_components/system.js/dist/" %>system.js"></script>
-<script>
-window.define = System.amdDefine;
-window.require = System.amdRequire;
-System.config({
-  map: {
-    yfiles: "<%= libPath %>yfiles"
-  },
-  defaultJSExtensions: true
-});
-<% if (!(useBrowserify || useWebpack)) { %>
-  Promise.all([
-    System.import("scripts/<%= applicationName %>"),
-    <% modules.forEach(function (module) { %>System.import("<%= module %>"),
-  <%  }); %>
-])<% } else { %>System.import("scripts/<%= applicationName %>")<% } %><% if (language === "es6" || language === "typescript") { %>.then(function (results) {
-  <% if (useTypeInfo) { %>System.import("scripts/yfiles-typeinfo.js"); <% } %>
-  <% if (language === "typescript") { %>new results[0].<%= applicationName %>();
-  <% } else { %>new results[0]();<% } %>
-})<% } else { %>.then(function () {
-  new (yfiles.module("<%= module %>")).<%= applicationName %>();
-})<% } %>;
-</script><%
+<script src="../bower_components/system.js/dist/system.js"></script>
+<script src="scripts/app.js"></script>
+<%
 }
 
 
