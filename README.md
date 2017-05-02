@@ -85,7 +85,6 @@ The generator will automatically optimize the requires.
  * **Use yfiles-typeinfo.js** Includes the yfiles-typeinfo.js file which provides runtime type checking during development time. 
  Remember to remove this file for production releases.
  Further information can be found [here](http://docs.yworks.com/yfileshtmlv2/index.html#/dguide/DevelopmentSupport#DevelopmentSupport-Checks)
- * **npm & git** Runs the [node generator](https://github.com/yeoman/generator-node), which initializes a npm package and git.
  * **Visual Studio Code integration** Creates additional files required for [Visual Studio Codes'](https://code.visualstudio.com/) IntelliSense as well as a task runner if applicable.
  * **ECMAScript 6 +[babel](https://babeljs.io/)** Write ECMAScript 6 sources, transpile to ECMAScript 5 with babel.
   If no other build tool (Grunt/Browserify/Webpack) is involved, use the `npm run babel` script for one-time transpiling, or the 
