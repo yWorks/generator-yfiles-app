@@ -25,7 +25,6 @@ module.exports = yeoman.extend({
     this.log(chalk.green("Take a look at the README for further information how to use this generator."));
 
     var advancedOptions = [
-      {name: "npm & git", checked: false},
       {name: "Visual Studio Code integration", checked: false},
       {name: "ECMAScript 6 & babel", checked: false}
     ];
@@ -144,7 +143,6 @@ module.exports = yeoman.extend({
 
       this.props.useTypeScript = answers.advancedOptions.indexOf("TypeScript") >= 0;
       this.props.useTypeInfo = answers.advancedOptions.indexOf("Use yfiles-typeinfo.js") >= 0 && !this.props.useTypeScript && !this.props.useGrunt;
-      this.props.useNpmAndGit = answers.advancedOptions.indexOf("npm & git") >= 0;
 
       // For TypeScript AND Webpack, we need babel for the production (obfuscated) build (ts to es6 => babel to es5 => deployment tool => bundle)
       this.props.useBabel = (answers.advancedOptions.indexOf("ECMAScript 6 & babel") >= 0 && !this.props.useTypeScript) || (this.props.useTypeScript && this.props.useWebpack);
@@ -218,21 +216,6 @@ module.exports = yeoman.extend({
         "new (yfiles.module(\"" + this.props.module + "\"))." + this.props.applicationName + "();" : ""
     });
 
-    if (this.props.useNpmAndGit) {
-      var readmeTpl = _.template(this.fs.read(this.templatePath("README.md")));
-      this.composeWith(require.resolve('../../node_modules/generator-node/generators/app'), {
-        babel: false,
-        gulp: false,
-        travis: false,
-        boilerplate: false,
-        name: this.props.applicationName,
-        projectRoot: this.props.useGrunt ? "dist" : "app",
-        skipInstall: this.options.skipInstall,
-        readme: readmeTpl(this.props)
-      }, {
-        local: require("generator-node").app
-      });
-    }
   },
 
   writing: function () {
