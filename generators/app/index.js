@@ -120,8 +120,8 @@ module.exports = yeoman.extend({
       type: "list",
       name: "language",
       message: "Do you want to use ECMAScript 6 or TypeScript?",
-      choices: ["no", "ECMAScript 6 & babel", "TypeScript"],
-      default: "no",
+      choices: ["No", "ECMAScript 6 & babel", "TypeScript"],
+      default: "No",
       store: true
     }, {
       type: "checkbox",

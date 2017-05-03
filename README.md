@@ -77,6 +77,15 @@ Decide whether you want to load the library via
  * \<script\>-tags.
 This option will not be available when wbpack or Browserify have been selected as build tool, as the resulting bundle is included via \<script\>-tag.
 
+#### Do you want to use ECMAScript 6 or TypeScript? 
+* **No** Write plain JavaScript (ECMAScript 5).
+* **ECMAScript 6 +[babel](https://babeljs.io/)** Write ECMAScript 6 sources, transpile to ECMAScript 5 with babel.
+  If no other build tool (Grunt/Browserify/Webpack) is involved, use the `npm run babel` script for one-time transpiling, or the 
+  `npm run dev` script for watch mode.  
+* **[TypeScript](http://www.typescriptlang.org/)** Use TypeScript instead of plain JavaScript. Unless you also chose webpack
+ (in which case TypeScript compilation will be part of the webpack bundling), use the `npm run build`
+ script for one-time compilation, or the `npm run watch` script for watch mode. 
+
 #### Which modules do you want to use?
 Choose which yFiles modules your app will need. For an overview of these take a look at the Developer's Guide's [module section](http://docs.yworks.com/yfileshtml/#/dguide/introduction-modules).
 The generator will automatically optimize the requires.
@@ -86,13 +95,6 @@ The generator will automatically optimize the requires.
  Remember to remove this file for production releases.
  Further information can be found [here](http://docs.yworks.com/yfileshtmlv2/index.html#/dguide/DevelopmentSupport#DevelopmentSupport-Checks)
  * **Visual Studio Code integration** Creates additional files required for [Visual Studio Codes'](https://code.visualstudio.com/) IntelliSense as well as a task runner if applicable.
- * **ECMAScript 6 +[babel](https://babeljs.io/)** Write ECMAScript 6 sources, transpile to ECMAScript 5 with babel.
-  If no other build tool (Grunt/Browserify/Webpack) is involved, use the `npm run babel` script for one-time transpiling, or the 
-  `npm run dev` script for watch mode.  
- * **[TypeScript](http://www.typescriptlang.org/)** Use TypeScript instead of plain JavaScript. Unless you also chose webpack
- (in which case TypeScript compilation will be part of the webpack bundling), use the `npm run build`
- script for one-time compilation, or the `npm run watch` script for watch mode. 
-
 
 Choosing TypeScript will disable ECMAScript (+Babel).
 
