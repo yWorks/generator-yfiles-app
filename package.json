@@ -27,6 +27,7 @@
     "test-typescript-systemjs": "cross-env OPEN_IN_BROWSER=true mocha test/typescript-systemjs.js",
     "test-browserify": "cross-env OPEN_IN_BROWSER=true mocha test/browserify.js",
     "test-webpack": "cross-env OPEN_IN_BROWSER=true mocha test/webpack.js",
+    "test-webpack-es6": "cross-env OPEN_IN_BROWSER=true mocha test/webpack-es6.js",
     "test-typescript-nogrunt-amd": "cross-env OPEN_IN_BROWSER=true mocha test/typescript-nogrunt-amd.js",
     "test-typescript-webpack": "cross-env OPEN_IN_BROWSER=true mocha test/typescript-webpack.js",
     "test-typescript-grunt": "cross-env OPEN_IN_BROWSER=true mocha test/typescript-grunt.js"

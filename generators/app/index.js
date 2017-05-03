@@ -81,7 +81,7 @@ module.exports = yeoman.extend({
         if(!fs.existsSync(p)) {
           return "The license file was not found at the specified location."
         } else {
-          var parsedLicense = this.parseLicense(p);
+          var parsedLicense = this._parseLicense(p);
           if(!parsedLicense || !parsedLicense.key || !parsedLicense.product || !(parsedLicense.product === 'yFiles for HTML')) {
             return "The provided file does not appear to be a valid yFiles for HTML license file."
           } else {
@@ -173,11 +173,18 @@ module.exports = yeoman.extend({
         this.props.modules = utils.removeChildren(this.props.modules, yfilesModules);
       }
 
-      this.props.licenseContent = JSON.stringify(this.parseLicense(this.props.licensePath), null, 2);
+      var languageToExtension = {
+        'javascript': 'js',
+        'typescript': 'ts',
+        'es6': 'es6'
+      };
+      this.props.appScript = 'app.' + languageToExtension[this.props.language];
+
+      this.props.licenseContent = JSON.stringify(this._parseLicense(this.props.licensePath), null, 2);
     }.bind(this));
   },
 
-  parseLicense: function(path) {
+  _parseLicense: function(path) {
     var global = {
       yfiles: {},
     };
@@ -219,6 +226,7 @@ module.exports = yeoman.extend({
       libPath: this.config.get("libPath"),
       stylesPath: this.config.get("stylesPath"),
       loadingType: this.props.loadingType,
+      appScript: this.props.appScript,
       postClassContent: this.props.language === "es6" ?
         "new " + this.props.applicationName + "();" :
         this.props.language === "javascript" && !(this.props.loadingType === "systemjs") && !(this.props.useBrowserify || this.props.useWebpack) ?
@@ -267,7 +275,8 @@ module.exports = yeoman.extend({
       useWebpack: this.props.useWebpack,
       useTypeScript: this.props.useTypeScript,
       useBabel: this.props.useBabel,
-      language: this.props.language
+      language: this.props.language,
+      appScript: this.props.appScript
     };
 
     this.fs.copyTpl(
@@ -436,16 +445,26 @@ module.exports = yeoman.extend({
     // Webpack without Typescript
     //
     if (this.props.useWebpack && !this.props.useTypeScript) {
+
+      var devDeps = {
+        "webpack": "^2.4.1",
+        "webpack-dev-server": "^2.4.2"
+      };
+
+      var pkgScripts = {
+        "production": "npm run obfuscate && webpack --env=prod",
+        "dev": "webpack --env=dev",
+        "start": "webpack-dev-server --env=dev --open"
+      };
+
+      if(this.props.useBabel) {
+        devDeps["babel-loader"] = "^7.0.0";
+        pkgScripts.production = "npm run babel && "+pkgScripts.production;
+      }
+
       extend(pkg, {
-        scripts: {
-          "production": "npm run obfuscate && webpack --env=prod",
-          "dev": "webpack --env=dev",
-          "start": "webpack-dev-server --env=dev --open"
-        },
-        devDependencies: {
-          "webpack": "^2.4.1",
-          "webpack-dev-server": "^2.4.2"
-        }
+        scripts: pkgScripts,
+        devDependencies: devDeps
       });
 
       this.fs.copyTpl(
@@ -480,7 +499,7 @@ module.exports = yeoman.extend({
 
       extend(pkg, {
         scripts: {
-          "production": "tsc && npm run babel && npm run obfuscate && webpack --env=prod",
+          "production": "tsc --outFile app/scripts/app.es6 && npm run babel && npm run obfuscate && webpack --env=prod",
           "dev": "webpack --env=dev",
           "start": "webpack-dev-server --env=dev --open"
         },

@@ -57,7 +57,8 @@ module.exports = yeoman.extend({
       loadingType: this.options.loadingType,
       postClassContent: this.options.postClassContent && this.options.postClassContent.replace(/(\n|\r\n)/gm, "$1    "),
       description: this.options.description,
-      licenseContent: this.config.get("licenseContent")
+      licenseContent: this.config.get("licenseContent"),
+      appScript: this.options.appScript
     };
 
     if (language === "javascript" || language === "es6") {
@@ -73,13 +74,13 @@ module.exports = yeoman.extend({
 
       this.fs.copyTpl(
         this.templatePath(path.join(language, template)),
-        this.destinationPath(path.join(scriptsPath, language === "es6" ? "app.es6" : "app.js")),
+        this.destinationPath(path.join(scriptsPath, vars.appScript)),
         vars
       );
     } else {
       this.fs.copyTpl(
         this.templatePath(path.join(language, "application.ejs")),
-        this.destinationPath(path.join(scriptsPath, "app" + (language === "typescript" ? ".ts" : ".js"))),
+        this.destinationPath(path.join(scriptsPath, vars.appScript)),
         vars
       );
     }

@@ -7,7 +7,7 @@ module.exports = function(env) {
 
   var scriptsSrc = "<%= scriptsPath %>",
     libSrc = isDev ? "<%= libPath %>" : "<%= obfDest %>lib/",
-    appSrc = isDev ? scriptsSrc + <% if (useTypeScript) { %>'app.ts'<% } else { %>'app.js'<% } %> : "<%= obfDest %>scripts/app.js",
+    appSrc = isDev ? scriptsSrc + "<%= appScript %>" : "<%= obfDest %>scripts/app.js",
     destination = "app/dist/";
 
   return {
@@ -24,6 +24,19 @@ module.exports = function(env) {
     module: {
       loaders: [
         { test: /\.tsx?$/, loader: "ts-loader" }
+      ]
+    },
+    <% } %>
+    <% if (useBabel && !useTypeScript) { %>
+    module: {
+      loaders: [
+        {
+          test: /\.es6$/,
+          loader: 'babel-loader',
+          options: {
+            presets: ['es2015']
+          }
+        }
       ]
     },
     <% } %>
