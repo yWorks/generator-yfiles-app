@@ -52,6 +52,13 @@ describe('Webpack Only', function () {
   });
 
   describe('build result', function() {
+
+    it('created the bundle', function() {
+      assert.file([
+        'app/dist/bundle.js'
+      ]);
+    });
+
     it('runs', function (done) {
       util.maybeOpenInBrowser(this.dir,done);
     });

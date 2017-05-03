@@ -1,6 +1,5 @@
 'use strict';
 
-var path = require('path');
 var fs = require('fs');
 var exec = require('child_process').exec;
 var helpers = require('yeoman-test');
@@ -11,15 +10,17 @@ var util = require('./support/util');
 var defaultAnswers = require('./support/defaultPromtAnswers');
 
 var answers = Object.assign({},defaultAnswers, {
-  "buildTool":"webpack",
+  "buildTool":"Browserify",
   "advancedOptions": [
     "ECMAScript 6 & babel"
   ]
 });
 
-describe('Webpack And ES6', function () {
+console.log(JSON.stringify(answers,null,2));
 
-  this.timeout(35000);
+describe('Browserify + ES6', function () {
+
+  this.timeout(55000);
 
   before(function(done) {
     var that = this;
@@ -44,11 +45,12 @@ describe('Webpack And ES6', function () {
         'app/scripts/app.es6',
         'app/styles/yfiles.css',
         'Gruntfile.js',
-        'package.json',
-        'webpack.config.js'
+        'package.json'
       ]);
       assert.noFile([
-        'app/scripts/license.js'
+        'app/scripts/license.js',
+        'tsconfig.json',
+        'webpack.config.js'
       ]);
     });
 

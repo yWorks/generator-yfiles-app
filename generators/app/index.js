@@ -423,9 +423,20 @@ module.exports = yeoman.extend({
         // Apparently, browserify and watchify can't create their output directories on their own, so we need mkdirp as well.
         devDependencies.mkdirp =  "^0.5.1";
 
-        scripts.dev = "mkdirp app/dist && browserify app/scripts/app.js -o app/dist/bundle.js";
-        scripts.watch = "mkdirp app/dist && watchify app/scripts/app.js -o app/dist/bundle.js --poll=100 -v";
-        scripts.production = "npm run obfuscate && mkdirp app/dist && browserify build/obf/scripts/app.js -o app/dist/bundle.js";
+        if(this.props.useBabel) {
+          //
+          // Browserify and es6
+          //
+          devDependencies.babelify = "^7.3.0";
+          scripts.dev = "mkdirp app/dist && browserify app/scripts/app.es6 -o app/dist/bundle.js  -t [ babelify --extensions .es6 --presets [ es2015 ] ]";
+          scripts.watch = "mkdirp app/dist && watchify app/scripts/app.es6 -o app/dist/bundle.js  -t [ babelify --extensions .es6 --presets [ es2015 ] ] --poll=100 -v";
+          scripts.production = "npm run babel && npm run obfuscate && mkdirp app/dist && browserify build/obf/scripts/app.js -o app/dist/bundle.js";
+          scripts.babel = "babel -x \".es6\" --presets=es2015 app/scripts --out-dir app/scripts";
+        } else {
+          scripts.dev = "mkdirp app/dist && browserify app/scripts/app.js -o app/dist/bundle.js";
+          scripts.watch = "mkdirp app/dist && watchify app/scripts/app.js -o app/dist/bundle.js --poll=100 -v";
+          scripts.production = "npm run obfuscate && mkdirp app/dist && browserify build/obf/scripts/app.js -o app/dist/bundle.js";
+        }
       }
 
       extend(pkg, {

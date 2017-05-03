@@ -56,6 +56,12 @@ describe('Typescript + Webpack', function () {
 
   describe('build result', function () {
 
+    it('created the bundle', function() {
+      assert.file([
+        'app/dist/bundle.js'
+      ]);
+    });
+
     it('runs', function (done) {
       var dir = this.dir;
       util.maybeOpenInBrowser(dir,done);
