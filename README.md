@@ -96,7 +96,6 @@ The generator will automatically optimize the requires.
  Further information can be found [here](http://docs.yworks.com/yfileshtmlv2/index.html#/dguide/DevelopmentSupport#DevelopmentSupport-Checks)
  * **Visual Studio Code integration** Creates additional files required for [Visual Studio Codes'](https://code.visualstudio.com/) IntelliSense as well as a task runner if applicable.
 
-Choosing TypeScript will disable ECMAScript (+Babel).
 
 ## License
 MIT © [yWorks GmbH](http://www.yworks.com)
