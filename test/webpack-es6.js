@@ -12,9 +12,7 @@ var defaultAnswers = require('./support/defaultPromtAnswers');
 
 var answers = Object.assign({},defaultAnswers, {
   "buildTool":"webpack",
-  "advancedOptions": [
-    "ECMAScript 6 & babel"
-  ]
+  "language": "ECMAScript 6 & babel"
 });
 
 describe('Webpack And ES6', function () {

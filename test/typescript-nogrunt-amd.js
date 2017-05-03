@@ -12,8 +12,9 @@ var defaultAnswers = require('./support/defaultPromtAnswers');
 var answers = Object.assign({},defaultAnswers, {
   "buildTool":"none",
   "loadingType": "AMD",
+  "language": "TypeScript",
   "advancedOptions": [
-    "Use yfiles-typeinfo.js", "TypeScript"
+    "Use yfiles-typeinfo.js"
   ]
 });
 

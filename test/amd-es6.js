@@ -11,9 +11,9 @@ var defaultAnswers = require('./support/defaultPromtAnswers');
 
 var answers = Object.assign({},defaultAnswers, {
   "loadingType": "AMD",
+  "language": "ECMAScript 6 & babel",
   "advancedOptions": [
-    "Use yfiles-typeinfo.js",
-    "ECMAScript 6 & babel"
+    "Use yfiles-typeinfo.js"
   ]
 });
 

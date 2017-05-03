@@ -11,9 +11,7 @@ var defaultAnswers = require('./support/defaultPromtAnswers');
 
 var answers = Object.assign({},defaultAnswers, {
   "buildTool":"Browserify",
-  "advancedOptions": [
-    "ECMAScript 6 & babel"
-  ]
+  "language": "ECMAScript 6 & babel"
 });
 
 console.log(JSON.stringify(answers,null,2));

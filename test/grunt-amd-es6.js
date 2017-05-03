@@ -12,9 +12,7 @@ var defaultAnswers = require('./support/defaultPromtAnswers');
 var answers = Object.assign({},defaultAnswers, {
   "buildTool":"Grunt",
   "loadingType": "AMD",
-  "advancedOptions": [
-    "ECMAScript 6 & babel"
-  ]
+  "language": "ECMAScript 6 & babel"
 });
 
 

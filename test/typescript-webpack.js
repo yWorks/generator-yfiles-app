@@ -11,9 +11,7 @@ var defaultAnswers = require('./support/defaultPromtAnswers');
 
 var answers = Object.assign({},defaultAnswers, {
   "buildTool":"webpack",
-  "advancedOptions": [
-    "TypeScript"
-  ]
+  "language": "TypeScript"
 });
 
 describe('Typescript + Webpack', function () {

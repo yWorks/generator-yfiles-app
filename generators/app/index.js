@@ -25,8 +25,7 @@ module.exports = yeoman.extend({
     this.log(chalk.green("Take a look at the README for further information how to use this generator."));
 
     var advancedOptions = [
-      {name: "Visual Studio Code integration", checked: false},
-      {name: "ECMAScript 6 & babel", checked: false}
+      {name: "Visual Studio Code integration", checked: false}
     ];
 
     var prompts = [{
@@ -118,22 +117,20 @@ module.exports = yeoman.extend({
         };
       }.bind(this))
     }, {
+      type: "list",
+      name: "language",
+      message: "Do you want to use ECMAScript 6 or TypeScript?",
+      choices: ["no", "ECMAScript 6 & babel", "TypeScript"],
+      default: "no",
+      store: true
+    }, {
       type: "checkbox",
       name: "advancedOptions",
       message: "What else do you want?",
       choices: function (props) {
-       if (props.buildTool.indexOf("webpack") >= 0) {
+       if (props.buildTool.indexOf("none") >= 0) {
           return advancedOptions.concat([
-            {name: "TypeScript", checked: false}
-          ]);
-        } else if (props.buildTool.indexOf("Grunt") >= 0) {
-          return advancedOptions.concat([
-            {name: "TypeScript", checked: false}
-          ]);
-        } else if (props.buildTool.indexOf("none") >= 0) {
-          return advancedOptions.concat([
-            {name: "Use yfiles-typeinfo.js", checked: true},
-            {name: "TypeScript", checked: false}
+            {name: "Use yfiles-typeinfo.js", checked: true}
           ]);
         }
         return advancedOptions;
@@ -150,16 +147,17 @@ module.exports = yeoman.extend({
 
       this.props.useBundlingTool = this.props.useBrowserify || this.props.useWebpack;
 
-      this.props.useTypeScript = answers.advancedOptions.indexOf("TypeScript") >= 0;
+      this.props.useTypeScript = answers.language === "TypeScript";
+      this.props.useEs6 = answers.language === "ECMAScript 6 & babel";
       this.props.useTypeInfo = answers.advancedOptions.indexOf("Use yfiles-typeinfo.js") >= 0 && !this.props.useTypeScript && !this.props.useGrunt;
 
       // For TypeScript AND Webpack, we need babel for the production (obfuscated) build (ts to es6 => babel to es5 => deployment tool => bundle)
-      this.props.useBabel = (answers.advancedOptions.indexOf("ECMAScript 6 & babel") >= 0 && !this.props.useTypeScript) || (this.props.useTypeScript && this.props.useWebpack);
+      this.props.useBabel = (this.props.useEs6 && !this.props.useTypeScript) || (this.props.useTypeScript && this.props.useWebpack);
       this.props.useVsCode = answers.advancedOptions.indexOf("Visual Studio Code integration") >= 0;
 
       this.props.licensePath = answers.licensePath;
       this.props.language = this.props.useTypeScript ? "typescript"
-        : answers.advancedOptions.indexOf("ECMAScript 6 & babel") >= 0 ? "es6"
+        : this.props.useEs6 ? "es6"
           : "javascript";
 
       this.props.loadingType = this.props.useTypeScript && answers.loadingType === "script-tags" ? "AMD" : answers.loadingType;
