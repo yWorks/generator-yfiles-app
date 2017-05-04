@@ -301,49 +301,6 @@ module.exports = yeoman.extend({
       );
     }
 
-    if (this.props.useVsCode) {
-      var jsconfig = this.fs.readJSON(this.destinationPath("jsconfig.json"), {});
-      jsconfig.exclude = [
-        "node_modules",
-        appPath + "/lib",
-        "dist",
-        "build"
-      ];
-      this.fs.writeJSON(this.destinationPath("jsconfig.json"), jsconfig);
-
-      if (this.props.useGrunt) {
-        var tasks = this.fs.readJSON(this.destinationPath("tasks.json"), {});
-        tasks.command = "grunt";
-        tasks.isShellCommand = true;
-        tasks.tasks = [
-          {
-            "taskName": "default",
-            "args": [],
-            "isBuildCommand": true,
-            "isWatching": false,
-            "problemMatcher": [
-              "$lessCompile",
-              "$tsc",
-              "$jshint"
-            ]
-          }
-        ];
-        this.fs.writeJSON(this.destinationPath(path.join(".vscode", "tasks.json")), tasks);
-      }
-
-      this.fs.copy(
-        path.join(this.props.yfilesPath, "ide-support/yfiles-api.d.ts"),
-        this.destinationPath(path.join(appPath, "typings/yfiles-api.d.ts"))
-      );
-
-      if (!this.props.useTypeScript) {
-        this.fs.copy(
-          this.templatePath("yfiles-amd-modules.d.ts"),
-          this.destinationPath(path.join(appPath, "typings/yfiles-amd-modules.d.ts"))
-        );
-      }
-    }
-
     vars.libPath = utils.unixPath(libPath);
 
     var pkg = this.fs.readJSON(this.destinationPath("package.json"), {});
@@ -547,6 +504,67 @@ module.exports = yeoman.extend({
       || this.props.useTypeScript) {
       this.fs.writeJSON(this.destinationPath("package.json"), pkg);
     }
+
+    //
+    // Visual Studio Code
+    // Handle vs code last, so package.json is final already and we can
+    // just add all npm scripts to tasks.json
+    //
+    if (this.props.useVsCode) {
+      var jsconfig = this.fs.readJSON(this.destinationPath("jsconfig.json"), {});
+      jsconfig.exclude = [
+        "node_modules",
+        appPath + "/lib",
+        "dist",
+        "build"
+      ];
+      this.fs.writeJSON(this.destinationPath("jsconfig.json"), jsconfig);
+
+      var npmScripts = pkg.scripts;
+      if(npmScripts && Object.keys(npmScripts).length>0) {
+
+        var tasksPath = path.join(".vscode", "tasks.json");
+        var tasksJson = this.fs.readJSON(tasksPath, {});
+
+        var tasks = [];
+
+        Object.keys(npmScripts).forEach(function(scriptName) {
+          var taskDef = {
+            "taskName": scriptName,
+            "args": ["run-script",scriptName]
+          };
+          if(scriptName==="build"||scriptName==="dev") {
+            taskDef.isBuildCommand = true;
+          }
+          tasks.push(taskDef)
+        });
+
+        extend(tasksJson, {
+          "version": "0.1.0",
+          "command": "npm",
+          "isShellCommand": true,
+          "showOutput": "always",
+          "suppressTaskName": true,
+          "tasks": tasks
+        });
+
+        this.fs.writeJSON(this.destinationPath(tasksPath), tasksJson);
+
+      }
+
+      this.fs.copy(
+        path.join(this.props.yfilesPath, "ide-support/yfiles-api.d.ts"),
+        this.destinationPath(path.join(appPath, "typings/yfiles-api.d.ts"))
+      );
+
+      if (!this.props.useTypeScript) {
+        this.fs.copy(
+          this.templatePath("yfiles-amd-modules.d.ts"),
+          this.destinationPath(path.join(appPath, "typings/yfiles-amd-modules.d.ts"))
+        );
+      }
+    }
+
   },
 
   install: function () {
