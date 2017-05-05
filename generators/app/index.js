@@ -212,28 +212,28 @@ module.exports = yeoman.extend({
   },
 
   default: function () {
-    this.composeWith(require.resolve("../class/"), {
+
+    var options = {};
+    extend(options,this.props);
+    extend(options,{
       name: this.props.applicationName,
-      module: this.props.module,
       description: "A simple yFiles application that creates a GraphComponent and enables basic input gestures.",
-      buildTool: this.props.buildTool,
-      useTypeInfo: this.props.useTypeInfo,
       content: this.fs.read(this.templatePath(path.join(this.props.language), "applicationContent.ejs")),
       appPath: this.config.get("appPath"),
       scriptsPath: this.config.get("scriptsPath"),
       libPath: this.config.get("libPath"),
       stylesPath: this.config.get("stylesPath"),
-      loadingType: this.props.loadingType,
-      appScript: this.props.appScript,
       postClassContent: this.props.language === "es6" ?
         "new " + this.props.applicationName + "();" :
         this.props.language === "javascript" && !(this.props.loadingType === "systemjs") && !(this.props.useBrowserify || this.props.useWebpack) ?
-        "new " + this.props.module + "." + this.props.applicationName + "();" :
-        this.props.language === "typescript" && (this.props.useBrowserify || this.props.useWebpack || this.props.loadingType === "systemjs") ?
-        "new " + this.props.applicationName + "();" :
-        this.props.useBrowserify || this.props.useWebpack || this.props.loadingType === "systemjs"?
-        "new (yfiles.module(\"" + this.props.module + "\"))." + this.props.applicationName + "();" : ""
+          "new " + this.props.module + "." + this.props.applicationName + "();" :
+          this.props.language === "typescript" && (this.props.useBrowserify || this.props.useWebpack || this.props.loadingType === "systemjs") ?
+            "new " + this.props.applicationName + "();" :
+            this.props.useBrowserify || this.props.useWebpack || this.props.loadingType === "systemjs"?
+              "new (yfiles.module(\"" + this.props.module + "\"))." + this.props.applicationName + "();" : ""
     });
+
+    this.composeWith(require.resolve("../class/"), options);
 
   },
 
@@ -270,6 +270,7 @@ module.exports = yeoman.extend({
       useTypeInfo: this.props.useTypeInfo,
       useGrunt: this.props.useGrunt,
       useBrowserify: this.props.useBrowserify,
+      useVsCode: this.props.useVsCode,
       useWebpack: this.props.useWebpack,
       useTypeScript: this.props.useTypeScript,
       useBabel: this.props.useBabel,
@@ -557,12 +558,6 @@ module.exports = yeoman.extend({
         this.destinationPath(path.join(appPath, "typings/yfiles-api.d.ts"))
       );
 
-      if (!this.props.useTypeScript) {
-        this.fs.copy(
-          this.templatePath("yfiles-amd-modules.d.ts"),
-          this.destinationPath(path.join(appPath, "typings/yfiles-amd-modules.d.ts"))
-        );
-      }
     }
 
   },

@@ -11,11 +11,15 @@ var defaultAnswers = require('./support/defaultPromtAnswers');
 
 var answers = Object.assign({},defaultAnswers, {
   "buildTool":"none",
-  "loadingType": "AMD"
+  "loadingType": "AMD",
+  "advancedOptions": [
+    "Visual Studio Code integration",
+    "Use yfiles-typeinfo.js"
+  ]
 });
 
 
-describe('AMD', function () {
+describe('AMD + VS Code', function () {
 
   this.timeout(55000);
 
@@ -41,11 +45,11 @@ describe('AMD', function () {
         'app/index.html',
         'app/scripts/app.js',
         'app/styles/yfiles.css',
-        'bower.json'
+        'bower.json',
+        'jsconfig.json',
       ]);
       assert.noFile([
         'tsconfig.json',
-        'jsconfig.json',
         'package.json',
         'Gruntfile.js',
         'app/scripts/license.js',

@@ -50,6 +50,7 @@ module.exports = yeoman.extend({
       module: this.options.module,
       moduleList: useBrowserify ? modules.map(function(module) { return '../lib/'+module}) : modules,
       useTypeInfo: this.options.useTypeInfo,
+      useVsCode: this.options.useVsCode,
       useGrunt: useGrunt,
       useBrowserify: useBrowserify,
       useWebpack: useWebpack,
