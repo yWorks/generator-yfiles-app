@@ -1,6 +1,6 @@
 {
   "name": "generator-yfiles-app",
-  "version": "0.10.6",
+  "version": "1.0.0",
   "description": "A generator that scaffolds a yFiles for HTML powered application. Requires local yFiles package.",
   "homepage": "http://www.yworks.com",
   "author": {
@@ -15,16 +15,38 @@
   "keywords": [
     "yeoman-generator"
   ],
+  "scripts": {
+    "test": "mocha",
+    "test-open-in-browser": "cross-env OPEN_IN_BROWSER=true mocha",
+    "test-amd": "cross-env OPEN_IN_BROWSER=true mocha test/amd.js",
+    "test-amd-es6": "cross-env OPEN_IN_BROWSER=true mocha test/amd-es6.js",
+    "test-amd-vscode": "cross-env OPEN_IN_BROWSER=true mocha test/amd-vscode.js",
+    "test-browserify": "cross-env OPEN_IN_BROWSER=true mocha test/browserify.js",
+    "test-browserify-es6": "cross-env OPEN_IN_BROWSER=true mocha test/browserify-es6.js",
+    "test-grunt-amd": "cross-env OPEN_IN_BROWSER=true mocha test/grunt-amd.js",
+    "test-grunt-amd-es6": "cross-env OPEN_IN_BROWSER=true mocha test/grunt-amd-es6.js",
+    "test-script-tags": "cross-env OPEN_IN_BROWSER=true mocha test/script-tags.js",
+    "test-systemjs": "cross-env OPEN_IN_BROWSER=true mocha test/systemjs.js",
+    "test-systemjs-es6": "cross-env OPEN_IN_BROWSER=true mocha test/systemjs-es6.js",
+    "test-typescript-grunt": "cross-env OPEN_IN_BROWSER=true mocha test/typescript-grunt.js",
+    "test-typescript-nogrunt-amd": "cross-env OPEN_IN_BROWSER=true mocha test/typescript-nogrunt-amd.js",
+    "test-typescript-systemjs": "cross-env OPEN_IN_BROWSER=true mocha test/typescript-systemjs.js",
+    "test-typescript-webpack": "cross-env OPEN_IN_BROWSER=true mocha test/typescript-webpack.js",
+    "test-webpack": "cross-env OPEN_IN_BROWSER=true mocha test/webpack.js",
+    "test-webpack-es6": "cross-env OPEN_IN_BROWSER=true mocha test/webpack-es6.js"
+  },
   "dependencies": {
-    "yeoman-generator": "^1.0.1",
     "chalk": "^1.1.3",
-    "yosay": "^1.2.1",
     "deep-extend": "latest",
     "generator-node": "latest",
-    "lodash": "latest"
+    "lodash": "latest",
+    "to-slug-case": "^1.0.0",
+    "yeoman-generator": "^1.0.1",
+    "yosay": "^1.2.1"
   },
   "devDependencies": {
     "babel-plugin-uglify": "^1.0.2",
+    "cross-env": "^4.0.0",
     "eslint-config-xo-space": "^0.7.0",
     "gulp": "^3.9.0",
     "gulp-eslint": "^1.0.0",
@@ -33,7 +55,10 @@
     "gulp-mocha": "^2.0.0",
     "gulp-nsp": "^2.1.0",
     "gulp-plumber": "^1.0.0",
-    "yeoman-assert": "^2.2.2"
+    "mocha": "^3.3.0",
+    "opn": "^4.0.2",
+    "yeoman-assert": "^2.2.2",
+    "yeoman-test": "^1.6.0"
   },
   "eslintConfig": {
     "extends": "xo-space",

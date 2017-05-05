@@ -17,44 +17,44 @@
 <body>
 <div id="graphComponent"></div>
 
-<% if (useTypeInfo && !useGruntBundling) { %>
+<% if (useTypeInfo && !useGrunt) { %>
 <!-- Adding type information support during application development. -->
 <script src="scripts/yfiles-typeinfo.js"></script>
 
-<% } %><% if (!useGruntBundling) { %><script src="lib/yfiles/es2015-shim.js"></script><% } %>
-<% if (!useWebpack) { %><script src="scripts/license.js"></script><% } %>
+<% } %><% if (!useGrunt) { %><script src="lib/yfiles/es2015-shim.js"></script><% } %>
 <%
 
 
-if (useBrowserify || useWebpack) { %><script src="scripts/<%= applicationName %>.js"></script>
+if (useBundlingTool) { %><script src="dist/bundle.js"></script>
 <% if (language === "es6" && useTypeInfo) { %><script src="scripts/yfiles-typeinfo.js"></script><% } %>
 <% }
 
 else if (loadingType === "systemjs") { %>
-<script src="<%= useGruntBundling ? "lib/system.js/" : "../bower_components/system.js/dist/" %>system.js"></script>
+<script src="../bower_components/system.js/dist/system.js"></script>
+<% if(language === "typescript") {%>
 <script>
-window.define = System.amdDefine;
-window.require = System.amdRequire;
-System.config({
-  map: {
-    yfiles: "<%= libPath %>yfiles"
-  },
-  defaultJSExtensions: true
-});
-<% if (!(useBrowserify || useWebpack)) { %>
-  Promise.all([
-    System.import("scripts/<%= applicationName %>"),
-    <% modules.forEach(function (module) { %>System.import("<%= module %>"),
-  <%  }); %>
-])<% } else { %>System.import("scripts/<%= applicationName %>")<% } %><% if (language === "es6" || language === "typescript") { %>.then(function (results) {
-  <% if (useTypeInfo) { %>System.import("scripts/yfiles-typeinfo.js"); <% } %>
-  <% if (language === "typescript") { %>new results[0].<%= applicationName %>();
-  <% } else { %>new results[0]();<% } %>
-})<% } else { %>.then(function () {
-  new (yfiles.module("<%= module %>")).<%= applicationName %>();
-})<% } %>;
-</script><%
-}
+  window.define = System.amdDefine;
+  window.require = System.amdRequire;
+  System.config({
+    // This option makes the app work from filesystem, but prevents
+    // loading of CHS modules - you probably don't want to use it for production.
+    meta: { '*': { scriptLoad: true } },
+    map: {
+      'yfiles': './lib/yfiles'
+    },
+    packages: {
+      'yfiles': {
+        defaultExtension: 'js',
+        format: 'amd'
+      }
+    },
+  });
+  System.import('scripts/app.js');
+</script>
+<% } else { %>
+<script src="scripts/app.js"></script>
+<%
+}}
 
 
 else if (language === "typescript") {
@@ -67,30 +67,22 @@ else if (language === "typescript") {
     }
   });
   // load the license and the required modules
-  require([
-    './scripts/<%= applicationName %>.js',
-    './scripts/license.js',
-  ], function(<%= module %>) {
+  require(['./scripts/app.js'], function(<%= module %>) {
     new <%= module %>.<%= applicationName %>();
   });
 </script><%
 }
 
 
-else if (loadingType === "AMD") {
-    if (useGruntBundling) {
-%><script src="scripts/require.js"></script><%
-    } else {
-%><script src="../bower_components/requirejs/require.js"></script><%
-    }
-%>
-
-<script src="scripts/<%= applicationName %>.js"></script>
-<% }
+else if (loadingType === "AMD" && !useBundlingTool) {
+%><script src="../bower_components/requirejs/require.js"></script>
+<script src="scripts/app.js"></script>
+<%
+}
 
 
 else {
-  if (!useBrowserify || !useWebpack) {
+  if (!useBundlingTool) {
     if (loadingType === "script-tags") { %>
 <script src="<%= libPath %>yfiles/impl/lang.js"></script>
 <% } else { %>
@@ -101,7 +93,7 @@ else {
   } else { %>
 <script src="<%= libPath %>yfiles.js"></script>
 <% } %>
-<script src="scripts/<%= applicationName %>.js"></script>
+<script src="scripts/app.js"></script>
 <% } %>
 </body>
 </html>

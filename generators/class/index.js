@@ -15,7 +15,7 @@ module.exports = yeoman.extend({
 
     var language = this.options.language || this.config.get("language") || "javascript";
 
-    var useGruntBundling = buildTool.toLowerCase().indexOf("grunt") >= 0;
+    var useGrunt = buildTool.toLowerCase().indexOf("grunt") >= 0;
     var useBrowserify = buildTool.toLowerCase().indexOf("browserify") >= 0;
     var useWebpack = buildTool.toLowerCase().indexOf("webpack") >= 0;
 
@@ -41,34 +41,47 @@ module.exports = yeoman.extend({
       }
     }
 
+    var modules = this.config.get("modules");
+
     var vars = {
       name: this.options.name,
       appPath: utils.unixPath(appPath),
       scriptsPath: utils.unixPath(scriptsPath),
       module: this.options.module,
-      modules: this.options.dependencies,
-      moduleList: this.config.get("modules"),
+      moduleList: useBrowserify ? modules.map(function(module) { return '../lib/'+module}) : modules,
       useTypeInfo: this.options.useTypeInfo,
-      useGruntBundling: useGruntBundling,
+      useVsCode: this.options.useVsCode,
+      useGrunt: useGrunt,
       useBrowserify: useBrowserify,
       useWebpack: useWebpack,
       content: this.options.content && this.options.content.replace(/(\n|\r\n)/gm, "$1" + indent),
       loadingType: this.options.loadingType,
       postClassContent: this.options.postClassContent && this.options.postClassContent.replace(/(\n|\r\n)/gm, "$1    "),
       description: this.options.description,
-      licenseContent: this.config.get("licenseContent")
+      licenseContent: this.config.get("licenseContent"),
+      appScript: this.options.appScript
     };
 
     if (language === "javascript" || language === "es6") {
+
+      var template;
+      if(vars.loadingType === "AMD" && !(vars.useWebpack || vars.useBrowserify)) {
+        template = "applicationAmd.ejs";
+      } else if(vars.loadingType === "systemjs") {
+        template = "applicationSystemJS.ejs";
+      } else {
+        template = "application.ejs";
+      }
+
       this.fs.copyTpl(
-        this.templatePath(path.join(language, (vars.loadingType === "AMD" && !(vars.useWebpack || vars.useBrowserify)) ? "applicationAmd.ejs" : "application.ejs")),
-        this.destinationPath(path.join(scriptsPath, vars.name + ".js")),
+        this.templatePath(path.join(language, template)),
+        this.destinationPath(path.join(scriptsPath, vars.appScript)),
         vars
       );
     } else {
       this.fs.copyTpl(
         this.templatePath(path.join(language, "application.ejs")),
-        this.destinationPath(path.join(scriptsPath, vars.name + (language === "typescript" ? ".ts" : ".js"))),
+        this.destinationPath(path.join(scriptsPath, vars.appScript)),
         vars
       );
     }

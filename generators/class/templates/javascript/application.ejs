@@ -3,19 +3,15 @@
     if (idx === moduleList.length - 1) {
 %>var yfiles = require('<%= module %>');
 <%
-      if (useWebpack) {
-%>
-yfiles.license = <%-licenseContent%>;
-<%
-      }
     } else {
 %>require('<%= module %>');
 <%
     }
   });
-} else if (loadingType === "systemjs") { %>
-var yfiles = require('<%= moduleList[0] %>');
-<% } %>
+} %>
+
+yfiles.license = <%-licenseContent%>;
+
 yfiles.module('<%= module %>', function(exports) {
 
   /**
