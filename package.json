@@ -27,6 +27,7 @@
     "test-grunt-amd-es6": "cross-env OPEN_IN_BROWSER=true mocha test/grunt-amd-es6.js",
     "test-script-tags": "cross-env OPEN_IN_BROWSER=true mocha test/script-tags.js",
     "test-systemjs": "cross-env OPEN_IN_BROWSER=true mocha test/systemjs.js",
+    "test-systemjs-es6": "cross-env OPEN_IN_BROWSER=true mocha test/systemjs-es6.js",
     "test-typescript-grunt": "cross-env OPEN_IN_BROWSER=true mocha test/typescript-grunt.js",
     "test-typescript-nogrunt-amd": "cross-env OPEN_IN_BROWSER=true mocha test/typescript-nogrunt-amd.js",
     "test-typescript-systemjs": "cross-env OPEN_IN_BROWSER=true mocha test/typescript-systemjs.js",

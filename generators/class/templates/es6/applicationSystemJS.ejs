@@ -1,0 +1,38 @@
+window.define = System.amdDefine;
+window.require = System.amdRequire;
+System.config({
+  // This option makes the app work from filesystem, but prevents
+  // loading of CHS modules - you probably don't want to use it for production.
+  meta: { '*': { scriptLoad: true } },
+  map: {
+    'yfiles': './lib/yfiles'
+  },
+  packages: {
+    'yfiles': {
+      defaultExtension: 'js',
+    }
+  },
+});
+
+Promise.all([<% moduleList.forEach(function (module) { %>System.import("<%= module %>"),
+    <%  }); %>
+]).then(function(retVals) {
+
+  var yfiles = retVals[0];
+  <%
+    var licenseWithIndent = licenseContent.split("\n").join("\n  ");
+  %>
+  yfiles.license = <%-licenseWithIndent%>;
+
+  /**
+   * <% if(description) { %><%- description %><% } else { %>A yfiles class.<% } %>
+   */
+  class <%- name %> {
+    <% if (content) { %><%- content %><%
+    } else { %>constructor () {
+
+    }<% } %>
+  }
+
+  <% if (postClassContent) { %><%- postClassContent %><% } %>
+});
