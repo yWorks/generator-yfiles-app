@@ -62,15 +62,15 @@ module.exports = yeoman.extend({
       message: "Path of license file (e.g. 'path/to/license.js')",
       default: function(props) {
         var licensePath = path.join(props.yfilesPath, "demos/resources/license.js");
-        if (this.fs.existsSync(licensePath)) {
+        if (fs.existsSync(licensePath)) {
           return licensePath + "";
         }
         licensePath = path.join(props.yfilesPath, "license.js");
-        if (this.fs.existsSync(licensePath)) {
+        if (fs.existsSync(licensePath)) {
           return licensePath + "";
         }
         licensePath = path.join(props.yfilesPath, "yWorks.yFilesHTML.DevelopmentLicense.js");
-        if (this.fs.existsSync(licensePath)) {
+        if (fs.existsSync(licensePath)) {
           return licensePath + "";
         }
         return "";
