@@ -21,6 +21,7 @@
     "test-amd": "cross-env OPEN_IN_BROWSER=true mocha test/amd.js",
     "test-amd-es6": "cross-env OPEN_IN_BROWSER=true mocha test/amd-es6.js",
     "test-amd-pure-es6": "cross-env OPEN_IN_BROWSER=true mocha test/amd-pure-es6.js",
+    "test-amd-pure-es6-idea": "cross-env OPEN_IN_BROWSER=true mocha test/amd-pure-es6-idea.js",
     "test-amd-vscode": "cross-env OPEN_IN_BROWSER=true mocha test/amd-vscode.js",
     "test-browserify": "cross-env OPEN_IN_BROWSER=true mocha test/browserify.js",
     "test-browserify-es6": "cross-env OPEN_IN_BROWSER=true mocha test/browserify-es6.js",
@@ -40,6 +41,7 @@
   "dependencies": {
     "chalk": "^1.1.3",
     "deep-extend": "latest",
+    "file-url": "^2.0.2",
     "generator-node": "latest",
     "lodash": "latest",
     "to-slug-case": "^1.0.0",

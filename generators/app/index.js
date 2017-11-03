@@ -1,6 +1,7 @@
 "use strict";
 var yeoman = require("yeoman-generator");
 var chalk = require("chalk");
+var toFileUrl = require('file-url');
 var yosay = require("yosay");
 var path = require("path");
 var fs = require("fs");
@@ -25,7 +26,8 @@ module.exports = yeoman.extend({
     this.log(chalk.green("Take a look at the README for further information how to use this generator."));
 
     var advancedOptions = [
-      {name: "Visual Studio Code integration", checked: false}
+      {name: "Visual Studio Code integration", checked: false},
+      {name: "WebStorm/PHP-Storm/Intellij IDEA Ultimate Project files", checked: false}
     ];
 
     var prompts = [{
@@ -162,6 +164,7 @@ module.exports = yeoman.extend({
       this.props.useEs6 = answers.language === "Pure ECMAScript 6";
       this.props.useEs6Babel = answers.language === "ECMAScript 6 & babel";
       this.props.useTypeInfo = answers.advancedOptions.indexOf("Use yfiles-typeinfo.js") >= 0 && !this.props.useTypeScript && !this.props.useGrunt;
+      this.props.useIdeaProject = answers.advancedOptions.indexOf("WebStorm/PHP-Storm/Intellij IDEA Ultimate Project files") >= 0;
 
       // For TypeScript AND Webpack, we need babel for the production (obfuscated) build (ts to es6 => babel to es5 => deployment tool => bundle)
       this.props.useBabel = (this.props.useEs6Babel && !this.props.useTypeScript) || (this.props.useTypeScript && this.props.useWebpack);
@@ -277,16 +280,22 @@ module.exports = yeoman.extend({
       appPath: utils.unixPath(appPath),
       scriptsPath: utils.unixPath(scriptsPath),
       distPath: distPath,
+      yFilesUrl: toFileUrl(this.props.yfilesPath),
       module: this.props.module,
       modules: this.props.modules,
+      useES6: this.props.useEs6 || this.props.useEs6Babel,
       useTypeInfo: this.props.useTypeInfo,
       useGrunt: this.props.useGrunt,
       useBrowserify: this.props.useBrowserify,
+      useIdeaProject: this.props.useIdeaProject,
       useVsCode: this.props.useVsCode,
       useWebpack: this.props.useWebpack,
       useTypeScript: this.props.useTypeScript,
       useBabel: this.props.useBabel,
+      useBower: !(this.props.useWebpack || this.props.useBrowserify || this.props.loadingType === "script-tags"),
       language: this.props.language,
+      usePackageJSON: this.props.useBrowserify || this.props.useBundlingTool || this.props.useGrunt || this.props.useBabel
+      || this.props.useTypeScript,
       appScript: this.props.appScript
     };
 
@@ -314,6 +323,34 @@ module.exports = yeoman.extend({
       );
     }
 
+    if (this.props.useIdeaProject) {
+      this.fs.copyTpl(
+        this.templatePath("idea/yFiles_for_HTML.xml"),
+        this.destinationPath(path.join(".idea", "libraries", "yFiles_for_HTML.xml")),
+        vars
+      );
+      this.fs.copyTpl(
+        this.templatePath("idea/jsLibraryMappings.xml"),
+        this.destinationPath(path.join(".idea", "jsLibraryMappings.xml")),
+        vars
+      );
+      this.fs.copyTpl(
+        this.templatePath("idea/project.iml"),
+        this.destinationPath(path.join(".idea", vars.applicationName + ".iml")),
+        vars
+      );
+      this.fs.copyTpl(
+        this.templatePath("idea/modules.xml"),
+        this.destinationPath(path.join(".idea", "modules.xml")),
+        vars
+      );
+      this.fs.copyTpl(
+        this.templatePath("idea/misc.xml"),
+        this.destinationPath(path.join(".idea", "misc.xml")),
+        vars
+      );
+    }
+
     vars.libPath = utils.unixPath(libPath);
 
     var pkg = this.fs.readJSON(this.destinationPath("package.json"), {});
@@ -321,7 +358,7 @@ module.exports = yeoman.extend({
     //
     // Write bower.json for require.js or system.js
     //
-    if (!(this.props.useWebpack || this.props.useBrowserify || this.props.loadingType === "script-tags")) {
+    if (vars.useBower) {
       var bower = this.fs.readJSON(this.destinationPath("bower.json"), {});
       extend(bower, {
         "name": toSlugCase(this.props.applicationName),
@@ -513,8 +550,7 @@ module.exports = yeoman.extend({
 
     }
 
-    if (this.props.useBrowserify || this.props.useBundlingTool || this.props.useGrunt || this.props.useBabel
-      || this.props.useTypeScript) {
+    if (vars.usePackageJSON) {
       this.fs.writeJSON(this.destinationPath("package.json"), pkg);
     }
 

@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="yFiles for HTML" type="javaScript">
+    <properties>
+      <sourceFilesUrls>
+        <% if(language === "typescript") {%><item url="<%= yFilesUrl %>/ide-support/yfiles-api.d.ts" /><%} else {%>
+        <item url="<%= yFilesUrl %>/ide-support/yfiles-api.js" /><%}%>
+      </sourceFilesUrls>
+    </properties>
+    <CLASSES>
+      <% if(language === "typescript") {%><root url="<%= yFilesUrl %>/ide-support/yfiles-api.d.ts" /><%} else {%>
+      <root url="<%= yFilesUrl %>/ide-support/yfiles-api.js" /><%}%>
+    </CLASSES>
+    <SOURCES />
+  </library>
+</component>

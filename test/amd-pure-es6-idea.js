@@ -13,12 +13,13 @@ var answers = Object.assign({},defaultAnswers, {
   "loadingType": "AMD",
   "language": "Pure ECMAScript 6",
   "advancedOptions": [
-    "Use yfiles-typeinfo.js"
+    "Use yfiles-typeinfo.js",
+    "WebStorm/PHP-Storm/Intellij IDEA Ultimate Project files",
   ]
 });
 
 
-describe('AMD + Pure ES6', function () {
+describe('AMD + Pure ES6 + IDEA', function () {
 
   this.timeout(55000);
 
@@ -44,18 +45,18 @@ describe('AMD + Pure ES6', function () {
         'app/index.html',
         'app/scripts/app.js',
         'app/styles/yfiles.css',
-        'bower.json'
+        'bower.json',
+        '.idea/jsLibraryMappings.xml',
+        '.idea/misc.xml',
+        '.idea/modules.xml',
+        '.idea/testApp.iml',
+        '.idea/libraries/yFiles_for_HTML.xml',
       ]);
       assert.noFile([
         'tsconfig.json',
         'app/scripts/license.js',
         'webpack.config.js',
         'Gruntfile.js',
-        '.idea/jsLibraryMappings.xml',
-        '.idea/misc.xml',
-        '.idea/modules.xml',
-        '.idea/testApp.iml',
-        '.idea/libraries/yFiles_for_HTML.xml',
         'package.json'
       ]);
     });
