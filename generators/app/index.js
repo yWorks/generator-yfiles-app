@@ -32,19 +32,11 @@ module.exports = yeoman.extend({
       type: "input",
       name: "applicationName",
       message: "Application name",
-      default: path.basename(process.cwd()),
+      default: path.basename(process.cwd().replace('-','_')),
       filter: function (name) {
         name = utils.camelCase(name);
         return name.charAt(0).toUpperCase() + name.slice(1);
       },
-      validate: utils.isValidName
-    }, {
-      type: "input",
-      name: "module",
-      message: "Module name",
-      default: "application",
-      store: true,
-      filter: utils.camelCase,
       validate: utils.isValidName
     }, {
       type: "input",
@@ -120,9 +112,28 @@ module.exports = yeoman.extend({
       type: "list",
       name: "language",
       message: "Do you want to use ECMAScript 6 or TypeScript?",
-      choices: ["No", "ECMAScript 6 & babel", "TypeScript"],
+      choices: function (props) {
+        if (props.buildTool === "none"){
+          return ["No", "Pure ECMAScript 6"];
+        } else if (props.loadingType !== "systemjs"){
+          return ["No", "Pure ECMAScript 6", "ECMAScript 6 & babel", "TypeScript"]
+        } else {
+          return ["No", "ECMAScript 6 & babel", "TypeScript"]
+        }
+      },
       default: "No",
-      store: true
+      store: true,
+    }, {
+      type: "input",
+      name: "module",
+      message: "What module name do you want to use for your application?",
+      default: "application",
+      store: true,
+      filter: utils.camelCase,
+      validate: utils.isValidName,
+      when: function(props){
+        return props.language === "No";
+      },
     }, {
       type: "checkbox",
       name: "advancedOptions",
@@ -148,16 +159,17 @@ module.exports = yeoman.extend({
       this.props.useBundlingTool = this.props.useBrowserify || this.props.useWebpack;
 
       this.props.useTypeScript = answers.language === "TypeScript";
-      this.props.useEs6 = answers.language === "ECMAScript 6 & babel";
+      this.props.useEs6 = answers.language === "Pure ECMAScript 6";
+      this.props.useEs6Babel = answers.language === "ECMAScript 6 & babel";
       this.props.useTypeInfo = answers.advancedOptions.indexOf("Use yfiles-typeinfo.js") >= 0 && !this.props.useTypeScript && !this.props.useGrunt;
 
       // For TypeScript AND Webpack, we need babel for the production (obfuscated) build (ts to es6 => babel to es5 => deployment tool => bundle)
-      this.props.useBabel = (this.props.useEs6 && !this.props.useTypeScript) || (this.props.useTypeScript && this.props.useWebpack);
+      this.props.useBabel = (this.props.useEs6Babel && !this.props.useTypeScript) || (this.props.useTypeScript && this.props.useWebpack);
       this.props.useVsCode = answers.advancedOptions.indexOf("Visual Studio Code integration") >= 0;
 
       this.props.licensePath = answers.licensePath;
       this.props.language = this.props.useTypeScript ? "typescript"
-        : this.props.useEs6 ? "es6"
+        : (this.props.useEs6 || this.props.useEs6Babel) ? "es6"
           : "javascript";
 
       this.props.loadingType = this.props.useTypeScript && answers.loadingType === "script-tags" ? "AMD" : answers.loadingType;
@@ -176,7 +188,7 @@ module.exports = yeoman.extend({
         'typescript': 'ts',
         'es6': 'es6'
       };
-      this.props.appScript = 'app.' + languageToExtension[this.props.language];
+      this.props.appScript = this.props.useEs6 ? 'app.js' : ('app.' + languageToExtension[this.props.language]);
 
       this.props.licenseContent = JSON.stringify(this._parseLicense(this.props.licensePath), null, 2);
     }.bind(this));

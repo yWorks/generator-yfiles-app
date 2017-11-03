@@ -15,7 +15,7 @@ var answers = {
     "yfiles/view-editor",
     "yfiles/view-layout-bridge"
   ],
-  "language": "no",
+  "language": "No",
   "advancedOptions": []
 };
 

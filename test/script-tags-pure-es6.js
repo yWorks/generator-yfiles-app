@@ -1,6 +1,5 @@
 'use strict';
 
-var path = require('path');
 var fs = require('fs');
 var exec = require('child_process').exec;
 var helpers = require('yeoman-test');
@@ -11,13 +10,18 @@ var util = require('./support/util');
 var defaultAnswers = require('./support/defaultPromtAnswers');
 
 var answers = Object.assign({},defaultAnswers, {
-  "buildTool":"webpack",
-  "language": "ECMAScript 6 & babel"
+  "loadingType": "script-tags",
+  "language": "Pure ECMAScript 6",
+  "advancedOptions": [
+    "Use yfiles-typeinfo.js"
+  ]
 });
 
-describe('Webpack And ES6', function () {
+console.log(JSON.stringify(answers,null,2));
 
-  this.timeout(35000);
+describe('Script Tags ES6', function () {
+
+  this.timeout(55000);
 
   before(function(done) {
     var that = this;
@@ -32,44 +36,32 @@ describe('Webpack And ES6', function () {
       .withPrompts(answers).then(function(dir) {
         that.dir = dir;
         done();
-      }).catch(done);
+      })
   });
 
   describe('check files', function() {
     it('generates base files', function () {
       assert.file([
         'app/index.html',
-        'app/scripts/app.es6',
-        'app/styles/yfiles.css',
-        'Gruntfile.js',
-        'package.json',
-        'webpack.config.js'
+        'app/scripts/app.js',
+        'app/scripts/yfiles-typeinfo.js',
+        'app/styles/yfiles.css'
       ]);
       assert.noFile([
-        'app/scripts/license.js'
+        'package.json',
+        'app/scripts/license.js',
+        'webpack.config.js',
+        'bower.json',
+        'tsconfig.json',
+        'Gruntfile.js'
       ]);
     });
 
   });
 
   describe('build result', function() {
-
-    it('created the bundle', function() {
-      assert.file([
-        'app/dist/bundle.js'
-      ]);
-    });
-
     it('runs', function (done) {
       util.maybeOpenInBrowser(this.dir,done);
-    });
-
-    it('succeeds to run production build', function (done) {
-      var dir = this.dir;
-      exec('npm run production', {cwd: dir}, function(error, stdout, stderr) {
-        assert.ok(error === null, "Production build failed: "+error);
-        util.maybeOpenInBrowser(dir,done);
-      });
     });
   });
 

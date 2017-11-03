@@ -12,9 +12,11 @@
   // get the IGraph
   var graph = graphComponent.graph;
   // create some nodes
-  graph.createNode(new yfiles.geometry.Rect(10, 10, 100, 100));
-  graph.createNode(new yfiles.geometry.Rect(150, 150, 100, 100));
-  graph.createNode(new yfiles.geometry.Rect(250, 250, 100, 100));
+  var node1 = graph.createNode(new yfiles.geometry.Rect(50, 50, 30, 30));
+  var node2 = graph.createNode();
+
+  // create an edge
+  graph.createEdge(node1, node2);
 
   // create an input mode
   graphComponent.inputMode = new yfiles.input.GraphEditorInputMode();
