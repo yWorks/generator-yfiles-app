@@ -1,5 +1,5 @@
 # generator-yfiles-app [![NPM version][npm-image]][npm-url]
-> A yeoman generator that scaffolds a [yFiles for HTML](http://www.yworks.com/yfileshtml) powered application. Requires a local yFiles for HTML package which can be [obtained and evaluated here](https://www.yworks.com/products/yfiles-for-html/evaluate).
+> A yeoman generator that scaffolds a [yFiles for HTML](https://www.yworks.com/yfileshtml) powered application. Requires a local yFiles for HTML package which can be [obtained and evaluated here](https://www.yworks.com/products/yfiles-for-html/evaluate).
 
 ## Installation
 
@@ -43,10 +43,6 @@ Here is a rundown of the options you have:
 #### Application name
 The name of the app and of the first class. Only valid JavaScript identifiers (consisting of \[a-zA-Z$_]) are accepted.
 
-#### Module name
-The name of the module/namespace the first class shall live in. 
-Only valid JavaScript identifiers (consisting of \[a-zA-Z$_]) are accepted.
-
 #### Path of yFiles for HTML package
 The path to the root of a valid yFiles for HTML package (e.g. "path/to/yFilesPackage"). This package must contain the following folders: 
  * "lib/yfiles"
@@ -59,7 +55,7 @@ based on the yFiles for HTML package path. You may however want to specify a cus
 
 #### Which build tool do you want to use?
 You can choose between those build tools:
- * **none**: No build file is provided and you can run your app directly without the need of a compile step.
+ * **none**: No build file is provided and you can run your ES5/ES6 app on supported browsers directly without the need of a compile step.
  * **[Grunt](http://gruntjs.com/)**: Adds a production build step (`npm run production`) that obfuscates and minifies the application and library sources. For development, the 
  application can be started directly without a build step. 
  * **[Browserify](http://browserify.org/)** Adds a production build step that obfuscates and minifies all JavaScript sources, 
@@ -75,10 +71,11 @@ Decide whether you want to load the library via
  * [AMD require](http://requirejs.org/docs/whyamd.html),
  * [systemjs](https://github.com/systemjs/systemjs) or
  * \<script\>-tags.
-This option will not be available when wbpack or Browserify have been selected as build tool, as the resulting bundle is included via \<script\>-tag.
+This option will not be available when webpack or Browserify have been selected as build tool, as the resulting bundle is included via \<script\>-tag.
 
 #### Do you want to use ECMAScript 6 or TypeScript? 
 * **No** Write plain JavaScript (ECMAScript 5).
+* **Pure ECMAScript 6** Write plain modern JavaScript (version 6) without a transpilation step. Code will not run without a transpile-step in Internet Explorer and other browsers from the stone age. 
 * **ECMAScript 6 +[babel](https://babeljs.io/)** Write ECMAScript 6 sources, transpile to ECMAScript 5 with babel.
   If no other build tool (Grunt/Browserify/Webpack) is involved, use the `npm run babel` script for one-time transpiling, or the 
   `npm run dev` script for watch mode.  
@@ -90,11 +87,17 @@ This option will not be available when wbpack or Browserify have been selected a
 Choose which yFiles modules your app will need. For an overview of these take a look at the Developer's Guide's [module section](http://docs.yworks.com/yfileshtml/#/dguide/introduction-modules).
 The generator will automatically optimize the requires.
 
+#### Module name
+The name of the module/namespace the first class shall live in. 
+Only valid JavaScript identifiers (consisting of \[a-zA-Z$_]) are accepted.
+This will not be shown when TypeScript or ES6 is used.
+
 #### What else do you want?
  * **Use yfiles-typeinfo.js** Includes the yfiles-typeinfo.js file which provides runtime type checking during development time. 
  Remember to remove this file for production releases.
  Further information can be found [here](http://docs.yworks.com/yfileshtml/#/dguide/DevelopmentSupport#DevelopmentSupport-Checks)
  * **Visual Studio Code integration** Creates additional files required for [Visual Studio Codes'](https://code.visualstudio.com/) IntelliSense as well as a task runner if applicable.
+ * **WebStorm/PHP-Storm/Intellij IDEA Ultimate Project files** Creates a simple project file structure for [JetBrains' IDEs](https://www.jetbrains.com/)' with libraries and directories set up correctly.
 
 
 ## License

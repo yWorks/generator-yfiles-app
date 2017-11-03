@@ -1,8 +1,8 @@
 {
   "name": "generator-yfiles-app",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "A generator that scaffolds a yFiles for HTML powered application. Requires local yFiles package.",
-  "homepage": "http://www.yworks.com",
+  "homepage": "https://www.yworks.com",
   "author": {
     "name": "yFiles for HTML Support Team",
     "email": "yfileshtml@yworks.com",
