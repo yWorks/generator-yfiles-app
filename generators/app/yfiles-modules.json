@@ -15,7 +15,7 @@
   "yfiles/router-polyline": ["yfiles/algorithms"],
   "yfiles/router-other": ["yfiles/algorithms"],
   "yfiles/algorithms": [],
-  "yfiles/view-graphml": ["yfiles/view-component", "yfiles/view-folding", "yfiles/view-table"],
+  "yfiles/view-graphml": ["yfiles/view-component", "yfiles/view-folding"],
   "yfiles/view-folding": ["yfiles/view-component"],
   "yfiles/view-table": ["yfiles/view-component"],
   "yfiles/view-editor": ["yfiles/view-component"],

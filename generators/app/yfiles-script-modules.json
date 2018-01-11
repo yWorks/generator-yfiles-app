@@ -44,7 +44,7 @@
   "yfiles/impl/graph-input-table": ["yfiles/impl/core-lib", "yfiles/impl/graph-core", "yfiles/impl/graph-input", "yfiles/impl/graph-styles-table", "yfiles/impl/graph-table"],
   "yfiles/impl/graph-table": ["yfiles/impl/core-lib", "yfiles/impl/graph-core"],
   "yfiles/impl/graph-folding": ["yfiles/impl/core-lib", "yfiles/impl/graph-core"],
-  "yfiles/impl/graph-graphml": ["yfiles/impl/core-lib", "yfiles/impl/graph-core", "yfiles/impl/graph-folding", "yfiles/impl/graph-table"],
+  "yfiles/impl/graph-graphml": ["yfiles/impl/core-lib", "yfiles/impl/graph-core", "yfiles/impl/graph-folding"],
   "yfiles/impl/graph-core": [],
   "yfiles/impl/core-lib": []
 }

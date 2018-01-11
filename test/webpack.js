@@ -16,7 +16,7 @@ var answers = Object.assign({},defaultAnswers, {
 
 describe('Webpack Only', function () {
 
-  this.timeout(35000);
+  this.timeout(60000);
 
   before(function(done) {
     var that = this;
