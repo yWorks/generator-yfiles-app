@@ -21,7 +21,7 @@ var answers = Object.assign({},defaultAnswers, {
 
 describe('TypeScript + Grunt', function () {
 
-  this.timeout(25000);
+  this.timeout(60000);
 
   before(function(done) {
     var that = this;

@@ -306,13 +306,12 @@ module.exports = yeoman.extend({
     );
 
     this.fs.copy(
-      path.join(this.props.yfilesPath, "lib"),
+      path.join(this.props.yfilesPath, "lib/umd/"),
       this.destinationPath(libPath)
     );
 
-    // move yfiles.css into styles folder
-    this.fs.move(
-      this.destinationPath(path.join(libPath, "yfiles.css")),
+    this.fs.copy(
+      path.join(this.props.yfilesPath, "lib/yfiles.css"),
       this.destinationPath(path.join(stylesPath, "yfiles.css"))
     );
 
@@ -381,8 +380,8 @@ module.exports = yeoman.extend({
 
     if (this.props.useTypeScript && !this.props.useWebpack) {
       this.fs.copy(
-        path.join(this.props.yfilesPath, "ide-support/yfiles-api.d.ts"),
-        this.destinationPath(path.join(appPath, "typings/yfiles-api.d.ts"))
+        path.join(this.props.yfilesPath, "ide-support/yfiles-api-umd-vscode.d.ts"),
+        this.destinationPath(path.join(appPath, "typings/yfiles-api-umd-vscode.d.ts"))
       );
       this.fs.copyTpl(
         this.templatePath(path.join(this.props.language), "tsconfig.ejs"),
@@ -497,8 +496,8 @@ module.exports = yeoman.extend({
     else if(this.props.useWebpack && this.props.useTypeScript) {
 
       this.fs.copy(
-        path.join(this.props.yfilesPath, "ide-support/yfiles-api.d.ts"),
-        this.destinationPath(path.join(appPath, "typings/yfiles-api.d.ts"))
+        path.join(this.props.yfilesPath, "ide-support/yfiles-api-umd-vscode.d.ts"),
+        this.destinationPath(path.join(appPath, "typings/yfiles-api-umd-vscode.d.ts"))
       );
 
       this.fs.copyTpl(
@@ -602,8 +601,8 @@ module.exports = yeoman.extend({
       }
 
       this.fs.copy(
-        path.join(this.props.yfilesPath, "ide-support/yfiles-api.d.ts"),
-        this.destinationPath(path.join(appPath, "typings/yfiles-api.d.ts"))
+        path.join(this.props.yfilesPath, "ide-support/yfiles-api-umd-vscode.d.ts"),
+        this.destinationPath(path.join(appPath, "typings/yfiles-api-umd-vscode.d.ts"))
       );
 
     }
