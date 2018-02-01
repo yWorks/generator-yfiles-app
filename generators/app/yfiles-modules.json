@@ -1,23 +1,93 @@
 {
-  "yfiles/complete": ["yfiles/layout", "yfiles/view", "yfiles/view-layout-bridge"],
-  "yfiles/layout": ["yfiles/layout-familytree", "yfiles/layout-orthogonal-compact", "yfiles/layout-radial", "yfiles/layout-seriesparallel", "yfiles/layout-multipage"],
-  "yfiles/view": ["yfiles/view-editor", "yfiles/view-table", "yfiles/view-folding", "yfiles/view-graphml"],
-  "yfiles/view-layout-bridge": ["yfiles/algorithms", "yfiles/view-component"],
-  "yfiles/layout-multipage": ["yfiles/layout-organic", "yfiles/router-other", "yfiles/router-polyline"],
-  "yfiles/layout-radial": ["yfiles/layout-hierarchic"],
-  "yfiles/layout-familytree": ["yfiles/layout-hierarchic", "yfiles/router-other"],
-  "yfiles/layout-orthogonal-compact": ["yfiles/layout-orthogonal", "yfiles/router-other", "yfiles/router-polyline"],
-  "yfiles/layout-hierarchic": ["yfiles/algorithms"],
-  "yfiles/layout-orthogonal": ["yfiles/layout-tree"],
-  "yfiles/layout-organic": ["yfiles/algorithms"],
-  "yfiles/layout-tree": ["yfiles/algorithms"],
-  "yfiles/layout-seriesparallel": ["yfiles/algorithms"],
-  "yfiles/router-polyline": ["yfiles/algorithms"],
-  "yfiles/router-other": ["yfiles/algorithms"],
   "yfiles/algorithms": [],
-  "yfiles/view-graphml": ["yfiles/view-component", "yfiles/view-folding"],
-  "yfiles/view-folding": ["yfiles/view-component"],
-  "yfiles/view-table": ["yfiles/view-component"],
-  "yfiles/view-editor": ["yfiles/view-component"],
-  "yfiles/view-component": []
+  "yfiles/complete": [
+    "yfiles/view",
+    "yfiles/layout",
+    "yfiles/view-layout-bridge"
+  ],
+  "yfiles/layout-familytree": [
+    "yfiles/algorithms",
+    "yfiles/layout-hierarchic",
+    "yfiles/router-other"
+  ],
+  "yfiles/layout-hierarchic": [
+    "yfiles/algorithms"
+  ],
+  "yfiles/layout-multipage": [
+    "yfiles/algorithms",
+    "yfiles/layout-organic",
+    "yfiles/router-other",
+    "yfiles/router-polyline"
+  ],
+  "yfiles/layout-organic": [
+    "yfiles/algorithms"
+  ],
+  "yfiles/layout-orthogonal-compact": [
+    "yfiles/algorithms",
+    "yfiles/layout-orthogonal",
+    "yfiles/router-other",
+    "yfiles/router-polyline",
+    "yfiles/layout-tree"
+  ],
+  "yfiles/layout-orthogonal": [
+    "yfiles/algorithms",
+    "yfiles/layout-tree"
+  ],
+  "yfiles/layout-radial": [
+    "yfiles/algorithms",
+    "yfiles/layout-hierarchic",
+    "yfiles/layout-hierarchic"
+  ],
+  "yfiles/layout-seriesparallel": [
+    "yfiles/algorithms"
+  ],
+  "yfiles/layout-tree": [
+    "yfiles/algorithms"
+  ],
+  "yfiles/layout": [
+    "yfiles/layout-familytree",
+    "yfiles/layout-tree",
+    "yfiles/layout-radial",
+    "yfiles/layout-orthogonal",
+    "yfiles/layout-orthogonal-compact",
+    "yfiles/layout-organic",
+    "yfiles/layout-hierarchic",
+    "yfiles/layout-seriesparallel",
+    "yfiles/router-polyline",
+    "yfiles/router-other",
+    "yfiles/layout-multipage",
+    "yfiles/layout-organic",
+    "yfiles/algorithms"
+  ],
+  "yfiles/router-other": [
+    "yfiles/algorithms"
+  ],
+  "yfiles/router-polyline": [
+    "yfiles/algorithms"
+  ],
+  "yfiles/view-component": [],
+  "yfiles/view-editor": [
+    "yfiles/view-component"
+  ],
+  "yfiles/view-folding": [
+    "yfiles/view-component"
+  ],
+  "yfiles/view-graphml": [
+    "yfiles/view-component",
+    "yfiles/view-folding"
+  ],
+  "yfiles/view-layout-bridge": [
+    "yfiles/view-component",
+    "yfiles/algorithms"
+  ],
+  "yfiles/view-table": [
+    "yfiles/view-component"
+  ],
+  "yfiles/view": [
+    "yfiles/view-component",
+    "yfiles/view-editor",
+    "yfiles/view-folding",
+    "yfiles/view-table",
+    "yfiles/view-graphml"
+  ]
 }

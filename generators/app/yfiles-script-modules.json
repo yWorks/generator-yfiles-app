@@ -1,50 +1,185 @@
 {
-  "yfiles/complete": ["yfiles/layout", "yfiles/view", "yfiles/view-layout-bridge"],
-  "yfiles/layout": ["yfiles/layout-familytree", "yfiles/layout-orthogonal-compact", "yfiles/layout-radial", "yfiles/layout-seriesparallel", "yfiles/layout-multipage"],
-  "yfiles/view": ["yfiles/view-editor", "yfiles/view-table", "yfiles/view-folding", "yfiles/view-graphml"],
-  "yfiles/view-layout-bridge": ["yfiles/view-component", "yfiles/algorithms", "yfiles/impl/graph-layout-bridge", "yfiles/impl/layout-core"],
-  "yfiles/layout-multipage": ["yfiles/algorithms", "yfiles/impl/layout-core", "yfiles/impl/layout-multipage"],
-  "yfiles/layout-radial": ["yfiles/algorithms", "yfiles/impl/layout-core", "yfiles/impl/layout-radial"],
-  "yfiles/layout-familytree": ["yfiles/algorithms", "yfiles/impl/layout-core", "yfiles/impl/layout-familytree"],
-  "yfiles/layout-orthogonal-compact": ["yfiles/algorithms", "yfiles/impl/layout-core", "yfiles/impl/layout-orthogonal-compact"],
-  "yfiles/layout-hierarchic": ["yfiles/algorithms", "yfiles/impl/layout-core", "yfiles/impl/layout-hierarchic"],
-  "yfiles/layout-orthogonal": ["yfiles/algorithms", "yfiles/impl/layout-core", "yfiles/impl/layout-orthogonal"],
-  "yfiles/layout-organic": ["yfiles/algorithms", "yfiles/impl/layout-core", "yfiles/impl/layout-organic"],
-  "yfiles/layout-tree": ["yfiles/algorithms", "yfiles/impl/layout-core", "yfiles/impl/layout-tree"],
-  "yfiles/layout-seriesparallel": ["yfiles/algorithms", "yfiles/impl/layout-core", "yfiles/impl/layout-seriesparallel"],
-  "yfiles/router-polyline": ["yfiles/algorithms", "yfiles/impl/layout-core", "yfiles/impl/layout-polyline"],
-  "yfiles/router-other": ["yfiles/algorithms", "yfiles/impl/layout-core", "yfiles/impl/layout-router"],
-  "yfiles/algorithms": ["yfiles/impl/algorithms"],
-  "yfiles/view-graphml": ["yfiles/view-component", "yfiles/impl/graph-graphml"],
-  "yfiles/view-folding": ["yfiles/view-component", "yfiles/impl/graph-folding"],
-  "yfiles/view-table": ["yfiles/view-component", "yfiles/impl/graph-input-table", "yfiles/impl/graph-styles-table", "yfiles/impl/graph-table"],
-  "yfiles/view-editor": ["yfiles/view-component", "yfiles/impl/graph-input"],
-  "yfiles/view-component": ["yfiles/impl/core-lib", "yfiles/impl/graph-binding", "yfiles/impl/graph-core", "yfiles/impl/graph-styles-core", "yfiles/impl/graph-styles-default", "yfiles/impl/graph-styles-other", "yfiles/impl/graph-styles-template"],
-  "yfiles/impl/graph-layout-bridge": ["yfiles/impl/core-lib", "yfiles/impl/graph-core"],
-  "yfiles/impl/layout-core": ["yfiles/impl/algorithms", "yfiles/impl/core-lib"],
-  "yfiles/impl/layout-router": ["yfiles/impl/algorithms", "yfiles/impl/core-lib", "yfiles/impl/layout-core"],
-  "yfiles/impl/layout-polyline": ["yfiles/impl/algorithms", "yfiles/impl/core-lib", "yfiles/impl/layout-core"],
-  "yfiles/impl/layout-seriesparallel": ["yfiles/impl/algorithms", "yfiles/impl/core-lib", "yfiles/impl/layout-core"],
-  "yfiles/impl/layout-tree": ["yfiles/impl/algorithms", "yfiles/impl/core-lib", "yfiles/impl/layout-core"],
-  "yfiles/impl/layout-organic": ["yfiles/impl/algorithms", "yfiles/impl/core-lib", "yfiles/impl/layout-core"],
-  "yfiles/impl/layout-orthogonal": ["yfiles/impl/algorithms", "yfiles/impl/core-lib", "yfiles/impl/layout-core", "yfiles/impl/layout-tree"],
-  "yfiles/impl/layout-orthogonal-compact": ["yfiles/impl/algorithms", "yfiles/impl/core-lib", "yfiles/impl/layout-core", "yfiles/impl/layout-orthogonal", "yfiles/impl/layout-polyline", "yfiles/impl/layout-router", "yfiles/impl/layout-tree"],
-  "yfiles/impl/layout-hierarchic": ["yfiles/impl/algorithms", "yfiles/impl/core-lib", "yfiles/impl/layout-core"],
-  "yfiles/impl/layout-familytree": ["yfiles/impl/algorithms", "yfiles/impl/core-lib", "yfiles/impl/layout-core", "yfiles/impl/layout-hierarchic", "yfiles/impl/layout-router"],
-  "yfiles/impl/layout-radial": ["yfiles/impl/algorithms", "yfiles/impl/core-lib", "yfiles/impl/layout-core", "yfiles/impl/layout-hierarchic"],
-  "yfiles/impl/layout-multipage": ["yfiles/impl/algorithms", "yfiles/impl/core-lib", "yfiles/impl/layout-core", "yfiles/impl/layout-organic", "yfiles/impl/layout-polyline", "yfiles/impl/layout-router"],
-  "yfiles/impl/algorithms": ["yfiles/impl/core-lib"],
-  "yfiles/impl/graph-binding": ["yfiles/impl/core-lib", "yfiles/impl/graph-core"],
-  "yfiles/impl/graph-styles-core": ["yfiles/impl/core-lib", "yfiles/impl/graph-core"],
-  "yfiles/impl/graph-styles-default": ["yfiles/impl/core-lib", "yfiles/impl/graph-core", "yfiles/impl/graph-styles-core"],
-  "yfiles/impl/graph-styles-other": ["yfiles/impl/core-lib", "yfiles/impl/graph-core", "yfiles/impl/graph-styles-core", "yfiles/impl/graph-styles-default"],
-  "yfiles/impl/graph-styles-template": ["yfiles/impl/core-lib", "yfiles/impl/graph-core"],
-  "yfiles/impl/graph-styles-table": ["yfiles/impl/core-lib", "yfiles/impl/graph-core", "yfiles/impl/graph-styles-core", "yfiles/impl/graph-styles-template", "yfiles/impl/graph-table"],
-  "yfiles/impl/graph-input": ["yfiles/impl/core-lib", "yfiles/impl/graph-core"],
-  "yfiles/impl/graph-input-table": ["yfiles/impl/core-lib", "yfiles/impl/graph-core", "yfiles/impl/graph-input", "yfiles/impl/graph-styles-table", "yfiles/impl/graph-table"],
-  "yfiles/impl/graph-table": ["yfiles/impl/core-lib", "yfiles/impl/graph-core"],
-  "yfiles/impl/graph-folding": ["yfiles/impl/core-lib", "yfiles/impl/graph-core"],
-  "yfiles/impl/graph-graphml": ["yfiles/impl/core-lib", "yfiles/impl/graph-core", "yfiles/impl/graph-folding"],
-  "yfiles/impl/graph-core": [],
-  "yfiles/impl/core-lib": []
+  "yfiles/algorithms": [
+    "yfiles/impl/algorithms"
+  ],
+  "yfiles/complete": [
+    "yfiles/view",
+    "yfiles/layout",
+    "yfiles/view-layout-bridge"
+  ],
+  "yfiles/layout-familytree": [
+    "yfiles/layout-hierarchic",
+    "yfiles/router-other",
+    "yfiles/impl/layout-familytree"
+  ],
+  "yfiles/layout-hierarchic": [
+    "yfiles/algorithms",
+    "yfiles/impl/layout-hierarchic"
+  ],
+  "yfiles/layout-multipage": [
+    "yfiles/layout-organic",
+    "yfiles/router-other",
+    "yfiles/router-polyline",
+    "yfiles/impl/layout-multipage"
+  ],
+  "yfiles/layout-organic": [
+    "yfiles/algorithms",
+    "yfiles/impl/layout-organic"
+  ],
+  "yfiles/layout-orthogonal-compact": [
+    "yfiles/layout-orthogonal",
+    "yfiles/router-other",
+    "yfiles/router-polyline",
+    "yfiles/impl/layout-orthogonal-compact"
+  ],
+  "yfiles/layout-orthogonal": [
+    "yfiles/layout-tree",
+    "yfiles/impl/layout-orthogonal"
+  ],
+  "yfiles/layout-radial": [
+    "yfiles/layout-hierarchic",
+    "yfiles/impl/layout-radial"
+  ],
+  "yfiles/layout-seriesparallel": [
+    "yfiles/algorithms",
+    "yfiles/impl/layout-seriesparallel"
+  ],
+  "yfiles/layout-tree": [
+    "yfiles/algorithms",
+    "yfiles/impl/layout-tree"
+  ],
+  "yfiles/layout": [
+    "yfiles/layout-familytree",
+    "yfiles/layout-radial",
+    "yfiles/layout-orthogonal-compact",
+    "yfiles/layout-seriesparallel",
+    "yfiles/layout-multipage"
+  ],
+  "yfiles/router-other": [
+    "yfiles/algorithms",
+    "yfiles/impl/layout-router"
+  ],
+  "yfiles/router-polyline": [
+    "yfiles/algorithms",
+    "yfiles/impl/layout-polyline"
+  ],
+  "yfiles/view-component": [
+    "yfiles/impl/graph-binding",
+    "yfiles/impl/graph-styles-other",
+    "yfiles/impl/graph-styles-template"
+  ],
+  "yfiles/view-editor": [
+    "yfiles/view-component",
+    "yfiles/impl/graph-input"
+  ],
+  "yfiles/view-folding": [
+    "yfiles/view-component",
+    "yfiles/impl/graph-folding"
+  ],
+  "yfiles/view-graphml": [
+    "yfiles/view-folding",
+    "yfiles/impl/graph-graphml"
+  ],
+  "yfiles/view-layout-bridge": [
+    "yfiles/view-component",
+    "yfiles/algorithms",
+    "yfiles/impl/graph-layout-bridge"
+  ],
+  "yfiles/view-table": [
+    "yfiles/view-component",
+    "yfiles/impl/graph-input-table"
+  ],
+  "yfiles/view": [
+    "yfiles/view-editor",
+    "yfiles/view-table",
+    "yfiles/view-graphml"
+  ],
+  "yfiles/impl/algorithms": [
+    "yfiles/impl/core-lib"
+  ],
+  "yfiles/impl/core-lib": [],
+  "yfiles/impl/graph-binding": [
+    "yfiles/impl/graph-core"
+  ],
+  "yfiles/impl/graph-core": [
+    "yfiles/impl/core-lib"
+  ],
+  "yfiles/impl/graph-folding": [
+    "yfiles/impl/graph-core"
+  ],
+  "yfiles/impl/graph-graphml": [
+    "yfiles/impl/graph-folding"
+  ],
+  "yfiles/impl/graph-input-table": [
+    "yfiles/impl/graph-input",
+    "yfiles/impl/graph-styles-table"
+  ],
+  "yfiles/impl/graph-input": [
+    "yfiles/impl/graph-core"
+  ],
+  "yfiles/impl/graph-layout-bridge": [
+    "yfiles/impl/layout-core",
+    "yfiles/impl/graph-core"
+  ],
+  "yfiles/impl/graph-styles-core": [
+    "yfiles/impl/graph-core"
+  ],
+  "yfiles/impl/graph-styles-default": [
+    "yfiles/impl/graph-styles-core"
+  ],
+  "yfiles/impl/graph-styles-other": [
+    "yfiles/impl/graph-styles-default"
+  ],
+  "yfiles/impl/graph-styles-table": [
+    "yfiles/impl/graph-styles-core",
+    "yfiles/impl/graph-styles-template",
+    "yfiles/impl/graph-table"
+  ],
+  "yfiles/impl/graph-styles-template": [
+    "yfiles/impl/graph-core"
+  ],
+  "yfiles/impl/graph-table": [
+    "yfiles/impl/graph-core"
+  ],
+  "yfiles/impl/layout-core": [
+    "yfiles/impl/algorithms"
+  ],
+  "yfiles/impl/layout-familytree": [
+    "yfiles/impl/layout-hierarchic",
+    "yfiles/impl/layout-router"
+  ],
+  "yfiles/impl/layout-hierarchic": [
+    "yfiles/impl/layout-core"
+  ],
+  "yfiles/impl/layout-multipage": [
+    "yfiles/impl/layout-organic",
+    "yfiles/impl/layout-polyline",
+    "yfiles/impl/layout-router"
+  ],
+  "yfiles/impl/layout-organic": [
+    "yfiles/impl/layout-core"
+  ],
+  "yfiles/impl/layout-orthogonal-compact": [
+    "yfiles/impl/layout-orthogonal",
+    "yfiles/impl/layout-polyline",
+    "yfiles/impl/layout-router"
+  ],
+  "yfiles/impl/layout-orthogonal": [
+    "yfiles/impl/layout-tree"
+  ],
+  "yfiles/impl/layout-polyline": [
+    "yfiles/impl/layout-core"
+  ],
+  "yfiles/impl/layout-radial": [
+    "yfiles/impl/layout-hierarchic"
+  ],
+  "yfiles/impl/layout-router": [
+    "yfiles/impl/layout-core"
+  ],
+  "yfiles/impl/layout-seriesparallel": [
+    "yfiles/impl/layout-core"
+  ],
+  "yfiles/impl/layout-tree": [
+    "yfiles/impl/layout-core"
+  ]
 }

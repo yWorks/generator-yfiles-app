@@ -13,7 +13,8 @@ var answers = Object.assign({},defaultAnswers, {
   "loadingType": "script-tags",
   "advancedOptions": [
     "Use yfiles-typeinfo.js"
-  ]
+  ],
+  "modules": ["yfiles/complete"]
 });
 
 console.log(JSON.stringify(answers,null,2));
