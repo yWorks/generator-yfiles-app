@@ -1,0 +1,111 @@
+{
+  "yfiles/algorithms": [
+    "yfiles/core"
+  ],
+  "yfiles/core": [],
+  "yfiles/layout-core": [
+    "yfiles/core",
+    "yfiles/algorithms"
+  ],
+  "yfiles/layout-familytree": [
+    "yfiles/core",
+    "yfiles/algorithms",
+    "yfiles/layout-core",
+    "yfiles/layout-hierarchic",
+    "yfiles/router-other"
+  ],
+  "yfiles/layout-hierarchic": [
+    "yfiles/core",
+    "yfiles/algorithms",
+    "yfiles/layout-core"
+  ],
+  "yfiles/layout-multipage": [
+    "yfiles/core",
+    "yfiles/algorithms",
+    "yfiles/layout-core",
+    "yfiles/layout-organic",
+    "yfiles/router-polyline",
+    "yfiles/router-other"
+  ],
+  "yfiles/layout-organic": [
+    "yfiles/core",
+    "yfiles/algorithms",
+    "yfiles/layout-core"
+  ],
+  "yfiles/layout-orthogonal-compact": [
+    "yfiles/core",
+    "yfiles/algorithms",
+    "yfiles/layout-orthogonal",
+    "yfiles/router-polyline",
+    "yfiles/router-other",
+    "yfiles/layout-tree",
+    "yfiles/layout-core"
+  ],
+  "yfiles/layout-orthogonal": [
+    "yfiles/core",
+    "yfiles/algorithms",
+    "yfiles/layout-tree",
+    "yfiles/layout-core"
+  ],
+  "yfiles/layout-radial": [
+    "yfiles/core",
+    "yfiles/algorithms",
+    "yfiles/layout-core",
+    "yfiles/layout-hierarchic"
+  ],
+  "yfiles/layout-seriesparallel": [
+    "yfiles/core",
+    "yfiles/algorithms",
+    "yfiles/layout-core"
+  ],
+  "yfiles/layout-tree": [
+    "yfiles/core",
+    "yfiles/algorithms",
+    "yfiles/layout-core"
+  ],
+  "yfiles/router-other": [
+    "yfiles/core",
+    "yfiles/algorithms",
+    "yfiles/layout-core"
+  ],
+  "yfiles/router-polyline": [
+    "yfiles/core",
+    "yfiles/algorithms",
+    "yfiles/layout-core"
+  ],
+  "yfiles/styles-other": [
+    "yfiles/core",
+    "yfiles/view-component"
+  ],
+  "yfiles/styles-template": [
+    "yfiles/core",
+    "yfiles/view-component"
+  ],
+  "yfiles/view-component": [
+    "yfiles/core"
+  ],
+  "yfiles/view-editor": [
+    "yfiles/core",
+    "yfiles/view-component"
+  ],
+  "yfiles/view-folding": [
+    "yfiles/core",
+    "yfiles/view-component"
+  ],
+  "yfiles/view-graphml": [
+    "yfiles/core",
+    "yfiles/view-component",
+    "yfiles/view-folding"
+  ],
+  "yfiles/view-layout-bridge": [
+    "yfiles/core",
+    "yfiles/layout-core",
+    "yfiles/view-component"
+  ],
+  "yfiles/view-table": [
+    "yfiles/core",
+    "yfiles/view-component",
+    "yfiles/view-editor",
+    "yfiles/styles-template"
+  ]
+}

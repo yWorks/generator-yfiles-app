@@ -6,14 +6,14 @@ require([<%moduleList.forEach(function(module, idx) {if (idx === moduleList.leng
   %>
   yfiles.license = <%-licenseWithIndent%>;
 
-  var <%= module %> = yfiles.module('<%= module %>', function(exports) {
+  var app = yfiles.module('app', function(exports) {
 
     /**
      * <% if(description) { %><%= description %><% } else { %>A yfiles class.<% } %>
-     * @class <%= module %>.<%= name %>
+     * @class app.<%= name %>
      */
     exports.<%= name %> = new yfiles.ClassDefinition(function () {
-      /** @lends {<%= module %>.<%= name %>.prototype} */
+      /** @lends app.<%= name %>.prototype} */
       return {
         <% if (content) { %><%- content %><%
         } else { %>'constructor': function () {

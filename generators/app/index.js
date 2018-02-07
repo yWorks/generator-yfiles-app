@@ -8,10 +8,12 @@ var fs = require("fs");
 var extend = require("deep-extend");
 var toSlugCase = require('to-slug-case')
 var yfilesModules = require("./yfiles-modules.json");
+var yfilesES6Modules = require("./yfiles-es6-modules.json");
 var yfilesScriptModules = require("./yfiles-script-modules.json");
-var _ = require("lodash");
 var utils = require("../utils");
 var validatePrompts = require("./validatePrompts");
+
+var promptOptions = require("./promptOptions")
 
 module.exports = yeoman.extend({
   initializing: function () {
@@ -69,66 +71,79 @@ module.exports = yeoman.extend({
       }.bind(this),
       store: true,
       validate: validatePrompts.isValidYfilesLicense
-    }, {
+    },{
+      type: "list",
+      name: "moduleType",
+      message: "Which kind of yFiles modules do you want to use?",
+      choices: [promptOptions.moduleType.UMD, promptOptions.moduleType.ES6_MODULES],
+      default: "ES6 Modules",
+      store: true
+    },{
       type: "list",
       name: "buildTool",
       message: "Which build tool do you want to use?",
-      choices: ["none", "Grunt", "Browserify", "webpack"],
+      choices: function (props) {
+        var choices = [promptOptions.buildTool.NONE, promptOptions.buildTool.GRUNT, promptOptions.buildTool.WEBPACK];
+        if(props.moduleType !== promptOptions.moduleType.ES6_MODULES) {
+          choices.push(promptOptions.buildTool.BROWSERIFY);
+        }
+        return choices;
+      },
       default: "none",
+      when: function (props) {
+        return props.moduleType !== promptOptions.moduleType.ES6_MODULES
+      },
       store: true
     }, {
       type: "list",
       name: "loadingType",
       message: "Module loading method",
-      choices: ["AMD", "script-tags", "systemjs"],
+      choices: [promptOptions.loadingType.AMD, promptOptions.loadingType.SCRIPT_TAGS, promptOptions.loadingType.SYSTEMJS],
       default: "AMD",
       store: true,
       when: function (props) {
-        return props.buildTool === "none" || props.buildTool === "Grunt";
+        return props.moduleType !== promptOptions.moduleType.ES6_MODULES && (props.buildTool === promptOptions.buildTool.NONE || props.buildTool === promptOptions.buildTool.GRUNT);
       }
     }, {
       type: "checkbox",
       name: "modules",
       message: "Which modules do you want to use?",
       store: true,
-      choices: utils.flattenTree(yfilesModules, "yfiles/complete").map(function (mod) {
-        return {
-          name: mod,
-          checked: this.minimumModules.indexOf(mod) >= 0
-        };
-      }.bind(this))
+      choices: function(props) {
+        return (props.moduleType === promptOptions.moduleType.ES6_MODULES ? Object.keys(yfilesES6Modules) : utils.flattenTree(yfilesModules, "yfiles/complete")).map(function (mod) {
+          return {
+            name: mod,
+            checked: this.minimumModules.indexOf(mod) >= 0
+          };
+        }.bind(this))
+      }.bind(this)
     }, {
       type: "list",
       name: "language",
-      message: "Do you want to use ECMAScript 6 or TypeScript?",
+      message: "Which language variant do you want to use?",
       choices: function (props) {
-        if (props.buildTool === "none"){
-          return ["No", "Pure ECMAScript 6"];
-        } else if (props.loadingType !== "systemjs"){
-          return ["No", "Pure ECMAScript 6", "ECMAScript 6 & babel", "TypeScript"]
+        if (props.moduleType === promptOptions.moduleType.ES6_MODULES) {
+          return [promptOptions.language.ES6, promptOptions.language.TypeScript]
+        } else if (props.buildTool === promptOptions.buildTool.NONE){
+          return [promptOptions.language.ES5, promptOptions.language.ES6];
+        } else if (props.loadingType !== promptOptions.loadingType.SYSTEMJS){
+          return [promptOptions.language.ES5, promptOptions.language.ES6, promptOptions.language.ES6Babel, promptOptions.language.TypeScript]
         } else {
-          return ["No", "ECMAScript 6 & babel", "TypeScript"]
+          // systemjs
+          return [promptOptions.language.ES5, promptOptions.language.ES6Babel, promptOptions.language.TypeScript]
         }
       },
-      default: "No",
-      store: true,
-    }, {
-      type: "input",
-      name: "module",
-      message: "What module name do you want to use for your application?",
-      default: "application",
-      store: true,
-      filter: utils.camelCase,
-      validate: utils.isValidName,
-      when: function(props){
-        return props.language === "No";
+      default: promptOptions.language.ES5,
+      when: function(props) {
+        return props.moduleType !== promptOptions.moduleType.ES6_MODULES
       },
+      store: true
     }, {
       type: "checkbox",
       name: "advancedOptions",
       message: "What else do you want?",
       choices: function (props) {
-       if (props.buildTool.indexOf("none") >= 0) {
+       if (props.buildTool && props.buildTool.indexOf("none") >= 0) {
           return advancedOptions.concat([
             {name: "Use yfiles-typeinfo.js", checked: true}
           ]);
@@ -142,19 +157,19 @@ module.exports = yeoman.extend({
       this.props = answers;
 
       this.props.useBrowserify = answers.buildTool === "Browserify";
-      this.props.useWebpack = answers.buildTool === "webpack";
+      this.props.useES6Modules = answers.moduleType === promptOptions.moduleType.ES6_MODULES
+      this.props.useWebpack = answers.buildTool === "webpack" || this.props.useES6Modules;
       this.props.useGrunt = answers.buildTool === "Grunt" || this.props.useBrowserify || this.props.useWebpack;
 
       this.props.useBundlingTool = this.props.useBrowserify || this.props.useWebpack;
 
       this.props.useTypeScript = answers.language === "TypeScript";
-      this.props.useEs6 = answers.language === "Pure ECMAScript 6";
-      this.props.useEs6Babel = answers.language === "ECMAScript 6 & babel";
+      this.props.useEs6 = answers.language === promptOptions.language.ES6 || this.props.useES6Modules;
+      this.props.useEs6Babel = answers.language === promptOptions.language.ES6Babel;
       this.props.useTypeInfo = answers.advancedOptions.indexOf("Use yfiles-typeinfo.js") >= 0 && !this.props.useTypeScript && !this.props.useGrunt;
       this.props.useIdeaProject = answers.advancedOptions.indexOf("WebStorm/PHP-Storm/Intellij IDEA Ultimate Project files") >= 0;
 
-      // For TypeScript AND Webpack, we need babel for the production (obfuscated) build (ts to es6 => babel to es5 => deployment tool => bundle)
-      this.props.useBabel = (this.props.useEs6Babel && !this.props.useTypeScript) || (this.props.useTypeScript && this.props.useWebpack);
+      this.props.useBabel = (this.props.useEs6Babel && !this.props.useTypeScript)
       this.props.useVsCode = answers.advancedOptions.indexOf("Visual Studio Code integration") >= 0;
 
       this.props.licensePath = answers.licensePath;
@@ -162,15 +177,15 @@ module.exports = yeoman.extend({
         : (this.props.useEs6 || this.props.useEs6Babel) ? "es6"
           : "javascript";
 
-      this.props.loadingType = this.props.useTypeScript && answers.loadingType === "script-tags" ? "AMD" : answers.loadingType;
+      this.props.loadingType = this.props.useTypeScript && answers.loadingType === promptOptions.loadingType.SCRIPT_TAGS ? promptOptions.loadingType.AMD : answers.loadingType;
       this.props.modules = utils.joinArrays(this.minimumModules, answers.modules);
 
-      if (answers.loadingType === "script-tags") {
+      if (answers.loadingType === promptOptions.loadingType.SCRIPT_TAGS) {
         this.props.modules = utils.insertChildren(this.props.modules, yfilesScriptModules).filter(function(module) {
           return module.indexOf("/impl/") >= 0;
         }).reverse();
       } else {
-        this.props.modules = utils.removeChildren(this.props.modules, yfilesModules);
+        this.props.modules = utils.removeChildren(this.props.modules, this.props.useES6Modules ? yfilesES6Modules : yfilesModules);
       }
 
       var languageToExtension = {
@@ -204,19 +219,19 @@ module.exports = yeoman.extend({
     extend(options,{
       name: this.props.applicationName,
       description: "A simple yFiles application that creates a GraphComponent and enables basic input gestures.",
-      content: this.fs.read(this.templatePath(path.join(this.props.language), "applicationContent.ejs")),
+      content: this.fs.read(this.templatePath(path.join(this.props.language), this.props.useES6Modules ? "applicationContentES6Modules.ejs" : "applicationContent.ejs")),
       appPath: this.config.get("appPath"),
       scriptsPath: this.config.get("scriptsPath"),
       libPath: this.config.get("libPath"),
       stylesPath: this.config.get("stylesPath"),
       postClassContent: this.props.language === "es6" ?
         "new " + this.props.applicationName + "();" :
-        this.props.language === "javascript" && !(this.props.loadingType === "systemjs") && !(this.props.useBrowserify || this.props.useWebpack) ?
-          "new " + this.props.module + "." + this.props.applicationName + "();" :
-          this.props.language === "typescript" && (this.props.useBrowserify || this.props.useWebpack || this.props.loadingType === "systemjs") ?
+        this.props.language === "javascript" && !(this.props.loadingType === promptOptions.loadingType.SYSTEMJS) && !(this.props.useBrowserify || this.props.useWebpack) ?
+          "new app." + this.props.applicationName + "();" :
+          this.props.language === "typescript" && (this.props.useBrowserify || this.props.useWebpack || this.props.loadingType === promptOptions.loadingType.SYSTEMJS) ?
             "new " + this.props.applicationName + "();" :
-            this.props.useBrowserify || this.props.useWebpack || this.props.loadingType === "systemjs"?
-              "new (yfiles.module(\"" + this.props.module + "\"))." + this.props.applicationName + "();" : ""
+            this.props.useBrowserify || this.props.useWebpack || this.props.loadingType === promptOptions.loadingType.SYSTEMJS?
+              "new (yfiles.module(\"app\"))." + this.props.applicationName + "();" : ""
     });
 
     this.composeWith(require.resolve("../class/"), options);
@@ -252,7 +267,6 @@ module.exports = yeoman.extend({
       scriptsPath: utils.unixPath(scriptsPath),
       distPath: distPath,
       yFilesUrl: toFileUrl(this.props.yfilesPath),
-      module: this.props.module,
       modules: this.props.modules,
       useES6: this.props.useEs6 || this.props.useEs6Babel,
       useTypeInfo: this.props.useTypeInfo,
@@ -263,11 +277,13 @@ module.exports = yeoman.extend({
       useWebpack: this.props.useWebpack,
       useTypeScript: this.props.useTypeScript,
       useBabel: this.props.useBabel,
-      useBower: !(this.props.useWebpack || this.props.useBrowserify || this.props.loadingType === "script-tags"),
+      useBower: !(this.props.useWebpack || this.props.useBrowserify || this.props.loadingType === promptOptions.loadingType.SCRIPT_TAGS),
       language: this.props.language,
       usePackageJSON: this.props.useBrowserify || this.props.useBundlingTool || this.props.useGrunt || this.props.useBabel
       || this.props.useTypeScript,
-      appScript: this.props.appScript
+      appScript: this.props.appScript,
+      useES6Modules: this.props.useES6Modules,
+      moduleType: this.props.moduleType
     };
 
     this.fs.copyTpl(
@@ -276,10 +292,18 @@ module.exports = yeoman.extend({
       vars
     );
 
-    this.fs.copy(
-      path.join(this.props.yfilesPath, "lib/umd/"),
-      this.destinationPath(libPath)
-    );
+
+    if(this.props.useES6Modules) {
+      this.fs.copy(
+        path.join(this.props.yfilesPath, "lib/es6-modules/"),
+        this.destinationPath(libPath)
+      );
+    } else {
+      this.fs.copy(
+        path.join(this.props.yfilesPath, "lib/umd/"),
+        this.destinationPath(libPath)
+      );
+    }
 
     this.fs.copy(
       path.join(this.props.yfilesPath, "lib/yfiles.css"),
@@ -333,14 +357,14 @@ module.exports = yeoman.extend({
       extend(bower, {
         "name": toSlugCase(this.props.applicationName),
         "description": pkg.description || "",
-        "main": (this.props.useGrunt ? distPath : appPath)+"app.js",
+        "main": (this.props.useGrunt ? distPath : appPath)+"/app.js",
         "version": pkg.version || "0.0.0",
         "dependencies": {
         },
         "private": true
       });
 
-      if (this.props.loadingType === "AMD") {
+      if (this.props.loadingType === promptOptions.loadingType.AMD) {
         bower.dependencies["requirejs"] = "^2.3.2";
       } else {
         bower.dependencies["system.js"] = "systemjs/systemjs";
@@ -594,9 +618,9 @@ module.exports = yeoman.extend({
       }
     }.bind(this);
 
-    if (!(this.props.useWebpack || this.props.useBrowserify || this.props.loadingType === "script-tags") || this.props.useTypeScript || this.props.useGrunt) {
+    if (!(this.props.useWebpack || this.props.useBrowserify || this.props.loadingType === promptOptions.loadingType.SCRIPT_TAGS) || this.props.useTypeScript || this.props.useGrunt) {
       this.installDependencies({
-        bower: !(this.props.useWebpack || this.props.useBrowserify || this.props.loadingType === "script-tags"),
+        bower: !(this.props.useWebpack || this.props.useBrowserify || this.props.loadingType === promptOptions.loadingType.SCRIPT_TAGS),
         npm: this.props.useGrunt || this.props.useTypeScript || this.props.useBabel,
         callback: function () {
           postInstall()

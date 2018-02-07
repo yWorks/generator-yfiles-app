@@ -15,9 +15,10 @@ module.exports = yeoman.extend({
 
     var language = this.options.language || this.config.get("language") || "javascript";
 
-    var useGrunt = buildTool.toLowerCase().indexOf("grunt") >= 0;
-    var useBrowserify = buildTool.toLowerCase().indexOf("browserify") >= 0;
-    var useWebpack = buildTool.toLowerCase().indexOf("webpack") >= 0;
+    var useGrunt = this.options.useGrunt;
+    var useBrowserify = this.options.useBrowserify;
+    var useWebpack = this.options.useWebpack;
+    var useES6Modules = this.options.useES6Modules;
 
     var indent = "";
     if (language === "es6") {
@@ -47,13 +48,13 @@ module.exports = yeoman.extend({
       name: this.options.name,
       appPath: utils.unixPath(appPath),
       scriptsPath: utils.unixPath(scriptsPath),
-      module: this.options.module,
       moduleList: useBrowserify ? modules.map(function(module) { return '../lib/'+module}) : modules,
       useTypeInfo: this.options.useTypeInfo,
       useVsCode: this.options.useVsCode,
       useGrunt: useGrunt,
       useBrowserify: useBrowserify,
       useWebpack: useWebpack,
+      useES6Modules: useES6Modules,
       content: this.options.content && this.options.content.replace(/(\n|\r\n)/gm, "$1" + indent),
       loadingType: this.options.loadingType,
       postClassContent: this.options.postClassContent && this.options.postClassContent.replace(/(\n|\r\n)/gm, "$1    "),
@@ -65,7 +66,9 @@ module.exports = yeoman.extend({
     if (language === "javascript" || language === "es6") {
 
       var template;
-      if(vars.loadingType === "AMD" && !(vars.useWebpack || vars.useBrowserify)) {
+      if(useES6Modules) {
+        template = "applicationES6Modules.ejs"
+      } else if(vars.loadingType === "AMD" && !(vars.useWebpack || vars.useBrowserify)) {
         template = "applicationAmd.ejs";
       } else if(vars.loadingType === "systemjs") {
         template = "applicationSystemJS.ejs";

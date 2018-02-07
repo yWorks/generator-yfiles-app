@@ -8,9 +8,10 @@ var opn = require('opn');
 
 var util = require('./support/util');
 var defaultAnswers = require('./support/defaultPromtAnswers');
+var promptOptions = require("../generators/app/promptOptions")
 
 var answers = Object.assign({},defaultAnswers, {
-  "buildTool":"Browserify"
+  "buildTool": promptOptions.buildTool.BROWSERIFY
 });
 
 console.log(JSON.stringify(answers,null,2));

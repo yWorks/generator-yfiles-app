@@ -8,10 +8,11 @@ var opn = require('opn');
 
 var util = require('./support/util');
 var defaultAnswers = require('./support/defaultPromtAnswers');
+var promptOptions = require("../generators/app/promptOptions")
 
 var answers = Object.assign({},defaultAnswers, {
-  "loadingType": "AMD",
-  "language": "ECMAScript 6 & babel",
+  "loadingType": promptOptions.loadingType.AMD,
+  "language": promptOptions.language.ES6Babel,
   "advancedOptions": [
     "Use yfiles-typeinfo.js"
   ]

@@ -18,8 +18,8 @@ module.exports = function (grunt) {
       options: {
         libSrc: libSrc,
         libDest: packageLibDest,
-        modules: [
-          "yfiles/es2015-shim",
+        modules: [<% if(!useES6Modules) {%>
+          "yfiles/es2015-shim",<%}%>
           "yfiles/lang"<% modules.forEach(function (module) { %>,
           "<%= module %>"<%}); %>
         ],

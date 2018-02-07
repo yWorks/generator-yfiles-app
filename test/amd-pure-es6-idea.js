@@ -8,10 +8,11 @@ var opn = require('opn');
 
 var util = require('./support/util');
 var defaultAnswers = require('./support/defaultPromtAnswers');
+var promptOptions = require("../generators/app/promptOptions")
 
 var answers = Object.assign({},defaultAnswers, {
-  "loadingType": "AMD",
-  "language": "Pure ECMAScript 6",
+  "loadingType": promptOptions.loadingType.AMD,
+  "language": promptOptions.language.ES6,
   "advancedOptions": [
     "Use yfiles-typeinfo.js",
     "WebStorm/PHP-Storm/Intellij IDEA Ultimate Project files",

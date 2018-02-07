@@ -8,15 +8,15 @@ var opn = require('opn');
 
 var util = require('./support/util');
 var defaultAnswers = require('./support/defaultPromtAnswers');
+var promptOptions = require("../generators/app/promptOptions")
 
 var answers = Object.assign({},defaultAnswers, {
-  "buildTool":"Browserify",
-  "language": "ECMAScript 6 & babel"
+  "language": promptOptions.language.ES6,
+  "moduleType": promptOptions.moduleType.ES6_MODULES
 });
 
-console.log(JSON.stringify(answers,null,2));
 
-describe('Browserify + ES6', function () {
+describe('ES6Modules JS', function () {
 
   this.timeout(55000);
 
@@ -40,15 +40,18 @@ describe('Browserify + ES6', function () {
     it('generates base files', function () {
       assert.file([
         'app/index.html',
-        'app/scripts/app.es6',
+        'app/scripts/app.js',
         'app/styles/yfiles.css',
-        'Gruntfile.js',
-        'package.json'
+        'package.json',
+        'webpack.config.js',
+        'Gruntfile.js'
       ]);
       assert.noFile([
-        'app/scripts/license.js',
+        'app/lib/complete.js',
+        'bower.json',
         'tsconfig.json',
-        'webpack.config.js'
+        'jsconfig.json',
+        'app/scripts/license.js'
       ]);
     });
 
@@ -56,23 +59,10 @@ describe('Browserify + ES6', function () {
 
   describe('build result', function() {
 
-    it('created the bundle', function() {
-      assert.file([
-        'app/dist/bundle.js'
-      ]);
-    });
-
     it('runs', function (done) {
       util.maybeOpenInBrowser(this.dir,done);
     });
 
-    it('succeeds to run production build', function (done) {
-      var dir = this.dir;
-      exec('npm run production', {cwd: dir}, function(error, stdout, stderr) {
-        assert.ok(error === null, "Production build failed: "+error);
-        util.maybeOpenInBrowser(dir,done);
-      });
-    });
   });
 
 });

@@ -8,10 +8,11 @@ var assert = require('yeoman-assert');
 
 var util = require('./support/util');
 var defaultAnswers = require('./support/defaultPromtAnswers');
+var promptOptions = require("../generators/app/promptOptions")
 
 var answers = Object.assign({},defaultAnswers, {
-  "buildTool":"webpack",
-  "language": "TypeScript"
+  "buildTool": promptOptions.buildTool.WEBPACK,
+  "language": promptOptions.language.TypeScript
 });
 
 describe('Typescript + Webpack', function () {

@@ -8,10 +8,11 @@ var opn = require('opn');
 
 var util = require('./support/util');
 var defaultAnswers = require('./support/defaultPromtAnswers');
+var promptOptions = require("../generators/app/promptOptions")
 
 var answers = Object.assign({},defaultAnswers, {
-  "buildTool":"Grunt",
-  "loadingType": "AMD"
+  "buildTool": promptOptions.buildTool.GRUNT,
+  "loadingType": promptOptions.loadingType.AMD
 });
 
 

@@ -9,9 +9,10 @@ var opn = require('opn');
 
 var util = require('./support/util');
 var defaultAnswers = require('./support/defaultPromtAnswers');
+var promptOptions = require("../generators/app/promptOptions")
 
 var answers = Object.assign({},defaultAnswers, {
-  "buildTool":"webpack"
+  "buildTool": promptOptions.buildTool.WEBPACK
 });
 
 describe('Webpack Only', function () {

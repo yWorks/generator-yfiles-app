@@ -8,10 +8,11 @@ var opn = require('opn');
 
 var util = require('./support/util');
 var defaultAnswers = require('./support/defaultPromtAnswers');
+var promptOptions = require("../generators/app/promptOptions")
 
 var answers = Object.assign({},defaultAnswers, {
-  "loadingType": "script-tags",
-  "language": "Pure ECMAScript 6",
+  "loadingType": promptOptions.loadingType.SCRIPT_TAGS,
+  "language": promptOptions.language.ES6,
   "advancedOptions": [
     "Use yfiles-typeinfo.js"
   ]

@@ -9,10 +9,11 @@ var opn = require('opn');
 
 var util = require('./support/util');
 var defaultAnswers = require('./support/defaultPromtAnswers');
+var promptOptions = require("../generators/app/promptOptions")
 
 var answers = Object.assign({},defaultAnswers, {
-  "buildTool":"webpack",
-  "language": "ECMAScript 6 & babel"
+  "buildTool": promptOptions.buildTool.WEBPACK,
+  "language": promptOptions.language.ES6Babel
 });
 
 describe('Webpack And ES6', function () {

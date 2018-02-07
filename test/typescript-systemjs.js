@@ -8,11 +8,12 @@ var opn = require('opn');
 
 var util = require('./support/util');
 var defaultAnswers = require('./support/defaultPromtAnswers');
+var promptOptions = require("../generators/app/promptOptions")
 
 var answers = Object.assign({},defaultAnswers, {
-  "buildTool":"none",
-  "loadingType": "systemjs",
-  "language": "TypeScript",
+  "buildTool": promptOptions.buildTool.NONE,
+  "loadingType": promptOptions.loadingType.SYSTEMJS,
+  "language": promptOptions.language.TypeScript,
   "advancedOptions": [
     "Use yfiles-typeinfo.js"
   ]

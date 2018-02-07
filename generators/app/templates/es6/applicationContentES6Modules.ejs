@@ -1,0 +1,28 @@
+
+initialize() {
+  // create a GraphComponent
+  let graphComponent = new GraphComponent('graphComponent');
+
+  // get the IGraph
+  let graph = graphComponent.graph;
+
+  // create and configure a default node style
+  graph.nodeDefaults.style = new ShinyPlateNodeStyle({
+    fill: "orange",
+    drawShadow: true
+  });
+
+  // create some nodes
+  let node1 = graph.createNode([50, 50, 30, 30]);
+  let node2 = graph.createNode();
+
+  // create an edge
+  graph.createEdge(node1, node2);
+
+  // create an input mode
+  graphComponent.inputMode = new GraphEditorInputMode();
+}
+
+constructor() {
+  this.initialize();
+}

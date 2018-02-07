@@ -53,6 +53,11 @@ The path to the root of a valid yFiles for HTML package (e.g. "path/to/yFilesPac
 The path to a yFiles for HTML license.js file. The generator tries to guess the location of the license file
 based on the yFiles for HTML package path. You may however want to specify a custom path here ("path/to/license.js").
 
+#### Which kind of yFiles modules do you want to use?
+Choose whether you want to consume the yFiles library as ES6 Modules or as UMD modules. 
+ * **[UMD](https://github.com/umdjs/umd)** Use the "traditional" modules that work with AMD/require.js, commonjs (NodeJS) and as browser-globals. 
+ * **ES6 Modules** Use the yFiles ES6 Modules and access the yFiles API members using [import statements](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import). Selecting this option *skips most of the following prompts*, as these are not applicable when using ES6 Modules. The resulting project will use webpack, so the resulting application will work in most browsers. 
+
 #### Which build tool do you want to use?
 You can choose between those build tools:
  * **none**: No build file is provided and you can run your ES5/ES6 app on supported browsers directly without the need of a compile step.

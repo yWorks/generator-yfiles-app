@@ -1,0 +1,21 @@
+import {License} from 'yfiles/lang'
+
+import {GraphComponent, Fill} from 'yfiles/view-component'
+import {ShinyPlateNodeStyle} from 'yfiles/styles-other'
+import {GraphEditorInputMode} from 'yfiles/view-editor'
+
+License.value = <%-licenseContent%>;
+
+/**
+ * <% if(description) { %><%- description %><% } else { %>A yfiles class.<% } %>
+ */
+class <%- name %> {
+
+  <% if (content) { %><%- content %><%
+  } else { %>constructor () {
+
+  }<% } %>
+
+}
+
+new Yo();

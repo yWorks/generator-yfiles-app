@@ -7,6 +7,8 @@ const metaModules = fs.readdirSync(libRoot).filter(fileName => /\.js$/.test(file
 const implRoot = path.join(libRoot,'impl')
 const implModules = fs.readdirSync(implRoot).filter(fileName => /\.js$/.test(fileName) && fileName.indexOf('lang') === -1)
 
+const generateES6Modules = require('./generate-es6-modules')
+
 const moduleData = {}
 metaModules.forEach(metaFile => {
   const r = {
@@ -111,3 +113,5 @@ fs.writeFileSync(path.join(__dirname,'yfiles-script-modules.json'),JSON.stringif
 
 console.log(JSON.stringify(moduleData,null,2))
 
+let es6Map = generateES6Modules()
+fs.writeFileSync(path.join(__dirname,'yfiles-es6-modules.json'),JSON.stringify(es6Map,null,2),{encoding: 'utf8'})

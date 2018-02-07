@@ -11,18 +11,15 @@ var defaultAnswers = require('./support/defaultPromtAnswers');
 var promptOptions = require("../generators/app/promptOptions")
 
 var answers = Object.assign({},defaultAnswers, {
-  "loadingType": promptOptions.loadingType.SYSTEMJS,
-  "language": promptOptions.language.ES6Babel,
-  "advancedOptions": [
-    "Use yfiles-typeinfo.js"
-  ]
+  "buildTool": promptOptions.buildTool.BROWSERIFY,
+  "language": promptOptions.language.ES6Babel
 });
 
 console.log(JSON.stringify(answers,null,2));
 
-describe('SystemJS + ES6', function () {
+describe('Browserify + ES6', function () {
 
-  this.timeout(55000);
+  this.timeout(80000);
 
   before(function(done) {
     var that = this;
@@ -44,17 +41,15 @@ describe('SystemJS + ES6', function () {
     it('generates base files', function () {
       assert.file([
         'app/index.html',
-        'app/scripts/app.js',
-        'app/scripts/yfiles-typeinfo.js',
+        'app/scripts/app.es6',
         'app/styles/yfiles.css',
-        'bower.json',
+        'Gruntfile.js',
         'package.json'
       ]);
       assert.noFile([
         'app/scripts/license.js',
-        'webpack.config.js',
         'tsconfig.json',
-        'Gruntfile.js'
+        'webpack.config.js'
       ]);
     });
 
@@ -62,14 +57,22 @@ describe('SystemJS + ES6', function () {
 
   describe('build result', function() {
 
-    it('installed bower files', function() {
+    it('created the bundle', function() {
       assert.file([
-        'bower_components/system.js/dist/system.js'
+        'app/dist/bundle.js'
       ]);
     });
 
     it('runs', function (done) {
       util.maybeOpenInBrowser(this.dir,done);
+    });
+
+    it('succeeds to run production build', function (done) {
+      var dir = this.dir;
+      exec('npm run production', {cwd: dir}, function(error, stdout, stderr) {
+        assert.ok(error === null, "Production build failed: "+error);
+        util.maybeOpenInBrowser(dir,done);
+      });
     });
   });
 

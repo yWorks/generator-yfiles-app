@@ -8,12 +8,13 @@ var opn = require('opn');
 var exec = require('child_process').exec;
 
 var util = require('./support/util');
-var defaultAnswers = require('./support/defaultPromtAnswers');
+var defaultAnswers = require('./support/defaultPromtAnswers')
+var promptOptions = require("../generators/app/promptOptions")
 
 var answers = Object.assign({},defaultAnswers, {
-  "buildTool":"Grunt",
-  "loadingType": "AMD",
-  "language": "TypeScript",
+  "buildTool": promptOptions.buildTool.GRUNT,
+  "loadingType": promptOptions.loadingType.AMD,
+  "language": promptOptions.language.TypeScript,
   "advancedOptions": [
     "Use yfiles-typeinfo.js"
   ]
