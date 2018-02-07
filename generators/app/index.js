@@ -11,6 +11,7 @@ var yfilesModules = require("./yfiles-modules.json");
 var yfilesScriptModules = require("./yfiles-script-modules.json");
 var _ = require("lodash");
 var utils = require("../utils");
+var validatePrompts = require("./validatePrompts");
 
 module.exports = yeoman.extend({
   initializing: function () {
@@ -46,10 +47,7 @@ module.exports = yeoman.extend({
       message: "Path of yFiles for HTML package",
       default: "./",
       store: true,
-      validate: function (p) {
-        return !fs.existsSync(p) ? "This path does not exist" :
-          !fs.existsSync(path.join(p, "lib", "yfiles")) ? "Not a valid yfiles package" : true;
-      }
+      validate: validatePrompts.isValidYfilesPackage
     }, {
       type: "input",
       name: "licensePath",
@@ -70,18 +68,7 @@ module.exports = yeoman.extend({
         return "";
       }.bind(this),
       store: true,
-      validate: function (p) {
-        if(!fs.existsSync(p)) {
-          return "The license file was not found at the specified location."
-        } else {
-          var parsedLicense = this._parseLicense(p);
-          if(!parsedLicense || !parsedLicense.key || !parsedLicense.product || !(parsedLicense.product === 'yFiles for HTML')) {
-            return "The provided file does not appear to be a valid yFiles for HTML license file."
-          } else {
-            return true;
-          }
-        }
-      }.bind(this)
+      validate: validatePrompts.isValidYfilesLicense
     }, {
       type: "list",
       name: "buildTool",
@@ -193,24 +180,8 @@ module.exports = yeoman.extend({
       };
       this.props.appScript = this.props.useEs6 ? 'app.js' : ('app.' + languageToExtension[this.props.language]);
 
-      this.props.licenseContent = JSON.stringify(this._parseLicense(this.props.licensePath), null, 2);
+      this.props.licenseContent = JSON.stringify(utils.parseLicense(this.props.licensePath), null, 2);
     }.bind(this));
-  },
-
-  _parseLicense: function(path) {
-    var global = {
-      yfiles: {},
-    };
-    try {
-      // wrap the file with a function
-      var getModules = new Function("global", this.fs.read(path));
-      // and pass yfiles and lang to it
-      getModules.call(global, global);
-      return global.yfiles.license;
-    } catch (e) {
-      this.log("Could not parse license: "+e.message||e);
-      return null;
-    }
   },
 
   configuring: function () {

@@ -1,4 +1,5 @@
 var path = require("path");
+var fs = require('fs')
 
 module.exports = {
   joinArrays: function (a, b) {
@@ -60,5 +61,20 @@ module.exports = {
 
   isValidName: function (name) {
     return /[^a-zA-Z_$ ]/.test(name) ? "This is not a valid name, only [a-zA-Z_$ ] are allowed." : true;
+  },
+
+  parseLicense: function(path) {
+    var global = {
+      yfiles: {},
+    };
+    try {
+      // wrap the file with a function
+      var getModules = new Function("global", fs.readFileSync(path, 'utf8'));
+      // and pass yfiles and lang to it
+      getModules.call(global, global);
+      return global.yfiles.license;
+    } catch (e) {
+      return null;
+    }
   }
 };
