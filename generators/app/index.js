@@ -343,6 +343,13 @@ module.exports = yeoman.extend({
         this.destinationPath(path.join(".idea", "misc.xml")),
         vars
       );
+      if(this.props.useES6Modules) {
+        this.fs.copyTpl(
+          this.templatePath("idea/webResources.xml"),
+          this.destinationPath(path.join(".idea", "webResources.xml")),
+          vars
+        );
+      }
     }
 
     vars.libPath = utils.unixPath(libPath);
