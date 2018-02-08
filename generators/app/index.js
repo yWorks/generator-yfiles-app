@@ -397,8 +397,7 @@ module.exports = yeoman.extend({
           watch: "tsc -w"
         },
         devDependencies: {
-          "typescript": "^2.1.4",
-          "typings": "^2.1.0"
+          "typescript": "^2.6.2"
         }
       });
 
