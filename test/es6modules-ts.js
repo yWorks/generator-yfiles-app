@@ -11,16 +11,15 @@ var defaultAnswers = require('./support/defaultPromtAnswers');
 var promptOptions = require("../generators/app/promptOptions")
 
 var answers = Object.assign({},defaultAnswers, {
-  "buildTool": promptOptions.buildTool.NONE,
-  "loadingType": promptOptions.loadingType.AMD,
+  "language": promptOptions.language.TypeScript,
+  "moduleType": promptOptions.moduleType.ES6_MODULES,
   "advancedOptions": [
-    promptOptions.advanced.VSCODE,
-    promptOptions.advanced.TYPEINFO
+    promptOptions.advanced.VSCODE
   ]
 });
 
 
-describe('AMD + VS Code', function () {
+describe('ES6Modules JS', function () {
 
   this.timeout(55000);
 
@@ -44,29 +43,25 @@ describe('AMD + VS Code', function () {
     it('generates base files', function () {
       assert.file([
         'app/index.html',
-        'app/scripts/app.js',
+        'app/scripts/app.ts',
         'app/styles/yfiles.css',
-        'bower.json',
-        'jsconfig.json',
+        'app/typings/yfiles-api-es6-modules-vscode.d.ts',
+        'package.json',
+        'tsconfig.json',
+        'webpack.config.js',
+        'Gruntfile.js'
       ]);
       assert.noFile([
-        'tsconfig.json',
-        'package.json',
-        'Gruntfile.js',
-        'app/scripts/license.js',
-        'webpack.config.js'
+        'app/lib/complete.js',
+        'bower.json',
+        'jsconfig.json',
+        'app/scripts/license.js'
       ]);
     });
 
   });
 
   describe('build result', function() {
-
-    it('installed bower files', function() {
-      assert.file([
-        'bower_components/requirejs/require.js'
-      ]);
-    });
 
     it('runs', function (done) {
       util.maybeOpenInBrowser(this.dir,done);

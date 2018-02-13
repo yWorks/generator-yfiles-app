@@ -26,6 +26,7 @@
     "test-browserify": "cross-env OPEN_IN_BROWSER=true mocha test/browserify.js",
     "test-browserify-es6-babel": "cross-env OPEN_IN_BROWSER=true mocha test/browserify-es6-babel.js",
     "test-es6modules-js": "cross-env OPEN_IN_BROWSER=true mocha test/es6modules-js.js",
+    "test-es6modules-ts": "cross-env OPEN_IN_BROWSER=true mocha test/es6modules-ts.js",
     "test-grunt-amd": "cross-env OPEN_IN_BROWSER=true mocha test/grunt-amd.js",
     "test-grunt-amd-es6": "cross-env OPEN_IN_BROWSER=true mocha test/grunt-amd-es6.js",
     "test-script-tags": "cross-env OPEN_IN_BROWSER=true mocha test/script-tags.js",

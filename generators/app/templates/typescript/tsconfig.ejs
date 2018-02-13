@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": <% if (useBrowserify) { %>"es5"<% } else { %>"es6"<% }%>,
+    "target": "es5",
     "module": <% if (useBrowserify) { %>"commonjs"<% } else { %>"amd"<% }%>,
     "moduleResolution": "Classic",
     "sourceMap": true,
@@ -10,7 +10,7 @@
     "noImplicitAny": false
   },
   "files": [
-    "<%= appPath %>typings/yfiles-api-umd-vscode.d.ts",
+    "<%= appPath %>typings/<%= typingsFilename %>",
     "<%= scriptsPath %>app.ts"
   ]
 }

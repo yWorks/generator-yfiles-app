@@ -14,8 +14,8 @@ var answers = Object.assign({},defaultAnswers, {
   "loadingType": promptOptions.loadingType.AMD,
   "language": promptOptions.language.ES6,
   "advancedOptions": [
-    "Use yfiles-typeinfo.js",
-    "WebStorm/PHP-Storm/Intellij IDEA Ultimate Project files",
+    promptOptions.advanced.TYPEINFO,
+    promptOptions.advanced.WEBSTORM
   ]
 });
 

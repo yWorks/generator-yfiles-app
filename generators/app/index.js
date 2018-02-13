@@ -134,9 +134,6 @@ module.exports = yeoman.extend({
         }
       },
       default: promptOptions.language.ES5,
-      when: function(props) {
-        return props.moduleType !== promptOptions.moduleType.ES6_MODULES
-      },
       store: true
     }, {
       type: "checkbox",
@@ -164,7 +161,7 @@ module.exports = yeoman.extend({
       this.props.useBundlingTool = this.props.useBrowserify || this.props.useWebpack;
 
       this.props.useTypeScript = answers.language === "TypeScript";
-      this.props.useEs6 = answers.language === promptOptions.language.ES6 || this.props.useES6Modules;
+      this.props.useEs6 = answers.language === promptOptions.language.ES6;
       this.props.useEs6Babel = answers.language === promptOptions.language.ES6Babel;
       this.props.useTypeInfo = answers.advancedOptions.indexOf("Use yfiles-typeinfo.js") >= 0 && !this.props.useTypeScript && !this.props.useGrunt;
       this.props.useIdeaProject = answers.advancedOptions.indexOf("WebStorm/PHP-Storm/Intellij IDEA Ultimate Project files") >= 0;
@@ -196,6 +193,9 @@ module.exports = yeoman.extend({
       this.props.appScript = this.props.useEs6 ? 'app.js' : ('app.' + languageToExtension[this.props.language]);
 
       this.props.licenseContent = JSON.stringify(utils.parseLicense(this.props.licensePath), null, 2);
+
+      this.props.typingsFilename = this.getTypingsFilename()
+
     }.bind(this));
   },
 
@@ -236,6 +236,15 @@ module.exports = yeoman.extend({
 
     this.composeWith(require.resolve("../class/"), options);
 
+  },
+
+  getTypingsFilename: function() {
+    var useVSCode = this.props.useVsCode || (this.props.useTypeScript && !this.props.useIdeaProject);
+    if(this.props.useES6Modules) {
+      return useVSCode ? 'yfiles-api-es6-modules-vscode.d.ts' : 'yfiles-api-es6-modules-webstorm.d.ts'
+    } else {
+      return useVSCode ? 'yfiles-api-umd-vscode.d.ts' : 'yfiles-api-umd-webstorm.d.ts'
+    }
   },
 
   writing: function () {
@@ -283,7 +292,8 @@ module.exports = yeoman.extend({
       || this.props.useTypeScript,
       appScript: this.props.appScript,
       useES6Modules: this.props.useES6Modules,
-      moduleType: this.props.moduleType
+      moduleType: this.props.moduleType,
+      typingsFilename: this.props.typingsFilename
     };
 
     this.fs.copyTpl(
@@ -308,6 +318,11 @@ module.exports = yeoman.extend({
     this.fs.copy(
       path.join(this.props.yfilesPath, "lib/yfiles.css"),
       this.destinationPath(path.join(stylesPath, "yfiles.css"))
+    );
+
+    this.fs.copy(
+      path.join(this.props.yfilesPath, "ide-support/" + this.props.typingsFilename),
+      this.destinationPath(path.join(appPath, "typings/" + this.props.typingsFilename))
     );
 
     if (this.props.useTypeInfo) {
@@ -381,10 +396,6 @@ module.exports = yeoman.extend({
     }
 
     if (this.props.useTypeScript && !this.props.useWebpack) {
-      this.fs.copy(
-        path.join(this.props.yfilesPath, "ide-support/yfiles-api-umd-vscode.d.ts"),
-        this.destinationPath(path.join(appPath, "typings/yfiles-api-umd-vscode.d.ts"))
-      );
       this.fs.copyTpl(
         this.templatePath(path.join(this.props.language), "tsconfig.ejs"),
         this.destinationPath("tsconfig.json"),
@@ -496,11 +507,6 @@ module.exports = yeoman.extend({
     //
     else if(this.props.useWebpack && this.props.useTypeScript) {
 
-      this.fs.copy(
-        path.join(this.props.yfilesPath, "ide-support/yfiles-api-umd-vscode.d.ts"),
-        this.destinationPath(path.join(appPath, "typings/yfiles-api-umd-vscode.d.ts"))
-      );
-
       this.fs.copyTpl(
         this.templatePath(path.join(this.props.language), "tsconfig.ejs"),
         this.destinationPath("tsconfig.json"),
@@ -515,14 +521,13 @@ module.exports = yeoman.extend({
 
       extend(pkg, {
         scripts: {
-          "production": "tsc --outFile app/scripts/app.es6 && npm run babel && npm run obfuscate && webpack --env=prod",
+          "production": "tsc --outFile app/scripts/app.js && npm run obfuscate && webpack --env=prod",
           "dev": "webpack --env=dev",
           "start": "webpack-dev-server --env=dev --open"
         },
         devDependencies: {
           "ts-loader": "^2.0.3",
           "typescript": "^2.1.4",
-          "typings": "^2.1.0",
           "webpack": "^2.4.1",
           "webpack-dev-server": "^2.4.2"
         }
@@ -560,14 +565,16 @@ module.exports = yeoman.extend({
     // just add all npm scripts to tasks.json
     //
     if (this.props.useVsCode) {
-      var jsconfig = this.fs.readJSON(this.destinationPath("jsconfig.json"), {});
-      jsconfig.exclude = [
-        "node_modules",
-        appPath + "/lib",
-        "dist",
-        "build"
-      ];
-      this.fs.writeJSON(this.destinationPath("jsconfig.json"), jsconfig);
+      if(!this.props.useTypeScript) {
+        var jsconfig = this.fs.readJSON(this.destinationPath("jsconfig.json"), {});
+        jsconfig.exclude = [
+          "node_modules",
+          appPath + "/lib",
+          "dist",
+          "build"
+        ];
+        this.fs.writeJSON(this.destinationPath("jsconfig.json"), jsconfig);
+      }
 
       var npmScripts = pkg.scripts;
       if(npmScripts && Object.keys(npmScripts).length>0) {
@@ -600,11 +607,6 @@ module.exports = yeoman.extend({
         this.fs.writeJSON(this.destinationPath(tasksPath), tasksJson);
 
       }
-
-      this.fs.copy(
-        path.join(this.props.yfilesPath, "ide-support/yfiles-api-umd-vscode.d.ts"),
-        this.destinationPath(path.join(appPath, "typings/yfiles-api-umd-vscode.d.ts"))
-      );
 
     }
 

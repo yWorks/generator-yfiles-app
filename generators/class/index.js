@@ -82,8 +82,11 @@ module.exports = yeoman.extend({
         vars
       );
     } else {
+
+      var template = useES6Modules ? "applicationES6Modules.ejs" : "application.ejs";
+
       this.fs.copyTpl(
-        this.templatePath(path.join(language, "application.ejs")),
+        this.templatePath(path.join(language, template)),
         this.destinationPath(path.join(scriptsPath, vars.appScript)),
         vars
       );

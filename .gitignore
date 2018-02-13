@@ -3,3 +3,4 @@ coverage
 .idea
 localconfig.json
 tools/*.json
+npm-debug.log
