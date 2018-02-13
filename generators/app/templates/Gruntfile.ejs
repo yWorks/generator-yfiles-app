@@ -18,12 +18,15 @@ module.exports = function (grunt) {
       options: {
         libSrc: libSrc,
         libDest: packageLibDest,
-        modules: [<% if(!useES6Modules) {%>
-          "yfiles/es2015-shim",<%}%>
+        modules: [
           "yfiles/lang"<% modules.forEach(function (module) { %>,
           "<%= module %>"<%}); %>
         ],
-        files: [{
+        files: [<% if(!useES6Modules) {%>
+        {
+          src: libSrc + 'yfiles/es2015-shim.js',
+          dest: packageLibDest + 'yfiles/es2015-shim.js'
+        }, <%}%>{
           expand: true,
           cwd: scriptsSrc,
           src: ["**/*.js", "!**/license.js"],
