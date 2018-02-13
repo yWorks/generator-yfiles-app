@@ -1,7 +1,7 @@
 
 initialize() {
   // create a GraphComponent
-  let graphComponent = new yfiles.view.GraphComponent('graphComponent');
+  const graphComponent = new yfiles.view.GraphComponent('graphComponent');
 
   // create and configure a default node style
   graphComponent.graph.nodeDefaults.style = new yfiles.styles.ShinyPlateNodeStyle({
@@ -10,10 +10,10 @@ initialize() {
   });
 
   // get the IGraph
-  let graph = graphComponent.graph;
+  const graph = graphComponent.graph;
   // create some nodes
-  let node1 = graph.createNode(new yfiles.geometry.Rect(50, 50, 30, 30));
-  let node2 = graph.createNode();
+  const node1 = graph.createNode(new yfiles.geometry.Rect(50, 50, 30, 30));
+  const node2 = graph.createNode();
 
   // create an edge
   graph.createEdge(node1, node2);

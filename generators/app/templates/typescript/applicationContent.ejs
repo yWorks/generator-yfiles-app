@@ -10,10 +10,10 @@ initialize() {
   });
 
   // get the IGraph
-  var graph:yfiles.graph.IGraph = graphComponent.graph;
+  const graph:yfiles.graph.IGraph = graphComponent.graph;
   // create some nodes
-  var node1:yfiles.graph.INode = graph.createNode(new yfiles.geometry.Rect(50, 50, 30, 30));
-  var node2:yfiles.graph.INode = graph.createNode();
+  const node1:yfiles.graph.INode = graph.createNode(new yfiles.geometry.Rect(50, 50, 30, 30));
+  const node2:yfiles.graph.INode = graph.createNode();
 
   // create an edge
   graph.createEdge(node1, node2);

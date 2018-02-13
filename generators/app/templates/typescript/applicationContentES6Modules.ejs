@@ -10,10 +10,10 @@ initialize() {
   });
 
   // get the IGraph
-  var graph:IGraph = graphComponent.graph;
+  const graph:IGraph = graphComponent.graph;
   // create some nodes
-  var node1:INode = graph.createNode(new Rect(50, 50, 30, 30));
-  var node2:INode = graph.createNode();
+  const node1:INode = graph.createNode(new Rect(50, 50, 30, 30));
+  const node2:INode = graph.createNode();
 
   // create an edge
   graph.createEdge(node1, node2);
