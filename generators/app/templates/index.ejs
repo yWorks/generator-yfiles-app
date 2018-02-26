@@ -30,7 +30,7 @@ if (useBundlingTool) { %><script src="dist/bundle.js"></script>
 <% }
 
 else if (loadingType === "systemjs") { %>
-<script src="../bower_components/system.js/dist/system.js"></script>
+<script src="../node_modules/systemjs/dist/system.js"></script>
 <% if(language === "typescript") {%>
 <script>
   window.define = System.amdDefine;
@@ -58,7 +58,7 @@ else if (loadingType === "systemjs") { %>
 
 
 else if (language === "typescript") {
-%><script src="../bower_components/requirejs/require.js"></script>
+%><script src="../node_modules/requirejs/require.js"></script>
 <script>
   require.config({
     baseUrl: './',
@@ -75,7 +75,7 @@ else if (language === "typescript") {
 
 
 else if (loadingType === "AMD" && !useBundlingTool) {
-%><script src="../bower_components/requirejs/require.js"></script>
+%><script src="../node_modules/requirejs/require.js"></script>
 <script src="scripts/app.js"></script>
 <%
 }

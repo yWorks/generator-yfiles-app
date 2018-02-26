@@ -3,12 +3,17 @@
 
 ## Installation
 
-First, install [Yeoman](http://yeoman.io) and generator-yfiles-app using [npm](https://www.npmjs.com/) (we assume you have pre-installed [node.js](https://nodejs.org/)). 
+First, install [Yeoman](http://yeoman.io) and generator-yfiles-app using [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/) (we assume you have pre-installed [node.js](https://nodejs.org/)). 
 The current version scaffolds yFiles for HTML 2.0 projects.
 
 ```bash
 npm install -g yo
 npm install -g generator-yfiles-app
+```
+or
+```bash
+yarn global add yo
+yarn global add generator-yfiles-app
 ```
 
 Then generate your new project:
@@ -31,6 +36,12 @@ To scaffold a **yFiles for HTML 1.4** project, please install v0.9.5 of the gene
 
 ```bash
 npm install -g generator-yfiles-app@0.9.5
+```
+
+To scaffold a **yFiles for HTML 2.0** project, please install v1.2.0 of the generator-yfiles-app, i.e:
+
+```bash
+npm install -g generator-yfiles-app@1.2.0
 ```
 
 ## About this generator
@@ -78,8 +89,12 @@ Decide whether you want to load the library via
  * \<script\>-tags.
 This option will not be available when webpack or Browserify have been selected as build tool, as the resulting bundle is included via \<script\>-tag.
 
-#### Do you want to use ECMAScript 6 or TypeScript? 
-* **No** Write plain JavaScript (ECMAScript 5).
+#### Which modules do you want to use?
+Choose which yFiles modules your app will need. For an overview of these take a look at the Developer's Guide's [module section](http://docs.yworks.com/yfileshtml/#/dguide/introduction-modules).
+The generator will automatically optimize the set of modules to load.
+
+#### Which language variant do you want to use?
+Depending on your previous choices not all of the following choices for the source language will be available:
 * **Pure ECMAScript 6** Write plain modern JavaScript (version 6) without a transpilation step. Code will not run without a transpile-step in Internet Explorer and other browsers from the stone age. 
 * **ECMAScript 6 +[babel](https://babeljs.io/)** Write ECMAScript 6 sources, transpile to ECMAScript 5 with babel.
   If no other build tool (Grunt/Browserify/Webpack) is involved, use the `npm run babel` script for one-time transpiling, or the 
@@ -87,15 +102,14 @@ This option will not be available when webpack or Browserify have been selected 
 * **[TypeScript](http://www.typescriptlang.org/)** Use TypeScript instead of plain JavaScript. Unless you also chose webpack
  (in which case TypeScript compilation will be part of the webpack bundling), use the `npm run build`
  script for one-time compilation, or the `npm run watch` script for watch mode. 
+* **ES5** Use old ES5 for writing your code without using ES6 features like `class` etc. 
 
-#### Which modules do you want to use?
-Choose which yFiles modules your app will need. For an overview of these take a look at the Developer's Guide's [module section](http://docs.yworks.com/yfileshtml/#/dguide/introduction-modules).
-The generator will automatically optimize the requires.
+#### Module loading method
+Decide which package manager you want to use for managing packages and dependencies: 
+ * [npm](https://www.npmjs.com/) or
+ * [yarn](https://yarnpkg.com/)
 
-#### Module name
-The name of the module/namespace the first class shall live in. 
-Only valid JavaScript identifiers (consisting of \[a-zA-Z$_]) are accepted.
-This will not be shown when TypeScript or ES6 is used.
+This option will not be available for those variants where no third party software is required for transpiling or loading the app.
 
 #### What else do you want?
  * **Use yfiles-typeinfo.js** Includes the yfiles-typeinfo.js file which provides runtime type checking during development time. 

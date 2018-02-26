@@ -8,7 +8,7 @@ var assert = require('yeoman-assert');
 var opn = require('opn');
 
 var util = require('./support/util');
-var defaultAnswers = require('./support/defaultPromtAnswers');
+var defaultAnswers = require('./support/defaultPromptAnswers');
 var promptOptions = require("../generators/app/promptOptions")
 
 var answers = Object.assign({},defaultAnswers, {
@@ -46,7 +46,11 @@ describe('Webpack Only', function () {
         'webpack.config.js'
       ]);
       assert.noFile([
-        'app/scripts/license.js'
+        'app/scripts/license.js',
+        'app/typings/yfiles-api-umd-vscode.d.ts',
+        'app/typings/yfiles-api-umd-webstorm.d.ts',
+        'app/typings/yfiles-api-es6-modules-vscode.d.ts',
+        'app/typings/yfiles-api-es6-modules-webstorm.d.ts'
       ]);
     });
 

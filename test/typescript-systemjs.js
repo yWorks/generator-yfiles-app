@@ -7,7 +7,7 @@ var assert = require('yeoman-assert');
 var opn = require('opn');
 
 var util = require('./support/util');
-var defaultAnswers = require('./support/defaultPromtAnswers');
+var defaultAnswers = require('./support/defaultPromptAnswers');
 var promptOptions = require("../generators/app/promptOptions")
 
 var answers = Object.assign({},defaultAnswers, {
@@ -47,11 +47,12 @@ describe('TypeScript + SystemJS', function () {
         'app/index.html',
         'app/scripts/app.ts',
         'app/styles/yfiles.css',
+        'app/typings/yfiles-api-umd-vscode.d.ts',
         'package.json',
-        'bower.json',
         'tsconfig.json'
       ]);
       assert.noFile([
+        'bower.json',
         'Gruntfile.js',
         'app/scripts/license.js',
         'webpack.config.js'
@@ -63,9 +64,9 @@ describe('TypeScript + SystemJS', function () {
 
   describe('build result', function () {
 
-    it('installed bower files', function() {
+    it('installed package.json files', function() {
       assert.file([
-        'bower_components/system.js/dist/system.js'
+        'node_modules/systemjs/dist/system.js'
       ]);
     });
 

@@ -1,6 +1,6 @@
 require.config({ paths: {yfiles: 'lib/yfiles'} });
 
-require([<%moduleList.forEach(function(module, idx) {if (idx === moduleList.length - 1) {%>'<%= module %>'<%} else {%>'<%= module %>', <%}})%>], yfiles => {
+require([<%moduleList.forEach(function(module, idx) {if (idx === moduleList.length - 1) {%>'<%= module %>'<%} else {%>'<%= module %>', <%}})%>], (/**typeof yfiles*/yfiles) => {
   <%
     var licenseWithIndent = licenseContent.split("\n").join("\n  ");
   %>
@@ -10,10 +10,39 @@ require([<%moduleList.forEach(function(module, idx) {if (idx === moduleList.leng
    * <% if(description) { %><%- description %><% } else { %>A yfiles class.<% } %>
    */
   class <%- name %> {
-    <% if (content) { %><%- content %><%
-    } else { %>constructor () {
 
-    }<% } %>
+    initialize() {
+      // create a GraphComponent
+      const graphComponent = new yfiles.view.GraphComponent('#graphComponent');
+    <% if (useShapeNodeStyle) { %>
+      // create and configure a default node style
+      graphComponent.graph.nodeDefaults.style = new yfiles.styles.ShinyPlateNodeStyle({
+        fill: yfiles.view.Fill.ORANGE,
+        drawShadow: true
+      });
+    <%}%>
+
+      // get the IGraph
+      const graph = graphComponent.graph;
+      // create some nodes
+      const node1 = graph.createNode(new yfiles.geometry.Rect(50, 50, 30, 30));
+      const node2 = graph.createNode();
+
+      // create an edge
+      graph.createEdge(node1, node2);
+    <% if (useGraphEditorInputMode) { %>
+      // create an input mode
+      graphComponent.inputMode = new yfiles.input.GraphEditorInputMode();
+    <% }%>
+      <% if (layout) { %>
+      // execute a layout
+      graphComponent.morphLayout(new <%=layout%>());
+      <% } %>
+    }
+
+    constructor() {
+      this.initialize();
+    }
   }
 
   <% if (postClassContent) { %><%- postClassContent %><% } %>

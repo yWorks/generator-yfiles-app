@@ -7,7 +7,7 @@ var assert = require('yeoman-assert');
 var opn = require('opn');
 
 var util = require('./support/util');
-var defaultAnswers = require('./support/defaultPromtAnswers');
+var defaultAnswers = require('./support/defaultPromptAnswers');
 var promptOptions = require("../generators/app/promptOptions")
 
 var answers = Object.assign({},defaultAnswers, {

@@ -7,7 +7,7 @@ var helpers = require('yeoman-test');
 var assert = require('yeoman-assert');
 
 var util = require('./support/util');
-var defaultAnswers = require('./support/defaultPromtAnswers');
+var defaultAnswers = require('./support/defaultPromptAnswers');
 var promptOptions = require("../generators/app/promptOptions")
 
 var answers = Object.assign({},defaultAnswers, {
@@ -43,6 +43,7 @@ describe('Typescript + Webpack', function () {
         'app/index.html',
         'app/scripts/app.ts',
         'app/styles/yfiles.css',
+        'app/typings/yfiles-api-umd-vscode.d.ts',
         'package.json',
         'tsconfig.json',
         'webpack.config.js',

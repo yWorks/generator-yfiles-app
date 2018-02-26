@@ -7,7 +7,7 @@ var assert = require('yeoman-assert');
 var opn = require('opn');
 
 var util = require('./support/util');
-var defaultAnswers = require('./support/defaultPromtAnswers');
+var defaultAnswers = require('./support/defaultPromptAnswers');
 var promptOptions = require("../generators/app/promptOptions")
 
 var answers = Object.assign({},defaultAnswers, {
@@ -44,9 +44,9 @@ describe('Grunt + AMD', function () {
         'app/styles/yfiles.css',
         'Gruntfile.js',
         'package.json',
-        'bower.json'
       ]);
       assert.noFile([
+        'bower.json',
         'app/scripts/license.js',
         'webpack.config.js',
         'tsconfig.json'
@@ -57,9 +57,9 @@ describe('Grunt + AMD', function () {
 
   describe('build result', function() {
 
-    it('installed bower files', function() {
+    it('installed npm files', function() {
       assert.file([
-        'bower_components/requirejs/require.js'
+        'node_modules/requirejs/require.js'
       ]);
     });
 

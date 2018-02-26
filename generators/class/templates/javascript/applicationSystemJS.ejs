@@ -25,11 +25,38 @@ Promise.all([<% moduleList.forEach(function (module) { %>System.import("<%= modu
   yfiles.license = <%-licenseWithIndent%>;
 
   var <%= name %> = yfiles.lang.Class('<%= name %>', {
-    <% if (content) { %><%- content %><%
-    } else { %>'constructor': function () {
+    'initialize': function() {
+      // create a GraphComponent
+      var graphComponent = new yfiles.view.GraphComponent('#graphComponent');
+    <% if (useShapeNodeStyle) { %>
+      // create and configure a default node style
+      graphComponent.graph.nodeDefaults.style = new yfiles.styles.ShinyPlateNodeStyle({
+        fill: yfiles.view.Fill.ORANGE,
+        drawShadow: true
+      });
+    <% } %>
 
-    }<%
-    } %>
+      // get the IGraph
+      var graph = graphComponent.graph;
+      // create some nodes
+      var node1 = graph.createNode(new yfiles.geometry.Rect(50, 50, 30, 30));
+      var node2 = graph.createNode();
+
+      // create an edge
+      graph.createEdge(node1, node2);
+    <% if (useGraphEditorInputMode) { %>
+      // create an input mode
+      graphComponent.inputMode = new yfiles.input.GraphEditorInputMode();
+    <% }%>
+      <% if (layout) { %>
+      // execute a layout
+      graphComponent.morphLayout(new <%=layout%>());
+      <% } %>
+    },
+
+    'constructor': function () {
+      this.initialize();
+    }
   });
   new <%= name %>();
 });

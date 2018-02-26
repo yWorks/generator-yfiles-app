@@ -6,8 +6,6 @@
       <excludeFolder url="file://$MODULE_DIR$/temp" />
       <excludeFolder url="file://$MODULE_DIR$/tmp" />
       <% if(!useES6Modules) {%><excludeFolder url="file://$MODULE_DIR$/app/lib" /><%}%>
-      <% if(useBower) {%><excludeFolder url="file://$MODULE_DIR$/bower_components" /><%}%>
-      <% if(false) {%><excludeFolder url="file://$MODULE_DIR$/node_modules" /><%}%>
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

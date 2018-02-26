@@ -7,7 +7,7 @@ var assert = require('yeoman-assert');
 var opn = require('opn');
 
 var util = require('./support/util');
-var defaultAnswers = require('./support/defaultPromtAnswers');
+var defaultAnswers = require('./support/defaultPromptAnswers');
 var promptOptions = require("../generators/app/promptOptions")
 
 var answers = Object.assign({},defaultAnswers, {
@@ -47,14 +47,18 @@ describe('SystemJS + ES6', function () {
         'app/scripts/app.js',
         'app/scripts/yfiles-typeinfo.js',
         'app/styles/yfiles.css',
-        'bower.json',
         'package.json'
       ]);
       assert.noFile([
+        'bower.json',
         'app/scripts/license.js',
         'webpack.config.js',
         'tsconfig.json',
-        'Gruntfile.js'
+        'Gruntfile.js',
+        'app/typings/yfiles-api-umd-vscode.d.ts',
+        'app/typings/yfiles-api-umd-webstorm.d.ts',
+        'app/typings/yfiles-api-es6-modules-vscode.d.ts',
+        'app/typings/yfiles-api-es6-modules-webstorm.d.ts'
       ]);
     });
 
@@ -62,9 +66,9 @@ describe('SystemJS + ES6', function () {
 
   describe('build result', function() {
 
-    it('installed bower files', function() {
+    it('installed package.json files', function() {
       assert.file([
-        'bower_components/system.js/dist/system.js'
+        'node_modules/systemjs/dist/system.js'
       ]);
     });
 

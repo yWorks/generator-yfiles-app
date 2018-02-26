@@ -4,6 +4,10 @@ module.exports = {
     SCRIPT_TAGS: "script-tags",
     SYSTEMJS: "systemjs"
   },
+  buildChain: {
+    YARN: "yarn",
+    NPM: "npm"
+  },
   moduleType: {
     UMD: "UMD",
     ES6_MODULES: "ES6 Modules"

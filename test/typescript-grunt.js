@@ -8,7 +8,7 @@ var opn = require('opn');
 var exec = require('child_process').exec;
 
 var util = require('./support/util');
-var defaultAnswers = require('./support/defaultPromtAnswers')
+var defaultAnswers = require('./support/defaultPromptAnswers')
 var promptOptions = require("../generators/app/promptOptions")
 
 var answers = Object.assign({},defaultAnswers, {
@@ -49,11 +49,12 @@ describe('TypeScript + Grunt', function () {
         'app/scripts/app.ts',
         'app/styles/yfiles.css',
         'package.json',
-        'bower.json',
+        'app/typings/yfiles-api-umd-vscode.d.ts',
         'tsconfig.json',
         'Gruntfile.js'
       ]);
       assert.noFile([
+        'bower.json',
         'app/scripts/license.js',
         'webpack.config.js'
       ]);
@@ -64,9 +65,9 @@ describe('TypeScript + Grunt', function () {
 
   describe('build result', function () {
 
-    it('installed bower files', function() {
+    it('installed package.json files', function() {
       assert.file([
-        'bower_components/requirejs/require.js'
+        'node_modules/requirejs/require.js'
       ]);
     });
 

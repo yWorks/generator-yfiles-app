@@ -1,9 +1,20 @@
 import {License} from 'yfiles/lang'
 
 import {GraphComponent} from 'yfiles/view-component'
-import {ShinyPlateNodeStyle} from 'yfiles/styles-other'
-import {GraphEditorInputMode} from 'yfiles/view-editor'
-
+<% if (useShapeNodeStyle) { %>import {ShinyPlateNodeStyle} from 'yfiles/graph-styles-other'
+<% } %>
+<% if (moduleList.indexOf('yfiles/layout-hierarchic')>= 0) { %>import {HierarchicLayout} from 'yfiles/layout-hierarchic'
+<% } %>
+<% if (useGraphEditorInputMode) { %>import {GraphEditorInputMode} from 'yfiles/view-editor'
+<% } %>
+<% if(moduleList.length>1) {
+for(var i=0;i<moduleList.length;i++) {
+if (['yfiles/lang', 'yfiles/styles-other', 'yfiles/view-editor','yfiles/view-component'].indexOf(moduleList[i]) <= 0){
+%>
+import '<%= moduleList[i]%>';<%
+}}
+}%>
+// Tell the library about the license contents
 License.value = <%-licenseContent%>;
 
 /**
@@ -11,10 +22,39 @@ License.value = <%-licenseContent%>;
  */
 class <%- name %> {
 
-  <% if (content) { %><%- content %><%
-  } else { %>constructor () {
+  initialize() {
+    // create a GraphComponent
+    const graphComponent = new GraphComponent('#graphComponent');
 
-  }<% } %>
+    // get the IGraph
+    const graph = graphComponent.graph;
+  <% if (useShapeNodeStyle) { %>
+    // create and configure a default node style
+    graph.nodeDefaults.style = new ShinyPlateNodeStyle({
+      fill: "orange",
+      drawShadow: true
+    });
+  <%}%>
+
+    // create some nodes
+    const node1 = graph.createNode([50, 50, 30, 30]);
+    const node2 = graph.createNode();
+
+    // create an edge
+    graph.createEdge(node1, node2);
+  <% if (useGraphEditorInputMode) { %>
+    // create an input mode
+    graphComponent.inputMode = new GraphEditorInputMode();
+  <% }%>
+    <% if (layout) { %>
+    // execute a layout
+    graphComponent.morphLayout(new <%=layout%>());
+    <% } %>
+  }
+
+  constructor() {
+    this.initialize();
+  }
 
 }
 

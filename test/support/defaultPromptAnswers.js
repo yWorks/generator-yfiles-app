@@ -15,6 +15,7 @@ var answers = {
   "licensePath": path.resolve(localConfig.yfilesPath, 'demos/resources/license.js'),
   "moduleType": promptOptions.moduleType.UMD,
   "buildTool": promptOptions.buildTool.NONE,
+  "buildChain": promptOptions.buildChain.YARN,
   "modules": [
     "yfiles/layout-hierarchic",
     "yfiles/view-component",
@@ -34,6 +35,11 @@ describe('Validate Prompts', function () {
     const validateLicenseResult = validatePrompts.isValidYfilesLicense(licensePath)
     assert((typeof validateLicenseResult) !== "string", validateLicenseResult)
   })
+  /*it('runs in some directory', function(done){
+    console.log("this dir" + this.dir);
+    assert(this.dir);
+    done();
+  })*/
 })
 
 module.exports = answers;

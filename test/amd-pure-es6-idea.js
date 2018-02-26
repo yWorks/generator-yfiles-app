@@ -7,7 +7,7 @@ var assert = require('yeoman-assert');
 var opn = require('opn');
 
 var util = require('./support/util');
-var defaultAnswers = require('./support/defaultPromtAnswers');
+var defaultAnswers = require('./support/defaultPromptAnswers');
 var promptOptions = require("../generators/app/promptOptions")
 
 var answers = Object.assign({},defaultAnswers, {
@@ -46,19 +46,19 @@ describe('AMD + Pure ES6 + IDEA', function () {
         'app/index.html',
         'app/scripts/app.js',
         'app/styles/yfiles.css',
-        'bower.json',
         '.idea/jsLibraryMappings.xml',
         '.idea/misc.xml',
         '.idea/modules.xml',
         '.idea/testApp.iml',
         '.idea/libraries/yFiles_for_HTML.xml',
+        'package.json'
       ]);
       assert.noFile([
+        'bower.json',
         'tsconfig.json',
         'app/scripts/license.js',
         'webpack.config.js',
         'Gruntfile.js',
-        'package.json'
       ]);
     });
 
@@ -66,9 +66,9 @@ describe('AMD + Pure ES6 + IDEA', function () {
 
   describe('build result', function() {
 
-    it('installed bower files', function() {
+    it('installed npm files', function() {
       assert.file([
-        'bower_components/requirejs/require.js'
+        'node_modules/requirejs/require.js'
       ]);
     });
 

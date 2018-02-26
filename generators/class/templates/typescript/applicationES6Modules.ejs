@@ -1,20 +1,59 @@
 import {License} from 'yfiles/lang'
 
 import {GraphComponent, IGraph, INode, Rect, Fill} from 'yfiles/view-component'
-import {ShinyPlateNodeStyle} from 'yfiles/styles-other'
-import {GraphEditorInputMode} from 'yfiles/view-editor'
-
+<% if (useShapeNodeStyle) { %>import {ShinyPlateNodeStyle} from 'yfiles/styles-other'
+<% } %>
+<% if (useGraphEditorInputMode) { %>import {GraphEditorInputMode} from 'yfiles/view-editor'
+<% } %>
+<% if (moduleList.indexOf('yfiles/layout-hierarchic')>= 0) { %>import {HierarchicLayout} from 'yfiles/layout-hierarchic'
+<% } %>
+<% if(moduleList.length>1) {
+for(var i=0;i<moduleList.length;i++) {
+  if (['yfiles/lang', 'yfiles/graph-styles-other', 'yfiles/view-editor','yfiles/layout-hierarchic'].indexOf(moduleList[i]) <= 0){
+%>
+import '<%= moduleList[i]%>';<%
+}}
+}%>
+// Tell the library about the license contents
 License.value = <%-licenseContent%>;
 
 /**
- * <% if(description) { %><%- description %><% } else { %>A yfiles class.<% } %>
+ * <% if(description) { %><%- description %><% } else { %>A simple yFiles for HTML powered class.<% } %>
  */
 class <%- name %> {
 
-  <% if (content) { %><%- content %><%
-  } else { %>constructor () {
+  initialize() {
+    // create a GraphComponent
+    const graphComponent:GraphComponent = new GraphComponent('#graphComponent');
+  <% if (useShapeNodeStyle) { %>
+    // create and configure a default node style
+    graphComponent.graph.nodeDefaults.style = new ShinyPlateNodeStyle({
+      fill: Fill.ORANGE,
+      drawShadow: true
+    });
+  <% } %>
 
-  }<% } %>
+    // get the IGraph
+    const graph:IGraph = graphComponent.graph;
+    // create some nodes
+    const node1:INode = graph.createNode(new Rect(50, 50, 30, 30));
+    const node2:INode = graph.createNode();
+
+    // create an edge
+    graph.createEdge(node1, node2);
+  <% if (useGraphEditorInputMode) { %>
+    // create an input mode
+    graphComponent.inputMode = new GraphEditorInputMode();
+  <% } %>
+  <% if (layout) { %>
+    // execute a layout
+    graphComponent.morphLayout(new <%=layout%>());
+  <% } %>
+  }
+
+  constructor() {
+    this.initialize();
+  }
 
 }
 
