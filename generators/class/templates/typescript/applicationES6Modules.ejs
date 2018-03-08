@@ -9,7 +9,7 @@ import {GraphComponent, IGraph, INode, Rect, Fill} from 'yfiles/view-component'
 <% } %>
 <% if(moduleList.length>1) {
 for(var i=0;i<moduleList.length;i++) {
-  if (['yfiles/lang', 'yfiles/graph-styles-other', 'yfiles/view-editor','yfiles/layout-hierarchic'].indexOf(moduleList[i]) <= 0){
+  if (['yfiles/lang', 'yfiles/styles-other', 'yfiles/view-editor','yfiles/layout-hierarchic'].indexOf(moduleList[i]) <= 0){
 %>
 import '<%= moduleList[i]%>';<%
 }}
