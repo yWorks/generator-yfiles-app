@@ -1,5 +1,7 @@
 'use strict';
 var path = require("path");
+var webpack = require('webpack')
+var UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 module.exports = function(env) {
 
@@ -10,11 +12,34 @@ module.exports = function(env) {
     appSrc = isDev ? scriptsSrc + "<%= appScript %>" : "<%= obfDest %>scripts/app.js",
     destination = "app/dist/";
 
-  return {
+  var config = {
 
     entry: {
       app: [path.resolve(appSrc)]
     },
+
+    plugins: [
+      // extract yfiles and node modules to a separate webpack chunk
+      new webpack.optimize.CommonsChunkPlugin({
+        name: 'lib',
+        minChunks (module) {
+          return (
+            module.resource &&
+            /\.js$/.test(module.resource) &&
+            (/lib[/\\]yfiles/.test(module.resource) || /node_modules[/\\]/.test(module.resource))
+          )
+        }
+      }),
+
+      new webpack.optimize.CommonsChunkPlugin({
+        // put the webpack manifest into a separate bundle, so
+        // the library bundle hash does not change for every build.
+        // https://webpack.js.org/guides/code-splitting-libraries/#manifest-file
+        name: 'manifest',
+        minChunks: Infinity
+      })
+    ],
+
     <% if (useTypeInfo) { %>
     alias: {
       "yfiles-typeinfo": path.resolve(scriptsSrc + "yfiles-typeinfo.js")
@@ -46,8 +71,8 @@ module.exports = function(env) {
 
     output: {
       path: path.resolve(__dirname, destination),
-      publicPath: "dist",
-      filename: 'bundle.js'
+      publicPath: 'dist',
+      filename: '[name].js'
     },
 
     devServer: {
@@ -56,5 +81,33 @@ module.exports = function(env) {
       port: 9003
     }
   };
+
+  if(!isDev) {
+    // For production, we want additional minification.
+    config.plugins.push(new UglifyJsPlugin({
+      uglifyOptions: {
+        beautify: false,
+        compress: {
+          dead_code: false,
+          conditionals: false
+        },
+        // keep the yFiles license header comments
+        extractComments: false
+      }
+    }))
+  }
+
+  if(isDev) {
+    config.plugins.push(new webpack.SourceMapDevToolPlugin({
+      filename: '[file].map',
+      // add source maps for non-library code to enable convenient debugging
+      exclude: [
+        'lib.js',
+        'manifest.js'
+      ]
+    }))
+  }
+
+  return config;
 
 };

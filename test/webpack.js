@@ -58,9 +58,12 @@ describe('Webpack Only', function () {
 
   describe('build result', function() {
 
-    it('created the bundle', function() {
+    it('created the bundles and sourcemaps', function() {
       assert.file([
-        'app/dist/bundle.js'
+        'app/dist/app.js',
+        'app/dist/app.js.map',
+        'app/dist/lib.js',
+        'app/dist/manifest.js'
       ]);
     });
 

@@ -492,8 +492,9 @@ module.exports = yeoman.extend({
     if (this.props.useWebpack && !this.props.useTypeScript) {
 
       var devDeps = {
-        "webpack": "^2.4.1",
-        "webpack-dev-server": "^2.4.2"
+        "uglifyjs-webpack-plugin": "^1.2.3",
+        "webpack": "^3.11.0",
+        "webpack-dev-server": "^2.11.2"
       };
 
       var pkgScripts = {

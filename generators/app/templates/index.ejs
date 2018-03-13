@@ -24,11 +24,15 @@
 <% } %><% if (!useGrunt) { %><script src="lib/yfiles/es2015-shim.js"></script><% } %>
 <%
 
-
-if (useBundlingTool) { %><script src="dist/bundle.js"></script>
-<% if (language === "es6" && useTypeInfo) { %><script src="scripts/yfiles-typeinfo.js"></script><% } %>
+if (useBundlingTool) { %>
+<% if (useBrowserify) { %>
+<script src="dist/bundle.js"></script>
+<% } else if (useWebpack) { %>
+<script src="dist/manifest.js"></script>
+<script src="dist/lib.js"></script>
+<script src="dist/app.js"></script>
+<% } if (language === "es6" && useTypeInfo) { %><script src="scripts/yfiles-typeinfo.js"></script><% } %>
 <% }
-
 else if (loadingType === "systemjs") { %>
 <script src="../node_modules/systemjs/dist/system.js"></script>
 <% if(language === "typescript") {%>
