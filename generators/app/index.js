@@ -76,7 +76,7 @@ module.exports = yeoman.extend({
       name: "moduleType",
       message: "Which kind of yFiles modules do you want to use?",
       choices: [promptOptions.moduleType.UMD, promptOptions.moduleType.ES6_MODULES],
-      default: "ES6 Modules",
+      default: promptOptions.moduleType.ES6_MODULES,
       store: true
     },{
       type: "list",
@@ -149,11 +149,12 @@ module.exports = yeoman.extend({
       },
       store: true
     }, {
-      type: "checkbox",
+      type: "list",
       name: "buildChain",
       message: "Which package manager would you like to use?",
       choices: [promptOptions.buildChain.YARN, promptOptions.buildChain.NPM],
-      store: true
+      store: true,
+      default: promptOptions.buildChain.NPM
     }];
 
     return this.prompt(prompts).then(function(answers) {
