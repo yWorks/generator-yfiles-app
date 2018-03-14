@@ -28,7 +28,6 @@ if (useBundlingTool) { %>
 <% if (useBrowserify) { %>
 <script src="dist/bundle.js"></script>
 <% } else if (useWebpack) { %>
-<script src="dist/manifest.js"></script>
 <script src="dist/lib.js"></script>
 <script src="dist/app.js"></script>
 <% } if (language === "es6" && useTypeInfo) { %><script src="scripts/yfiles-typeinfo.js"></script><% } %>

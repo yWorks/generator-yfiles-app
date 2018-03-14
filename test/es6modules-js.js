@@ -8,11 +8,13 @@ var opn = require('opn');
 
 var util = require('./support/util');
 var defaultAnswers = require('./support/defaultPromptAnswers');
-var promptOptions = require("../generators/app/promptOptions")
+var promptOptions = require("../generators/app/promptOptions");
+var defaultInit = require('./support/defaultInit');
 
 var answers = Object.assign({},defaultAnswers, {
   "language": promptOptions.language.ES6,
-  "moduleType": promptOptions.moduleType.ES6_MODULES
+  "moduleType": promptOptions.moduleType.ES6_MODULES,
+  "webpackVersion": 3
 });
 
 
@@ -30,7 +32,7 @@ describe('ES6Modules JS', function () {
         'skip-message': true,
         'skip-install': false
       })
-      .withPrompts(answers).then(function(dir) {
+      .withPrompts(answers).then(function(dir) {return defaultInit(__filename, dir)}).then(function(dir) {
         that.dir = dir;
         done();
       })
@@ -67,10 +69,13 @@ describe('ES6Modules JS', function () {
       assert.file([
         'app/dist/app.js',
         'app/dist/app.js.map',
-        'app/dist/lib.js',
-        'app/dist/manifest.js'
+        'app/dist/lib.js'
       ]);
     });
+
+    it('uses webpack 3', function() {
+      assert.fileContent('package.json', /"webpack": "\^?3/)
+    })
 
     it('runs', function (done) {
       util.maybeOpenInBrowser(this.dir,done);

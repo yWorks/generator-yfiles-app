@@ -8,8 +8,9 @@ var opn = require('opn');
 var exec = require('child_process').exec;
 
 var util = require('./support/util');
-var defaultAnswers = require('./support/defaultPromptAnswers')
-var promptOptions = require("../generators/app/promptOptions")
+var defaultAnswers = require('./support/defaultPromptAnswers');
+var promptOptions = require("../generators/app/promptOptions");
+var defaultInit = require('./support/defaultInit');
 
 var answers = Object.assign({},defaultAnswers, {
   "buildTool": promptOptions.buildTool.GRUNT,
@@ -34,7 +35,7 @@ describe('TypeScript + Grunt', function () {
         'skip-message': true,
         'skip-install': false
       })
-      .withPrompts(answers).then(function(dir) {
+      .withPrompts(answers).then(function(dir) {return defaultInit(__filename, dir)}).then(function(dir) {
         that.dir = dir;
         console.log("temp dir", dir);
         done();

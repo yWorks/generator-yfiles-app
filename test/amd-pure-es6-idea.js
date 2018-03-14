@@ -8,7 +8,8 @@ var opn = require('opn');
 
 var util = require('./support/util');
 var defaultAnswers = require('./support/defaultPromptAnswers');
-var promptOptions = require("../generators/app/promptOptions")
+var promptOptions = require("../generators/app/promptOptions");
+var defaultInit = require('./support/defaultInit');
 
 var answers = Object.assign({},defaultAnswers, {
   "loadingType": promptOptions.loadingType.AMD,
@@ -34,7 +35,7 @@ describe('AMD + Pure ES6 + IDEA', function () {
         'skip-message': true,
         'skip-install': false
       })
-      .withPrompts(answers).then(function(dir) {
+      .withPrompts(answers).then(function(dir) {return defaultInit(__filename, dir)}).then(function(dir) {
         that.dir = dir;
         done();
       })

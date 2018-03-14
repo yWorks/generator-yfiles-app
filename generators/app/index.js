@@ -136,6 +136,22 @@ module.exports = yeoman.extend({
       default: promptOptions.language.ES5,
       store: true
     }, {
+      type: "list",
+      name: "webpackVersion",
+      message: "Which webpack version would you like to use?",
+      choices: [{
+        name: "3.x",
+        value: 3
+      }, {
+        name: "4.x",
+        value: 4
+      }],
+      when: function (props) {
+        return props.buildTool === promptOptions.buildTool.WEBPACK || props.moduleType === promptOptions.moduleType.ES6_MODULES
+      },
+      default: 0, // choice index
+      store: true
+    }, {
       type: "checkbox",
       name: "advancedOptions",
       message: "What else do you want?",
@@ -163,6 +179,7 @@ module.exports = yeoman.extend({
       this.props.useBrowserify = answers.buildTool === "Browserify";
       this.props.useES6Modules = answers.moduleType === promptOptions.moduleType.ES6_MODULES
       this.props.useWebpack = answers.buildTool === "webpack" || this.props.useES6Modules;
+      this.props.webpack4 = answers.webpackVersion === 4;
       this.props.useGrunt = answers.buildTool === "Grunt" || this.props.useBrowserify || this.props.useWebpack;
       this.props.useYarn = answers.buildChain === promptOptions.buildChain.YARN;
 
@@ -392,6 +409,8 @@ module.exports = yeoman.extend({
 
     var pkg = this.fs.readJSON(this.destinationPath("package.json"), { description: "My first yFiles for HTML WebApp.", "license":"unlicensed", "private": true});
 
+    pkg.name = pkg.name || this.props.applicationName.toLowerCase();
+    pkg.version = pkg.version || "1.0.0";
 
     //
     // Write package.json for require.js or system.js
@@ -487,6 +506,40 @@ module.exports = yeoman.extend({
 
     }
 
+    if(this.props.useWebpack) {
+      var webpackProps = null;
+      if(this.props.webpack4) {
+        webpackProps = {
+          configTemplate: "webpack4.config.ejs",
+          productionParam: "--mode production",
+          devParam: "--mode development",
+          deps: {
+            "webpack": "^4.1.1",
+            "webpack-cli": "^2.0.11",
+            "webpack-dev-server": "^3.1.1"
+          },
+          tsDeps: {
+            "ts-loader": "^4.0.1",
+            "typescript": "^2.7.2"
+          }
+        }
+      } else {
+        webpackProps = {
+          configTemplate: "webpack.config.ejs",
+          productionParam: "--env=prod",
+          devParam: "--env=dev",
+          deps: {
+            "webpack": "^3.11.0",
+            "webpack-dev-server": "^2.11.2"
+          },
+          tsDeps: {
+            "ts-loader": "^3.5.0",
+            "typescript": "^2.7.2"
+          }
+        }
+      }
+    }
+
     //
     // Webpack without Typescript
     //
@@ -494,15 +547,16 @@ module.exports = yeoman.extend({
 
       var devDeps = {
         "uglifyjs-webpack-plugin": "^1.2.3",
-        "webpack": "^3.11.0",
-        "webpack-dev-server": "^2.11.2"
       };
 
+      extend(devDeps, webpackProps.deps)
+
       var pkgScripts = {
-        "production": this.props.useYarn ? "yarn run obfuscate && webpack --env=prod" : "npm run obfuscate && webpack --env=prod",
-        "dev": "webpack --env=dev",
-        "start": "webpack-dev-server --env=dev --open"
+        "production": this.props.useYarn ? "yarn run obfuscate && webpack " + webpackProps.productionParam : "npm run obfuscate && webpack "+ webpackProps.productionParam,
+        "dev": "webpack " + webpackProps.devParam,
+        "start": "webpack-dev-server " + webpackProps.devParam + " --open"
       };
+
       this.props.runScript = 'dev';
 
       if(this.props.useBabel) {
@@ -516,7 +570,7 @@ module.exports = yeoman.extend({
       });
 
       this.fs.copyTpl(
-        this.templatePath("webpack.config.ejs"),
+        this.templatePath(webpackProps.configTemplate),
         this.destinationPath("webpack.config.js"),
         templateVars
       );
@@ -535,23 +589,20 @@ module.exports = yeoman.extend({
       );
 
       this.fs.copyTpl(
-        this.templatePath("webpack.config.ejs"),
+        this.templatePath(webpackProps.configTemplate),
         this.destinationPath("webpack.config.js"),
         templateVars
       );
 
+      var devDependencies = extend(extend({}, webpackProps.deps),webpackProps.tsDeps)
+
       extend(pkg, {
         scripts: {
-          "production": this.props.useYarn ? "tsc --outFile app/scripts/app.js && yarn run obfuscate && webpack --env=prod": "tsc --outFile app/scripts/app.js && npm run obfuscate && webpack --env=prod",
-          "dev": "webpack --env=dev",
-          "start": "webpack-dev-server --env=dev --open"
+          "production": this.props.useYarn ? "tsc --outFile app/scripts/app.js && yarn run obfuscate && webpack " + webpackProps.productionParam: "tsc --outFile app/scripts/app.js && npm run obfuscate && webpack " + webpackProps.productionParam,
+          "dev": "webpack " + webpackProps.devParam,
+          "start": "webpack-dev-server " + webpackProps.devParam + " --open"
         },
-        devDependencies: {
-          "ts-loader": "^3.5.0",
-          "typescript": "^2.7.2",
-          "webpack": "^3.11.0",
-          "webpack-dev-server": "^2.11.1"
-        }
+        devDependencies: devDependencies
       });
 
       this.props.runScript = 'dev';

@@ -8,11 +8,13 @@ var assert = require('yeoman-assert');
 
 var util = require('./support/util');
 var defaultAnswers = require('./support/defaultPromptAnswers');
-var promptOptions = require("../generators/app/promptOptions")
+var promptOptions = require("../generators/app/promptOptions");
+var defaultInit = require('./support/defaultInit');
 
 var answers = Object.assign({},defaultAnswers, {
   "buildTool": promptOptions.buildTool.WEBPACK,
-  "language": promptOptions.language.TypeScript
+  "language": promptOptions.language.TypeScript,
+  "webpackVersion": 3
 });
 
 describe('Typescript + Webpack', function () {
@@ -29,7 +31,7 @@ describe('Typescript + Webpack', function () {
         'skip-message': true,
         'skip-install': false
       })
-      .withPrompts(answers).then(function(dir) {
+      .withPrompts(answers).then(function(dir) {return defaultInit(__filename, dir)}).then(function(dir) {
         that.dir = dir;
         console.log("temp dir", dir);
         done();
@@ -60,10 +62,16 @@ describe('Typescript + Webpack', function () {
       assert.file([
         'app/dist/app.js',
         'app/dist/app.js.map',
-        'app/dist/lib.js',
-        'app/dist/manifest.js'
+        'app/dist/lib.js'
       ]);
     });
+
+    it('uses webpack 3', function() {
+      assert.fileContent('package.json', /"webpack": "\^?3/)
+    })
+    it('uses ts-loader 3', function() {
+      assert.fileContent('package.json', /"ts-loader": "\^?3/)
+    })
 
     it('runs', function (done) {
       var dir = this.dir;

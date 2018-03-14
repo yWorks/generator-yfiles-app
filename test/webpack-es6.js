@@ -9,11 +9,13 @@ var opn = require('opn');
 
 var util = require('./support/util');
 var defaultAnswers = require('./support/defaultPromptAnswers');
-var promptOptions = require("../generators/app/promptOptions")
+var promptOptions = require("../generators/app/promptOptions");
+var defaultInit = require('./support/defaultInit');
 
 var answers = Object.assign({},defaultAnswers, {
   "buildTool": promptOptions.buildTool.WEBPACK,
-  "language": promptOptions.language.ES6Babel
+  "language": promptOptions.language.ES6Babel,
+  "webpackVersion": 3
 });
 
 describe('Webpack And ES6', function () {
@@ -30,7 +32,7 @@ describe('Webpack And ES6', function () {
         'skip-message': true,
         'skip-install': false
       })
-      .withPrompts(answers).then(function(dir) {
+      .withPrompts(answers).then(function(dir) {return defaultInit(__filename, dir)}).then(function(dir) {
         that.dir = dir;
         done();
       }).catch(done);
@@ -63,8 +65,7 @@ describe('Webpack And ES6', function () {
       assert.file([
         'app/dist/app.js',
         'app/dist/app.js.map',
-        'app/dist/lib.js',
-        'app/dist/manifest.js'
+        'app/dist/lib.js'
       ]);
     });
 

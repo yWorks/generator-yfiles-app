@@ -1,5 +1,6 @@
 'use strict';
 
+var path = require('path');
 var fs = require('fs');
 var exec = require('child_process').exec;
 var helpers = require('yeoman-test');
@@ -12,18 +13,14 @@ var promptOptions = require("../generators/app/promptOptions");
 var defaultInit = require('./support/defaultInit');
 
 var answers = Object.assign({},defaultAnswers, {
-  "language": promptOptions.language.TypeScript,
-  "moduleType": promptOptions.moduleType.ES6_MODULES,
-  "webpackVersion": 3,
-  "advancedOptions": [
-    promptOptions.advanced.VSCODE
-  ]
+  "buildTool": promptOptions.buildTool.WEBPACK,
+  "webpackVersion": 4,
+  "buildChain": promptOptions.buildChain.NPM
 });
 
+describe('Webpack 4', function () {
 
-describe('ES6Modules TS', function () {
-
-  this.timeout(55000);
+  this.timeout(120000);
 
   before(function(done) {
     var that = this;
@@ -45,19 +42,18 @@ describe('ES6Modules TS', function () {
     it('generates base files', function () {
       assert.file([
         'app/index.html',
-        'app/scripts/app.ts',
+        'app/scripts/app.js',
         'app/styles/yfiles.css',
-        'app/typings/yfiles-api-es6-modules-vscode.d.ts',
+        'Gruntfile.js',
         'package.json',
-        'tsconfig.json',
-        'webpack.config.js',
-        'Gruntfile.js'
+        'webpack.config.js'
       ]);
       assert.noFile([
-        'app/lib/complete.js',
-        'bower.json',
-        'jsconfig.json',
-        'app/scripts/license.js'
+        'app/scripts/license.js',
+        'app/typings/yfiles-api-umd-vscode.d.ts',
+        'app/typings/yfiles-api-umd-webstorm.d.ts',
+        'app/typings/yfiles-api-es6-modules-vscode.d.ts',
+        'app/typings/yfiles-api-es6-modules-webstorm.d.ts'
       ]);
     });
 
@@ -73,11 +69,8 @@ describe('ES6Modules TS', function () {
       ]);
     });
 
-    it('uses webpack 3', function() {
-      assert.fileContent('package.json', /"webpack": "\^?3/)
-    })
-    it('uses ts-loader 3', function() {
-      assert.fileContent('package.json', /"ts-loader": "\^?3/)
+    it('uses webpack 4', function() {
+      assert.fileContent('package.json', /"webpack": "\^?4/)
     })
 
     it('runs', function (done) {
@@ -91,7 +84,6 @@ describe('ES6Modules TS', function () {
         util.maybeOpenInBrowser(dir,done);
       });
     });
-
   });
 
 });

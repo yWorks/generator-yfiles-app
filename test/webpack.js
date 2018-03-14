@@ -9,10 +9,12 @@ var opn = require('opn');
 
 var util = require('./support/util');
 var defaultAnswers = require('./support/defaultPromptAnswers');
-var promptOptions = require("../generators/app/promptOptions")
+var promptOptions = require("../generators/app/promptOptions");
+var defaultInit = require('./support/defaultInit');
 
 var answers = Object.assign({},defaultAnswers, {
-  "buildTool": promptOptions.buildTool.WEBPACK
+  "buildTool": promptOptions.buildTool.WEBPACK,
+  "webpackVersion": 3
 });
 
 describe('Webpack Only', function () {
@@ -29,7 +31,7 @@ describe('Webpack Only', function () {
         'skip-message': true,
         'skip-install': false
       })
-      .withPrompts(answers).then(function(dir) {
+      .withPrompts(answers).then(function(dir) {return defaultInit(__filename, dir)}).then(function(dir) {
         that.dir = dir;
         done();
       })
@@ -62,10 +64,13 @@ describe('Webpack Only', function () {
       assert.file([
         'app/dist/app.js',
         'app/dist/app.js.map',
-        'app/dist/lib.js',
-        'app/dist/manifest.js'
+        'app/dist/lib.js'
       ]);
     });
+
+    it('uses webpack 3', function() {
+      assert.fileContent('package.json', /"webpack": "\^?3/)
+    })
 
     it('runs', function (done) {
       util.maybeOpenInBrowser(this.dir,done);

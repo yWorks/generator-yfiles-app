@@ -14,16 +14,16 @@ var defaultInit = require('./support/defaultInit');
 var answers = Object.assign({},defaultAnswers, {
   "language": promptOptions.language.TypeScript,
   "moduleType": promptOptions.moduleType.ES6_MODULES,
-  "webpackVersion": 3,
+  "webpackVersion": 4,
   "advancedOptions": [
     promptOptions.advanced.VSCODE
   ]
 });
 
 
-describe('ES6Modules TS', function () {
+describe('ES6Modules TS webpack 4', function () {
 
-  this.timeout(55000);
+  this.timeout(80000);
 
   before(function(done) {
     var that = this;
@@ -73,11 +73,11 @@ describe('ES6Modules TS', function () {
       ]);
     });
 
-    it('uses webpack 3', function() {
-      assert.fileContent('package.json', /"webpack": "\^?3/)
+    it('uses webpack 4', function() {
+      assert.fileContent('package.json', /"webpack": "\^?4/)
     })
-    it('uses ts-loader 3', function() {
-      assert.fileContent('package.json', /"ts-loader": "\^?3/)
+    it('uses ts-loader 4', function() {
+      assert.fileContent('package.json', /"ts-loader": "\^?4/)
     })
 
     it('runs', function (done) {

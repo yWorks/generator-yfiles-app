@@ -5,6 +5,8 @@ var UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 module.exports = function(env) {
 
+  console.log("Running webpack...")
+
   var isDev = env === 'dev';
 
   var scriptsSrc = "<%= scriptsPath %>",
@@ -29,14 +31,6 @@ module.exports = function(env) {
             (/lib[/\\]yfiles/.test(module.resource) || /node_modules[/\\]/.test(module.resource))
           )
         }
-      }),
-
-      new webpack.optimize.CommonsChunkPlugin({
-        // put the webpack manifest into a separate bundle, so
-        // the library bundle hash does not change for every build.
-        // https://webpack.js.org/guides/code-splitting-libraries/#manifest-file
-        name: 'manifest',
-        minChunks: Infinity
       })
     ],
 
@@ -44,15 +38,13 @@ module.exports = function(env) {
     alias: {
       "yfiles-typeinfo": path.resolve(scriptsSrc + "yfiles-typeinfo.js")
     }
-    <% } %>
-    <% if (useTypeScript) { %>
+    <% } %><% if (useTypeScript) { %>
     module: {
       loaders: [
         { test: /\.tsx?$/, loader: "ts-loader" }
       ]
     },
-    <% } %>
-    <% if (useBabel && !useTypeScript) { %>
+    <% } %><% if (useBabel && !useTypeScript) { %>
     module: {
       loaders: [
         {
@@ -63,8 +55,7 @@ module.exports = function(env) {
           }
         }
       ]
-    },
-    <% } %>
+    },<% } %>
     resolve: {
       modules: ['node_modules', path.resolve(libSrc)],
     },
@@ -101,10 +92,7 @@ module.exports = function(env) {
     config.plugins.push(new webpack.SourceMapDevToolPlugin({
       filename: '[file].map',
       // add source maps for non-library code to enable convenient debugging
-      exclude: [
-        'lib.js',
-        'manifest.js'
-      ]
+      exclude: ['lib.js']
     }))
   }
 

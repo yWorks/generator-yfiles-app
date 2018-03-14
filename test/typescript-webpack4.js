@@ -2,9 +2,9 @@
 
 var path = require('path');
 var fs = require('fs');
+var exec = require('child_process').exec;
 var helpers = require('yeoman-test');
 var assert = require('yeoman-assert');
-var opn = require('opn');
 
 var util = require('./support/util');
 var defaultAnswers = require('./support/defaultPromptAnswers');
@@ -12,17 +12,14 @@ var promptOptions = require("../generators/app/promptOptions");
 var defaultInit = require('./support/defaultInit');
 
 var answers = Object.assign({},defaultAnswers, {
-  "buildTool": promptOptions.buildTool.NONE,
-  "loadingType": promptOptions.loadingType.SYSTEMJS,
+  "buildTool": promptOptions.buildTool.WEBPACK,
   "language": promptOptions.language.TypeScript,
-  "advancedOptions": [
-    "Use yfiles-typeinfo.js"
-  ]
+  "webpackVersion": 4
 });
 
-describe('TypeScript + SystemJS', function () {
+describe('Typescript + Webpack 4', function () {
 
-  this.timeout(25000);
+  this.timeout(120000);
 
   before(function(done) {
     var that = this;
@@ -50,37 +47,45 @@ describe('TypeScript + SystemJS', function () {
         'app/styles/yfiles.css',
         'app/typings/yfiles-api-umd-vscode.d.ts',
         'package.json',
-        'tsconfig.json'
+        'tsconfig.json',
+        'webpack.config.js',
+        'Gruntfile.js'
       ]);
-      assert.noFile([
-        'bower.json',
-        'Gruntfile.js',
-        'app/scripts/license.js',
-        'webpack.config.js'
-      ]);
+      assert.noFile(['app/scripts/license.js']);
     })
 
   });
 
-
   describe('build result', function () {
 
-    it('installed package.json files', function() {
+    it('created the bundles and sourcemaps', function() {
       assert.file([
-        'node_modules/systemjs/dist/system.js'
+        'app/dist/app.js',
+        'app/dist/app.js.map',
+        'app/dist/lib.js'
       ]);
     });
 
-    it('created typescript output', function() {
-      assert.file([
-        'app/scripts/app.js'
-      ]);
-    });
+    it('uses webpack 4', function() {
+      assert.fileContent('package.json', /"webpack": "\^?4/)
+    })
+    it('uses ts-loader 4', function() {
+      assert.fileContent('package.json', /"ts-loader": "\^?4/)
+    })
 
     it('runs', function (done) {
       var dir = this.dir;
       util.maybeOpenInBrowser(dir,done);
     });
+
+    it('succeeds to run production build', function (done) {
+      var dir = this.dir;
+      exec('npm run production', {cwd: dir}, function(error, stdout, stderr) {
+        assert.ok(error === null, "Production build failed: "+stderr);
+        util.maybeOpenInBrowser(dir,done);
+      });
+    });
+
   });
 
 });
