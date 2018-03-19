@@ -411,6 +411,7 @@ module.exports = yeoman.extend({
 
     pkg.name = pkg.name || this.props.applicationName.toLowerCase();
     pkg.version = pkg.version || "1.0.0";
+    pkg.private = pkg.private || true;
 
     //
     // Write package.json for require.js or system.js
