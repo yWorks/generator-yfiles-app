@@ -104,7 +104,11 @@ Depending on your previous choices not all of the following choices for the sour
  script for one-time compilation, or the `npm run watch` script for watch mode. 
 * **ES5** Use old ES5 for writing your code without using ES6 features like `class` etc. 
 
-#### Module loading method
+####Which webpack version would you like to use?"
+If you chose to use webpack, or if the chosen configuration requires webpack, you are
+asked whether you want to use webpack 3 or webpack 4. 
+
+#### Which package manager would you like to use?
 Decide which package manager you want to use for managing packages and dependencies: 
  * [npm](https://www.npmjs.com/) or
  * [yarn](https://yarnpkg.com/)
