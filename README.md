@@ -1,6 +1,8 @@
 # generator-yfiles-app [![NPM version][npm-image]][npm-url]
 > A yeoman generator that scaffolds a [yFiles for HTML](https://www.yworks.com/yfileshtml) powered application. Requires a local yFiles for HTML package which can be [obtained and evaluated here](https://www.yworks.com/products/yfiles-for-html/evaluate).
 
+Watch [this Youtube screencast](https://www.youtube.com/watch?v=Pj0yd1iFp9g) to see the generator in action.
+
 ## Installation
 
 First, install [Yeoman](http://yeoman.io) and generator-yfiles-app using [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/) (we assume you have pre-installed [node.js](https://nodejs.org/)). 
@@ -104,7 +106,7 @@ Depending on your previous choices not all of the following choices for the sour
  script for one-time compilation, or the `npm run watch` script for watch mode. 
 * **ES5** Use old ES5 for writing your code without using ES6 features like `class` etc. 
 
-####Which webpack version would you like to use?"
+#### Which webpack version would you like to use?"
 If you chose to use webpack, or if the chosen configuration requires webpack, you are
 asked whether you want to use webpack 3 or webpack 4. 
 
