@@ -76,10 +76,10 @@ You can choose between those build tools:
  * **none**: No build file is provided and you can run your ES5/ES6 app on supported browsers directly without the need of a compile step.
  * **[Grunt](http://gruntjs.com/)**: Adds a production build step (`npm run production`) that obfuscates and minifies the application and library sources. For development, the 
  application can be started directly without a build step. 
- * **[Browserify](http://browserify.org/)** Adds a production build step that obfuscates and minifies all JavaScript sources, 
+ * **[Browserify](http://browserify.org/)** Adds a production build step that obfuscates and minifies all JavaScript sources (using Grunt), 
  and bundles them to a single file using Browserify (`npm run production`). For development, a [Watchify](https://github.com/substack/watchify) build
  script is provided that enables fast turnaround times during development (`npm run watch`).
- * **[Webpack](https://github.com/webpack/webpack)** Adds a production build step that obfuscates and minifies all JavaScript sources, 
+ * **[Webpack](https://github.com/webpack/webpack)** Adds a production build step that obfuscates and minifies all JavaScript sources (using Grunt), 
 and bundles them to a single file using webpack (`npm run production`). For development, a 
 [webpack-dev-server](https://webpack.js.org/configuration/dev-server/) configuration is provided that enables fast 
 turnaround times during development (`npm start`).
