@@ -16,6 +16,9 @@ module.exports = function(env) {
 
   var config = {
 
+    // don't add the default SourceMapDevToolPlugin config
+    devtool: false,
+
     entry: {
       app: [path.resolve(appSrc)]
     },

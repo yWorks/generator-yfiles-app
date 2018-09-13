@@ -63,6 +63,8 @@ module.exports = function (env, options) {
         compress: true,
         port: 9003
       },
+      // don't add the default SourceMapDevToolPlugin config
+      devtool: false,
       plugins: [
         new webpack.SourceMapDevToolPlugin({
           filename: '[file].map',
