@@ -20,7 +20,7 @@ var answers = Object.assign({},defaultAnswers, {
 
 describe('Webpack 4', function () {
 
-  this.timeout(120000);
+  this.timeout(240000);
 
   before(function(done) {
     var that = this;

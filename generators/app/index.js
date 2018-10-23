@@ -515,9 +515,9 @@ module.exports = yeoman.extend({
           productionParam: "--mode production",
           devParam: "--mode development",
           deps: {
-            "webpack": "^4.1.1",
-            "webpack-cli": "^2.0.11",
-            "webpack-dev-server": "^3.1.1"
+            "webpack": "^4.22.0",
+            "webpack-cli": "^3.1.2",
+            "webpack-dev-server": "^3.1.10"
           },
           tsDeps: {
             "ts-loader": "^4.0.1",
