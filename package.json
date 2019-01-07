@@ -13,7 +13,9 @@
   ],
   "main": "generators/app/index.js",
   "keywords": [
-    "yeoman-generator"
+    "yeoman-generator",
+    "yfiles",
+    "yfiles for html"
   ],
   "scripts": {
     "test": "mocha",
