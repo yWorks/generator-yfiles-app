@@ -1,7 +1,7 @@
 'use strict';
 
-var path = require('path');
 var fs = require('fs');
+var exec = require('child_process').exec;
 var helpers = require('yeoman-test');
 var assert = require('yeoman-assert');
 var opn = require('opn');
@@ -12,23 +12,26 @@ var promptOptions = require("../generators/app/promptOptions");
 var defaultInit = require('./support/defaultInit');
 
 var answers = Object.assign({},defaultAnswers, {
+  "moduleType": promptOptions.moduleType.UMD,
   "buildTool": promptOptions.buildTool.NONE,
-  "loadingType": promptOptions.loadingType.SYSTEMJS,
-  "language": promptOptions.language.TypeScript,
+  "loadingType": promptOptions.loadingType.AMD,
+  "language": promptOptions.language.ES6,
   "advancedOptions": [
-    "Use yfiles-typeinfo.js"
+    promptOptions.advanced.TYPEINFO,
+    promptOptions.advanced.WEBSTORM
   ]
 });
 
-describe('TypeScript + SystemJS', function () {
 
-  this.timeout(25000);
+describe('AMD + Pure ES6 + IDEA', function () {
+
+  this.timeout(55000);
 
   before(function(done) {
     var that = this;
-    helpers
+    this.app = helpers
       .run(require.resolve('../generators/app'))
-      .withGenerators([[helpers.createDummyGenerator(), require.resolve('../generators/class')]])
+      .withGenerators([[helpers.createDummyGenerator(),require.resolve('../generators/class')]])
       .withOptions({
         'skip-welcome-message': true,
         'skip-message': true,
@@ -36,51 +39,46 @@ describe('TypeScript + SystemJS', function () {
       })
       .withPrompts(answers).then(function(dir) {return defaultInit(__filename, dir)}).then(function(dir) {
         that.dir = dir;
-        console.log("temp dir", dir);
         done();
-      });
-    });
+      })
+  });
 
-  describe('check files', function () {
-
+  describe('check files', function() {
     it('generates base files', function () {
       assert.file([
         'app/index.html',
-        'app/scripts/app.ts',
+        'app/scripts/app.js',
         'app/styles/yfiles.css',
-        'app/typings/yfiles-api-umd-vscode.d.ts',
-        'package.json',
-        'tsconfig.json'
+        '.idea/jsLibraryMappings.xml',
+        '.idea/misc.xml',
+        '.idea/modules.xml',
+        '.idea/testApp.iml',
+        '.idea/libraries/yFiles_for_HTML.xml',
+        'package.json'
       ]);
       assert.noFile([
         'bower.json',
+        'tsconfig.json',
+        'app/scripts/license.json',
+        'webpack.config.js',
         'Gruntfile.js',
-        'app/scripts/license.js',
-        'webpack.config.js'
-      ]);
-    })
-
-  });
-
-
-  describe('build result', function () {
-
-    it('installed package.json files', function() {
-      assert.file([
-        'node_modules/systemjs/dist/system.js'
       ]);
     });
 
-    it('created typescript output', function() {
+  });
+
+  describe('build result', function() {
+
+    it('installed npm files', function() {
       assert.file([
-        'app/scripts/app.js'
+        'node_modules/requirejs/require.js'
       ]);
     });
 
     it('runs', function (done) {
-      var dir = this.dir;
-      util.maybeOpenInBrowser(dir,done);
+      util.maybeOpenInBrowser(this.dir,done);
     });
+
   });
 
 });

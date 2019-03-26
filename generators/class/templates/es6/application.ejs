@@ -1,4 +1,4 @@
-<% if (useWebpack || useBrowserify) {
+<% if (useWebpack) {
   moduleList.forEach(function(module, idx) {
     if (idx === moduleList.length - 1) {
 %>/**typeof yfiles*/ const yfiles = require('<%= module %>');

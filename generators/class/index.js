@@ -15,14 +15,13 @@ module.exports = yeoman.extend({
 
     var language = this.options.language || this.config.get("language") || "javascript";
 
-    var useGrunt = this.options.useGrunt;
-    var useBrowserify = this.options.useBrowserify;
     var useWebpack = this.options.useWebpack;
     var useES6Modules = this.options.useES6Modules;
+    var useLocalNpm = this.options.useLocalNpm;
 
     var indent = "";
     if (language === "es6") {
-      if (this.options.loadingType === "AMD" && !(useWebpack || useBrowserify)) {
+      if (this.options.loadingType === "AMD" && !useWebpack) {
         // es6+AMD: 4 spaces
         indent = "    ";
       } else {
@@ -33,7 +32,7 @@ module.exports = yeoman.extend({
       // ts: 2 spaces
       indent = "  ";
     } else if (language === "javascript") {
-      if (this.options.loadingType === "AMD" && !(useWebpack || useBrowserify)) {
+      if (this.options.loadingType === "AMD" && !useWebpack) {
         // js+AMD: 8 spaces
         indent = "        ";
       } else {
@@ -48,16 +47,15 @@ module.exports = yeoman.extend({
       name: this.options.name,
       appPath: utils.unixPath(appPath),
       scriptsPath: utils.unixPath(scriptsPath),
-      layout: modules.indexOf('yfiles/layout-hierarchic') >= 0 ? (useES6Modules ? 'HierarchicLayout' : 'yfiles.hierarchic.HierarchicLayout') : false,
-      useShapeNodeStyle: useES6Modules ? modules.indexOf('yfiles/styles-other') >= 0 : true,
-      useGraphEditorInputMode: modules.indexOf('yfiles/view-editor') >= 0,
-      moduleList: useBrowserify ? modules.map(function(module) { return '../lib/'+module}) : modules,
+      layout: modules.indexOf('layout-hierarchic') >= 0 ? (useES6Modules || useLocalNpm ? 'HierarchicLayout' : 'yfiles.hierarchic.HierarchicLayout') : false,
+      useShapeNodeStyle: useES6Modules ? modules.indexOf('styles-other') >= 0 : true,
+      useGraphEditorInputMode: modules.indexOf('view-editor') >= 0,
+      moduleList: useWebpack ? modules.map(function(module) { return '../lib/'+module.replace('yfiles/', '')}) : modules,
       useTypeInfo: this.options.useTypeInfo,
       useVsCode: this.options.useVsCode,
-      useGrunt: useGrunt,
-      useBrowserify: useBrowserify,
       useWebpack: useWebpack,
       useES6Modules: useES6Modules,
+      useLocalNpm: useLocalNpm,
       content: this.options.content && this.options.content.replace(/(\n|\r\n)/gm, "$1" + indent),
       loadingType: this.options.loadingType,
       postClassContent: this.options.postClassContent && this.options.postClassContent.replace(/(\n|\r\n)/gm, "$1    "),
@@ -66,15 +64,17 @@ module.exports = yeoman.extend({
       appScript: this.options.appScript
     };
 
+    vars.useViewLayoutBridge = (useES6Modules || useLocalNpm) ? vars.layout || modules.indexOf('view-layout-bridge') >= 0 : false
+
     if (language === "javascript" || language === "es6") {
 
       var template;
       if(useES6Modules) {
         template = "applicationES6Modules.ejs"
-      } else if(vars.loadingType === "AMD" && !(vars.useWebpack || vars.useBrowserify)) {
+      } else if(vars.loadingType === "AMD" && !vars.useWebpack) {
         template = "applicationAmd.ejs";
-      } else if(vars.loadingType === "systemjs") {
-        template = "applicationSystemJS.ejs";
+      } else if(useLocalNpm) {
+        template = "applicationLocalNpm.ejs";
       } else {
         template = "application.ejs";
       }
@@ -86,7 +86,14 @@ module.exports = yeoman.extend({
       );
     } else {
 
-      var template = useES6Modules ? "applicationES6Modules.ejs" : "application.ejs";
+      var template;
+      if(useES6Modules) {
+        template = "applicationES6Modules.ejs"
+      } else if(useLocalNpm) {
+        template = "applicationLocalNpm.ejs";
+      } else {
+        template = "application.ejs";
+      }
 
       this.fs.copyTpl(
         this.templatePath(path.join(language, template)),

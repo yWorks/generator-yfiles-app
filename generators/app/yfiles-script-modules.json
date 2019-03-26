@@ -1,185 +1,185 @@
 {
-  "yfiles/algorithms": [
-    "yfiles/impl/algorithms"
+  "algorithms": [
+    "impl/algorithms"
   ],
-  "yfiles/complete": [
-    "yfiles/view",
-    "yfiles/layout",
-    "yfiles/view-layout-bridge"
+  "complete": [
+    "view",
+    "layout",
+    "view-layout-bridge"
   ],
-  "yfiles/layout-familytree": [
-    "yfiles/layout-hierarchic",
-    "yfiles/router-other",
-    "yfiles/impl/layout-familytree"
+  "layout-familytree": [
+    "layout-hierarchic",
+    "router-other",
+    "impl/layout-familytree"
   ],
-  "yfiles/layout-hierarchic": [
-    "yfiles/algorithms",
-    "yfiles/impl/layout-hierarchic"
+  "layout-hierarchic": [
+    "algorithms",
+    "impl/layout-hierarchic"
   ],
-  "yfiles/layout-multipage": [
-    "yfiles/layout-organic",
-    "yfiles/router-other",
-    "yfiles/router-polyline",
-    "yfiles/impl/layout-multipage"
+  "layout-multipage": [
+    "layout-organic",
+    "router-other",
+    "router-polyline",
+    "impl/layout-multipage"
   ],
-  "yfiles/layout-organic": [
-    "yfiles/algorithms",
-    "yfiles/impl/layout-organic"
+  "layout-organic": [
+    "algorithms",
+    "impl/layout-organic"
   ],
-  "yfiles/layout-orthogonal-compact": [
-    "yfiles/layout-orthogonal",
-    "yfiles/router-other",
-    "yfiles/router-polyline",
-    "yfiles/impl/layout-orthogonal-compact"
+  "layout-orthogonal-compact": [
+    "layout-orthogonal",
+    "router-other",
+    "router-polyline",
+    "impl/layout-orthogonal-compact"
   ],
-  "yfiles/layout-orthogonal": [
-    "yfiles/layout-tree",
-    "yfiles/impl/layout-orthogonal"
+  "layout-orthogonal": [
+    "layout-tree",
+    "impl/layout-orthogonal"
   ],
-  "yfiles/layout-radial": [
-    "yfiles/layout-hierarchic",
-    "yfiles/impl/layout-radial"
+  "layout-radial": [
+    "layout-hierarchic",
+    "impl/layout-radial"
   ],
-  "yfiles/layout-seriesparallel": [
-    "yfiles/algorithms",
-    "yfiles/impl/layout-seriesparallel"
+  "layout-seriesparallel": [
+    "algorithms",
+    "impl/layout-seriesparallel"
   ],
-  "yfiles/layout-tree": [
-    "yfiles/algorithms",
-    "yfiles/impl/layout-tree"
+  "layout-tree": [
+    "algorithms",
+    "impl/layout-tree"
   ],
-  "yfiles/layout": [
-    "yfiles/layout-familytree",
-    "yfiles/layout-radial",
-    "yfiles/layout-orthogonal-compact",
-    "yfiles/layout-seriesparallel",
-    "yfiles/layout-multipage"
+  "layout": [
+    "layout-familytree",
+    "layout-radial",
+    "layout-orthogonal-compact",
+    "layout-seriesparallel",
+    "layout-multipage"
   ],
-  "yfiles/router-other": [
-    "yfiles/algorithms",
-    "yfiles/impl/layout-router"
+  "router-other": [
+    "algorithms",
+    "impl/layout-router"
   ],
-  "yfiles/router-polyline": [
-    "yfiles/algorithms",
-    "yfiles/impl/layout-polyline"
+  "router-polyline": [
+    "algorithms",
+    "impl/layout-polyline"
   ],
-  "yfiles/view-component": [
-    "yfiles/impl/graph-binding",
-    "yfiles/impl/graph-styles-other",
-    "yfiles/impl/graph-styles-template"
+  "view-component": [
+    "impl/graph-binding",
+    "impl/graph-styles-other",
+    "impl/graph-styles-template"
   ],
-  "yfiles/view-editor": [
-    "yfiles/view-component",
-    "yfiles/impl/graph-input"
+  "view-editor": [
+    "view-component",
+    "impl/graph-input"
   ],
-  "yfiles/view-folding": [
-    "yfiles/view-component",
-    "yfiles/impl/graph-folding"
+  "view-folding": [
+    "view-component",
+    "impl/graph-folding"
   ],
-  "yfiles/view-graphml": [
-    "yfiles/view-folding",
-    "yfiles/impl/graph-graphml"
+  "view-graphml": [
+    "view-folding",
+    "impl/graph-graphml"
   ],
-  "yfiles/view-layout-bridge": [
-    "yfiles/view-component",
-    "yfiles/algorithms",
-    "yfiles/impl/graph-layout-bridge"
+  "view-layout-bridge": [
+    "view-component",
+    "algorithms",
+    "impl/graph-layout-bridge"
   ],
-  "yfiles/view-table": [
-    "yfiles/view-component",
-    "yfiles/impl/graph-input-table"
+  "view-table": [
+    "view-component",
+    "impl/graph-input-table"
   ],
-  "yfiles/view": [
-    "yfiles/view-editor",
-    "yfiles/view-table",
-    "yfiles/view-graphml"
+  "view": [
+    "view-editor",
+    "view-table",
+    "view-graphml"
   ],
-  "yfiles/impl/algorithms": [
-    "yfiles/impl/core-lib"
+  "impl/algorithms": [
+    "impl/core-lib"
   ],
-  "yfiles/impl/core-lib": [],
-  "yfiles/impl/graph-binding": [
-    "yfiles/impl/graph-core"
+  "impl/core-lib": [],
+  "impl/graph-binding": [
+    "impl/graph-core"
   ],
-  "yfiles/impl/graph-core": [
-    "yfiles/impl/core-lib"
+  "impl/graph-core": [
+    "impl/core-lib"
   ],
-  "yfiles/impl/graph-folding": [
-    "yfiles/impl/graph-core"
+  "impl/graph-folding": [
+    "impl/graph-core"
   ],
-  "yfiles/impl/graph-graphml": [
-    "yfiles/impl/graph-folding"
+  "impl/graph-graphml": [
+    "impl/graph-folding"
   ],
-  "yfiles/impl/graph-input-table": [
-    "yfiles/impl/graph-input",
-    "yfiles/impl/graph-styles-table"
+  "impl/graph-input-table": [
+    "impl/graph-input",
+    "impl/graph-styles-table"
   ],
-  "yfiles/impl/graph-input": [
-    "yfiles/impl/graph-core"
+  "impl/graph-input": [
+    "impl/graph-core"
   ],
-  "yfiles/impl/graph-layout-bridge": [
-    "yfiles/impl/layout-core",
-    "yfiles/impl/graph-core"
+  "impl/graph-layout-bridge": [
+    "impl/layout-core",
+    "impl/graph-core"
   ],
-  "yfiles/impl/graph-styles-core": [
-    "yfiles/impl/graph-core"
+  "impl/graph-styles-core": [
+    "impl/graph-core"
   ],
-  "yfiles/impl/graph-styles-default": [
-    "yfiles/impl/graph-styles-core"
+  "impl/graph-styles-default": [
+    "impl/graph-styles-core"
   ],
-  "yfiles/impl/graph-styles-other": [
-    "yfiles/impl/graph-styles-default"
+  "impl/graph-styles-other": [
+    "impl/graph-styles-default"
   ],
-  "yfiles/impl/graph-styles-table": [
-    "yfiles/impl/graph-styles-core",
-    "yfiles/impl/graph-styles-template",
-    "yfiles/impl/graph-table"
+  "impl/graph-styles-table": [
+    "impl/graph-styles-core",
+    "impl/graph-styles-template",
+    "impl/graph-table"
   ],
-  "yfiles/impl/graph-styles-template": [
-    "yfiles/impl/graph-core"
+  "impl/graph-styles-template": [
+    "impl/graph-core"
   ],
-  "yfiles/impl/graph-table": [
-    "yfiles/impl/graph-core"
+  "impl/graph-table": [
+    "impl/graph-core"
   ],
-  "yfiles/impl/layout-core": [
-    "yfiles/impl/algorithms"
+  "impl/layout-core": [
+    "impl/algorithms"
   ],
-  "yfiles/impl/layout-familytree": [
-    "yfiles/impl/layout-hierarchic",
-    "yfiles/impl/layout-router"
+  "impl/layout-familytree": [
+    "impl/layout-hierarchic",
+    "impl/layout-router"
   ],
-  "yfiles/impl/layout-hierarchic": [
-    "yfiles/impl/layout-core"
+  "impl/layout-hierarchic": [
+    "impl/layout-core"
   ],
-  "yfiles/impl/layout-multipage": [
-    "yfiles/impl/layout-organic",
-    "yfiles/impl/layout-polyline",
-    "yfiles/impl/layout-router"
+  "impl/layout-multipage": [
+    "impl/layout-organic",
+    "impl/layout-polyline",
+    "impl/layout-router"
   ],
-  "yfiles/impl/layout-organic": [
-    "yfiles/impl/layout-core"
+  "impl/layout-organic": [
+    "impl/layout-core"
   ],
-  "yfiles/impl/layout-orthogonal-compact": [
-    "yfiles/impl/layout-orthogonal",
-    "yfiles/impl/layout-polyline",
-    "yfiles/impl/layout-router"
+  "impl/layout-orthogonal-compact": [
+    "impl/layout-orthogonal",
+    "impl/layout-polyline",
+    "impl/layout-router"
   ],
-  "yfiles/impl/layout-orthogonal": [
-    "yfiles/impl/layout-tree"
+  "impl/layout-orthogonal": [
+    "impl/layout-tree"
   ],
-  "yfiles/impl/layout-polyline": [
-    "yfiles/impl/layout-core"
+  "impl/layout-polyline": [
+    "impl/layout-core"
   ],
-  "yfiles/impl/layout-radial": [
-    "yfiles/impl/layout-hierarchic"
+  "impl/layout-radial": [
+    "impl/layout-hierarchic"
   ],
-  "yfiles/impl/layout-router": [
-    "yfiles/impl/layout-core"
+  "impl/layout-router": [
+    "impl/layout-core"
   ],
-  "yfiles/impl/layout-seriesparallel": [
-    "yfiles/impl/layout-core"
+  "impl/layout-seriesparallel": [
+    "impl/layout-core"
   ],
-  "yfiles/impl/layout-tree": [
-    "yfiles/impl/layout-core"
+  "impl/layout-tree": [
+    "impl/layout-core"
   ]
 }

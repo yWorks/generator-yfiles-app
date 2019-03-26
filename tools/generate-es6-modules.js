@@ -3,7 +3,7 @@ const path = require('path')
 
 const findES6Deps = function() {
   const packageRoot = require('../localconfig').yfilesPath
-  const libRoot = path.join(packageRoot,'lib/es6-modules/yfiles')
+  const libRoot = path.join(packageRoot,'lib/es-modules')
   const es6Modules = fs.readdirSync(libRoot).filter(fileName => /\.js$/.test(fileName) && fileName.indexOf('lang') === -1)
 
   const moduleData = {}

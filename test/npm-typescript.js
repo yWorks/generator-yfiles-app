@@ -12,12 +12,12 @@ var promptOptions = require("../generators/app/promptOptions");
 var defaultInit = require('./support/defaultInit');
 
 var answers = Object.assign({},defaultAnswers, {
-  "buildTool": promptOptions.buildTool.BROWSERIFY
+  "moduleType": promptOptions.moduleType.NPM,
+  "language": promptOptions.language.TypeScript
 });
 
-console.log(JSON.stringify(answers,null,2));
 
-describe('Browserify', function () {
+describe('Local NPM module + TypeScript', function () {
 
   this.timeout(55000);
 
@@ -41,15 +41,24 @@ describe('Browserify', function () {
     it('generates base files', function () {
       assert.file([
         'app/index.html',
-        'app/scripts/app.js',
+        'app/scripts/app.ts',
         'app/styles/yfiles.css',
-        'Gruntfile.js',
-        'package.json'
+        'package.json',
+        'tsconfig.json',
+        'webpack.config.js',
+        'app/shim/es2015-shim.js',
+        'node_modules/yfiles/yfiles.js',
       ]);
       assert.noFile([
-        'app/scripts/license.js',
-        'tsconfig.json',
-        'webpack.config.js'
+        'bower.json',
+        'jsconfig.json',
+        'app/scripts/license.json',
+        'app/typings/yfiles-api-umd-vscode.d.ts',
+        'app/typings/yfiles-api-umd-webstorm.d.ts',
+        'app/typings/yfiles-api-es-modules-vscode.d.ts',
+        'app/typings/yfiles-api-es-modules-webstorm.d.ts',
+        'Gruntfile.js',
+        'app/lib/yfiles/yfiles.js',
       ]);
     });
 
@@ -57,11 +66,17 @@ describe('Browserify', function () {
 
   describe('build result', function() {
 
-    it('created the bundle', function() {
+    it('created the bundles and sourcemaps', function() {
       assert.file([
-        'app/dist/bundle.js'
+        'app/dist/app.js',
+        'app/dist/app.js.map',
+        'app/dist/lib.js'
       ]);
     });
+
+    it('uses webpack 4', function() {
+      assert.fileContent('package.json', /"webpack": "\^?4/)
+    })
 
     it('runs', function (done) {
       util.maybeOpenInBrowser(this.dir,done);
@@ -74,6 +89,7 @@ describe('Browserify', function () {
         util.maybeOpenInBrowser(dir,done);
       });
     });
+
   });
 
 });

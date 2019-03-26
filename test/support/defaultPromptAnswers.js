@@ -8,21 +8,21 @@ var assert = require('yeoman-assert');
 var promptOptions = require("../../generators/app/promptOptions")
 
 const yfilesPath = localConfig.yfilesPath
-const licensePath = path.resolve(yfilesPath, 'demos/resources/license.js')
+const licensePath = path.resolve(yfilesPath, 'lib/license.json')
 var answers = {
   "applicationName": "testApp",
   "yfilesPath": localConfig.yfilesPath,
-  "licensePath": path.resolve(localConfig.yfilesPath, 'demos/resources/license.js'),
+  "licensePath": path.resolve(localConfig.yfilesPath, 'lib/license.json'),
   "moduleType": promptOptions.moduleType.UMD,
   "buildTool": promptOptions.buildTool.NONE,
   "buildChain": promptOptions.buildChain.YARN,
   "modules": [
-    "yfiles/layout-hierarchic",
-    "yfiles/view-component",
-    "yfiles/view-editor",
-    "yfiles/view-layout-bridge"
+    "layout-hierarchic",
+    "view-component",
+    "view-editor",
+    "view-layout-bridge"
   ],
-  "language": promptOptions.language.ES5,
+  "language": promptOptions.language.ES6,
   "advancedOptions": []
 };
 

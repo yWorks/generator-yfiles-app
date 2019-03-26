@@ -2,7 +2,7 @@
 
 var path = require('path');
 var opn = require('opn');
-var openIndexInBrowser = !!process.env.OPEN_IN_BROWSER;
+var openIndexInBrowser = true //process.env.OPEN_IN_BROWSER;
 
 function maybeOpenInBrowser(dir,done,file) {
   if (openIndexInBrowser) {

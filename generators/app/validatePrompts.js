@@ -8,10 +8,10 @@ var validations = {
     if (!fs.existsSync(p)) {
       return "This path does not exist"
     } else {
-      var hasES6Modules = fs.existsSync(path.join(p, "lib", "es6-modules", "yfiles"))
-      var hasOldModules = fs.existsSync(path.join(p, "lib", "yfiles"))
+      var hasES6Modules = fs.existsSync(path.join(p, "lib", "es-modules"))
+      var hasOldModules = fs.existsSync(path.join(p, "lib", "umd"))
       if (!hasES6Modules && hasOldModules) {
-        return "This generator works with yFiles 2.1 packages (or later). For older packages, use a previous release of the generator."
+        return "This generator works with yFiles 2.2 packages (or later). For older packages, use a previous release of the generator."
       } else if (!hasES6Modules && !hasOldModules) {
         return "Not a valid yFiles package"
       }

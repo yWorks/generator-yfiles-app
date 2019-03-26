@@ -1,10 +1,10 @@
 'use strict';
 
-var path = require('path');
 var fs = require('fs');
 var exec = require('child_process').exec;
 var helpers = require('yeoman-test');
 var assert = require('yeoman-assert');
+var opn = require('opn');
 
 var util = require('./support/util');
 var defaultAnswers = require('./support/defaultPromptAnswers');
@@ -12,20 +12,23 @@ var promptOptions = require("../generators/app/promptOptions");
 var defaultInit = require('./support/defaultInit');
 
 var answers = Object.assign({},defaultAnswers, {
-  "buildTool": promptOptions.buildTool.WEBPACK,
   "language": promptOptions.language.TypeScript,
-  "webpackVersion": 4
+  "moduleType": promptOptions.moduleType.ES6_MODULES,
+  "advancedOptions": [
+    promptOptions.advanced.VSCODE
+  ]
 });
 
-describe('Typescript + Webpack 4', function () {
 
-  this.timeout(120000);
+describe('ES Modules + TypeScript', function () {
+
+  this.timeout(55000);
 
   before(function(done) {
     var that = this;
-    helpers
+    this.app = helpers
       .run(require.resolve('../generators/app'))
-      .withGenerators([[helpers.createDummyGenerator(), require.resolve('../generators/class')]])
+      .withGenerators([[helpers.createDummyGenerator(),require.resolve('../generators/class')]])
       .withOptions({
         'skip-welcome-message': true,
         'skip-message': true,
@@ -33,30 +36,34 @@ describe('Typescript + Webpack 4', function () {
       })
       .withPrompts(answers).then(function(dir) {return defaultInit(__filename, dir)}).then(function(dir) {
         that.dir = dir;
-        console.log("temp dir", dir);
         done();
-      });
-    });
+      })
+  });
 
-  describe('check files', function () {
-
+  describe('check files', function() {
     it('generates base files', function () {
       assert.file([
         'app/index.html',
         'app/scripts/app.ts',
         'app/styles/yfiles.css',
-        'app/typings/yfiles-api-umd-vscode.d.ts',
+        'app/typings/yfiles-api-es-modules-vscode.d.ts',
         'package.json',
         'tsconfig.json',
         'webpack.config.js',
+        'app/lib/yfiles/yfiles.js',
+        'app/lib/es2015-shim.js'
+      ]);
+      assert.noFile([
+        'bower.json',
+        'jsconfig.json',
+        'app/scripts/license.json',
         'Gruntfile.js'
       ]);
-      assert.noFile(['app/scripts/license.js']);
-    })
+    });
 
   });
 
-  describe('build result', function () {
+  describe('build result', function() {
 
     it('created the bundles and sourcemaps', function() {
       assert.file([
@@ -74,14 +81,13 @@ describe('Typescript + Webpack 4', function () {
     })
 
     it('runs', function (done) {
-      var dir = this.dir;
-      util.maybeOpenInBrowser(dir,done);
+      util.maybeOpenInBrowser(this.dir,done);
     });
 
     it('succeeds to run production build', function (done) {
       var dir = this.dir;
       exec('npm run production', {cwd: dir}, function(error, stdout, stderr) {
-        assert.ok(error === null, "Production build failed: "+stderr);
+        assert.ok(error === null, "Production build failed: "+error);
         util.maybeOpenInBrowser(dir,done);
       });
     });

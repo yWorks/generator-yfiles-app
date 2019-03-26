@@ -54,7 +54,7 @@ describe('AMD + VS Code', function () {
         'bower.json',
         'tsconfig.json',
         'Gruntfile.js',
-        'app/scripts/license.js',
+        'app/scripts/license.json',
         'webpack.config.js'
       ]);
     });

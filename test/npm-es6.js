@@ -12,12 +12,12 @@ var promptOptions = require("../generators/app/promptOptions");
 var defaultInit = require('./support/defaultInit');
 
 var answers = Object.assign({},defaultAnswers, {
-  "buildTool": promptOptions.buildTool.NONE,
-  "loadingType": promptOptions.loadingType.AMD
+  "moduleType": promptOptions.moduleType.NPM,
+  "language": promptOptions.language.ES6
 });
 
 
-describe('AMD', function () {
+describe('Local NPM module + ES6', function () {
 
   this.timeout(55000);
 
@@ -44,14 +44,21 @@ describe('AMD', function () {
         'app/scripts/app.js',
         'app/styles/yfiles.css',
         'package.json',
+        'webpack.config.js',
+        'app/shim/es2015-shim.js',
+        'node_modules/yfiles/yfiles.js',
       ]);
       assert.noFile([
         'bower.json',
         'tsconfig.json',
         'jsconfig.json',
+        'app/scripts/license.json',
+        'app/typings/yfiles-api-umd-vscode.d.ts',
+        'app/typings/yfiles-api-umd-webstorm.d.ts',
+        'app/typings/yfiles-api-es-modules-vscode.d.ts',
+        'app/typings/yfiles-api-es-modules-webstorm.d.ts',
         'Gruntfile.js',
-        'app/scripts/license.js',
-        'webpack.config.js'
+        'app/lib/yfiles/yfiles.js',
       ]);
     });
 
@@ -59,14 +66,28 @@ describe('AMD', function () {
 
   describe('build result', function() {
 
-    it('installed package.json files', function() {
+    it('created the bundles and sourcemaps', function() {
       assert.file([
-        'node_modules/requirejs/require.js'
+        'app/dist/app.js',
+        'app/dist/app.js.map',
+        'app/dist/lib.js'
       ]);
     });
 
+    it('uses webpack 4', function() {
+      assert.fileContent('package.json', /"webpack": "\^?4/)
+    })
+
     it('runs', function (done) {
       util.maybeOpenInBrowser(this.dir,done);
+    });
+
+    it('succeeds to run production build', function (done) {
+      var dir = this.dir;
+      exec('npm run production', {cwd: dir}, function(error, stdout, stderr) {
+        assert.ok(error === null, "Production build failed: "+error);
+        util.maybeOpenInBrowser(dir,done);
+      });
     });
 
   });

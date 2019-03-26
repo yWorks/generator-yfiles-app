@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "module": <% if (useBrowserify) { %>"commonjs"<% } else { %>"amd"<% }%>,
-    "moduleResolution": "Classic",
+    "module": <% if (useLocalNpm) { %>"es6"<% } else { %>"amd"<% }%>,
+    "moduleResolution": <% if (useLocalNpm) { %>"node"<% } else { %>"Classic"<% }%>,
     "sourceMap": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
@@ -10,7 +10,7 @@
     "noImplicitAny": false
   },
   "files": [
-    "<%= appPath %>typings/<%= typingsFilename %>",
+    <% if (!useLocalNpm) { %>"<%= appPath %>typings/<%= typingsFilename %>", <% } %>
     "<%= scriptsPath %>app.ts"
   ]
 }

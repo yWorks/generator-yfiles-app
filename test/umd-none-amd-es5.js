@@ -12,7 +12,10 @@ var promptOptions = require("../generators/app/promptOptions");
 var defaultInit = require('./support/defaultInit');
 
 var answers = Object.assign({},defaultAnswers, {
-  "loadingType": promptOptions.loadingType.SCRIPT_TAGS,
+  "moduleType": promptOptions.moduleType.UMD,
+  "buildTool": promptOptions.buildTool.NONE,
+  "loadingType": promptOptions.loadingType.AMD,
+  "language": promptOptions.language.ES5,
   "advancedOptions": [
     "Use yfiles-typeinfo.js"
   ],
@@ -47,11 +50,11 @@ describe('Script Tags', function () {
         'app/index.html',
         'app/scripts/app.js',
         'app/scripts/yfiles-typeinfo.js',
-        'app/styles/yfiles.css'
+        'app/styles/yfiles.css',
+        'package.json',
       ]);
       assert.noFile([
-        'package.json',
-        'app/scripts/license.js',
+        'app/scripts/license.json',
         'webpack.config.js',
         'bower.json',
         'tsconfig.json',

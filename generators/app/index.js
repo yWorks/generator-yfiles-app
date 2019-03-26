@@ -6,14 +6,14 @@ var yosay = require("yosay");
 var path = require("path");
 var fs = require("fs");
 var extend = require("deep-extend");
-var toSlugCase = require('to-slug-case')
+var toSlugCase = require('to-slug-case');
 var yfilesModules = require("./yfiles-modules.json");
 var yfilesES6Modules = require("./yfiles-es6-modules.json");
 var yfilesScriptModules = require("./yfiles-script-modules.json");
 var utils = require("../utils");
 var validatePrompts = require("./validatePrompts");
 
-var promptOptions = require("./promptOptions")
+var promptOptions = require("./promptOptions");
 
 module.exports = yeoman.extend({
   initializing: function () {
@@ -53,13 +53,13 @@ module.exports = yeoman.extend({
     }, {
       type: "input",
       name: "licensePath",
-      message: "Path of license file (e.g. 'path/to/license.js')",
+      message: "Path of license file (e.g. 'path/to/license.json')",
       default: function(props) {
-        var licensePath = path.join(props.yfilesPath, "demos/resources/license.js");
+        var licensePath = path.join(props.yfilesPath, "lib/license.json");
         if (fs.existsSync(licensePath)) {
           return licensePath + "";
         }
-        licensePath = path.join(props.yfilesPath, "license.js");
+        licensePath = path.join(props.yfilesPath, "license.json");
         if (fs.existsSync(licensePath)) {
           return licensePath + "";
         }
@@ -75,42 +75,39 @@ module.exports = yeoman.extend({
       type: "list",
       name: "moduleType",
       message: "Which kind of yFiles modules do you want to use?",
-      choices: [promptOptions.moduleType.UMD, promptOptions.moduleType.ES6_MODULES],
-      default: promptOptions.moduleType.ES6_MODULES,
+      choices: [promptOptions.moduleType.UMD, promptOptions.moduleType.ES6_MODULES, promptOptions.moduleType.NPM],
+      default: promptOptions.moduleType.NPM,
       store: true
     },{
       type: "list",
       name: "buildTool",
       message: "Which build tool do you want to use?",
-      choices: function (props) {
-        var choices = [promptOptions.buildTool.NONE, promptOptions.buildTool.GRUNT, promptOptions.buildTool.WEBPACK];
-        if(props.moduleType !== promptOptions.moduleType.ES6_MODULES) {
-          choices.push(promptOptions.buildTool.BROWSERIFY);
-        }
-        return choices;
-      },
-      default: "none",
+      choices: [promptOptions.buildTool.NONE, promptOptions.buildTool.WEBPACK],
       when: function (props) {
-        return props.moduleType !== promptOptions.moduleType.ES6_MODULES
+        return props.moduleType === promptOptions.moduleType.UMD
       },
+      default: promptOptions.buildTool.NONE,
       store: true
     }, {
       type: "list",
       name: "loadingType",
       message: "Module loading method",
-      choices: [promptOptions.loadingType.AMD, promptOptions.loadingType.SCRIPT_TAGS, promptOptions.loadingType.SYSTEMJS],
+      choices: [promptOptions.loadingType.AMD, promptOptions.loadingType.SCRIPT_TAGS],
       default: "AMD",
       store: true,
       when: function (props) {
-        return props.moduleType !== promptOptions.moduleType.ES6_MODULES && (props.buildTool === promptOptions.buildTool.NONE || props.buildTool === promptOptions.buildTool.GRUNT);
+        return props.moduleType === promptOptions.moduleType.UMD && props.buildTool === promptOptions.buildTool.NONE;
       }
     }, {
       type: "checkbox",
       name: "modules",
       message: "Which modules do you want to use?",
       store: true,
+      when: function (props) {
+        return props.moduleType !== promptOptions.moduleType.UMD // UMD always loads complete
+      },
       choices: function(props) {
-        return (props.moduleType === promptOptions.moduleType.ES6_MODULES ? Object.keys(yfilesES6Modules) : utils.flattenTree(yfilesModules, "yfiles/complete")).map(function (mod) {
+        return (props.moduleType === promptOptions.moduleType.ES6_MODULES ? Object.keys(yfilesES6Modules) : utils.flattenTree(yfilesModules, "complete")).map(function (mod) {
           return {
             name: mod,
             checked: this.minimumModules.indexOf(mod) >= 0
@@ -126,30 +123,11 @@ module.exports = yeoman.extend({
           return [promptOptions.language.ES6, promptOptions.language.TypeScript]
         } else if (props.buildTool === promptOptions.buildTool.NONE){
           return [promptOptions.language.ES5, promptOptions.language.ES6];
-        } else if (props.loadingType !== promptOptions.loadingType.SYSTEMJS){
-          return [promptOptions.language.ES5, promptOptions.language.ES6, promptOptions.language.ES6Babel, promptOptions.language.TypeScript]
         } else {
-          // systemjs
-          return [promptOptions.language.ES5, promptOptions.language.ES6Babel, promptOptions.language.TypeScript]
+          return [promptOptions.language.ES6, promptOptions.language.TypeScript]
         }
       },
-      default: promptOptions.language.ES5,
-      store: true
-    }, {
-      type: "list",
-      name: "webpackVersion",
-      message: "Which webpack version would you like to use?",
-      choices: [{
-        name: "3.x",
-        value: 3
-      }, {
-        name: "4.x",
-        value: 4
-      }],
-      when: function (props) {
-        return props.buildTool === promptOptions.buildTool.WEBPACK || props.moduleType === promptOptions.moduleType.ES6_MODULES
-      },
-      default: 0, // choice index
+      default: promptOptions.language.ES6,
       store: true
     }, {
       type: "checkbox",
@@ -176,22 +154,20 @@ module.exports = yeoman.extend({
     return this.prompt(prompts).then(function(answers) {
       this.props = answers;
 
-      this.props.useBrowserify = answers.buildTool === "Browserify";
-      this.props.useES6Modules = answers.moduleType === promptOptions.moduleType.ES6_MODULES
-      this.props.useWebpack = answers.buildTool === "webpack" || this.props.useES6Modules;
-      this.props.webpack4 = answers.webpackVersion === 4;
-      this.props.useGrunt = answers.buildTool === "Grunt" || this.props.useBrowserify || this.props.useWebpack;
+      this.props.useES6Modules = answers.moduleType === promptOptions.moduleType.ES6_MODULES;
+      this.props.useLocalNpm = answers.moduleType === promptOptions.moduleType.NPM;
+      this.props.useWebpack = answers.buildTool === "webpack" || this.props.useES6Modules || this.props.useLocalNpm;
       this.props.useYarn = answers.buildChain === promptOptions.buildChain.YARN;
 
-      this.props.useBundlingTool = this.props.useBrowserify || this.props.useWebpack;
+      this.props.useBundlingTool = this.props.useWebpack;
 
       this.props.useTypeScript = answers.language === "TypeScript";
       this.props.useEs6 = answers.language === promptOptions.language.ES6;
+      this.props.useEs5 = answers.language === promptOptions.language.ES5;
       this.props.useEs6Babel = answers.language === promptOptions.language.ES6Babel;
-      this.props.useTypeInfo = answers.advancedOptions.indexOf("Use yfiles-typeinfo.js") >= 0 && !this.props.useTypeScript && !this.props.useGrunt;
+      this.props.useTypeInfo = answers.advancedOptions.indexOf("Use yfiles-typeinfo.js") >= 0 && !this.props.useTypeScript;
       this.props.useIdeaProject = answers.advancedOptions.indexOf("WebStorm/PHP-Storm/Intellij IDEA Ultimate Project files") >= 0;
 
-      this.props.useBabel = (this.props.useEs6Babel && !this.props.useTypeScript)
       this.props.useVsCode = answers.advancedOptions.indexOf("Visual Studio Code integration") >= 0;
 
 
@@ -201,14 +177,20 @@ module.exports = yeoman.extend({
           : "javascript";
 
       this.props.loadingType = this.props.useTypeScript && answers.loadingType === promptOptions.loadingType.SCRIPT_TAGS ? promptOptions.loadingType.AMD : answers.loadingType;
-      this.props.modules = utils.joinArrays(this.minimumModules, answers.modules);
+      this.props.modules = utils.joinArrays(this.minimumModules, answers.moduleType !== promptOptions.moduleType.UMD ? answers.modules : ["complete"]);
 
       if (answers.loadingType === promptOptions.loadingType.SCRIPT_TAGS) {
-        this.props.modules = utils.insertChildren(this.props.modules, yfilesScriptModules).filter(function(module) {
-          return module.indexOf("/impl/") >= 0;
+        const modules = utils.insertChildren(this.props.modules, yfilesScriptModules);
+        this.props.modules = modules.filter(function(module) {
+          return module.indexOf("impl/") >= 0;
         }).reverse();
       } else {
         this.props.modules = utils.removeChildren(this.props.modules, this.props.useES6Modules ? yfilesES6Modules : yfilesModules);
+      }
+
+      if (answers.loadingType === promptOptions.loadingType.AMD) {
+        // add a 'yfiles' prefix since we define the requirejs base path with 'yfiles'
+        this.props.modules = this.props.modules.map(module => 'yfiles/' + module)
       }
 
       var languageToExtension = {
@@ -220,18 +202,15 @@ module.exports = yeoman.extend({
 
       this.props.licenseContent = JSON.stringify(utils.parseLicense(this.props.licensePath), null, 2);
 
-      this.props.typingsFilename = this.getTypingsFilename()
-      this.props.useLoader = this.props.loadingType === promptOptions.loadingType.SYSTEMJS || this.props.loadingType === promptOptions.loadingType.AMD;
-      this.props.usePackageJSON = this.props.useBrowserify || this.props.useBundlingTool || this.props.useGrunt || this.props.useBabel
-        || this.props.useTypeScript || this.props.useLoader;
+      this.props.typingsFilename = this.getTypingsFilename();
+      this.props.useLoader = this.props.loadingType === promptOptions.loadingType.AMD;
+      this.props.usePackageJSON = this.props.useBundlingTool || this.props.useTypeScript || this.props.useLoader;
 
-      if (this.props.useWebpack || this.props.useBrowserify || this.props.useGrunt) {
+      if (this.props.useWebpack) {
         this.props.runScript = "dev";
       } else if (this.props.useTypeScript && !this.props.usePackageJSON){
         // you should run tsc..
         this.props.runPostInstall = "tsc";
-      } else if (this.props.useBabel){
-        this.props.runScript = "babel";
       }
     }.bind(this));
   },
@@ -277,7 +256,7 @@ module.exports = yeoman.extend({
   getTypingsFilename: function() {
     var useVSCode = this.props.useVsCode || (this.props.useTypeScript && !this.props.useIdeaProject);
     if(this.props.useES6Modules) {
-      return useVSCode ? 'yfiles-api-es6-modules-vscode.d.ts' : 'yfiles-api-es6-modules-webstorm.d.ts'
+      return useVSCode ? 'yfiles-api-es-modules-vscode.d.ts' : 'yfiles-api-es-modules-webstorm.d.ts'
     } else {
       return useVSCode ? 'yfiles-api-umd-vscode.d.ts' : 'yfiles-api-umd-webstorm.d.ts'
     }
@@ -313,21 +292,20 @@ module.exports = yeoman.extend({
       distPath: distPath,
       yFilesUrl: toFileUrl(this.props.yfilesPath),
       modules: this.props.modules,
-      useES6: this.props.useEs6 || this.props.useEs6Babel,
+      useES6: this.props.useEs6,
       useTypeInfo: this.props.useTypeInfo,
-      useGrunt: this.props.useGrunt,
       useYarn: this.props.useYarn,
       useBrowserify: this.props.useBrowserify,
       useIdeaProject: this.props.useIdeaProject,
       useVsCode: this.props.useVsCode,
       useWebpack: this.props.useWebpack,
       useTypeScript: this.props.useTypeScript,
-      useBabel: this.props.useBabel,
       useLoader: this.props.useLoader,
       language: this.props.language,
       usePackageJSON: this.props.usePackageJSON,
       appScript: this.props.appScript,
       useES6Modules: this.props.useES6Modules,
+      useLocalNpm: this.props.useLocalNpm,
       moduleType: this.props.moduleType,
       typingsFilename: this.props.typingsFilename
     };
@@ -339,29 +317,26 @@ module.exports = yeoman.extend({
     );
 
 
-    if(this.props.useES6Modules) {
-      this.fs.copy(
-        path.join(this.props.yfilesPath, "lib/es6-modules/"),
-        this.destinationPath(libPath)
-      );
+    if (!this.props.useLocalNpm) {
+      if (this.props.useES6Modules) {
+        this.fs.copy(path.join(this.props.yfilesPath, "lib/es-modules/**/*js"),
+          this.destinationPath(path.join(libPath, "yfiles")));
+        this.fs.copy(path.join(this.props.yfilesPath, "lib/umd/es2015-shim.js"),
+          this.destinationPath(path.join(libPath, "es2015-shim.js")));
+      } else {
+        this.fs.copy(path.join(this.props.yfilesPath, "lib/umd/"), this.destinationPath(libPath));
+      }
+      if (this.props.useTypeScript) {
+        this.fs.copy(path.join(this.props.yfilesPath, "ide-support/" + this.props.typingsFilename),
+          this.destinationPath(path.join(appPath, "typings/" + this.props.typingsFilename)));
+      }
     } else {
-      this.fs.copy(
-        path.join(this.props.yfilesPath, "lib/umd/"),
-        this.destinationPath(libPath)
-      );
+      this.fs.copy(path.join(this.props.yfilesPath, "lib/umd/es2015-shim.js"),
+        this.destinationPath(path.join(path.join(appPath, "shim"), "es2015-shim.js")));
     }
 
-    this.fs.copy(
-      path.join(this.props.yfilesPath, "lib/yfiles.css"),
-      this.destinationPath(path.join(stylesPath, "yfiles.css"))
-    );
-
-    if (this.props.useTypeScript) {
-      this.fs.copy(
-        path.join(this.props.yfilesPath, "ide-support/" + this.props.typingsFilename),
-        this.destinationPath(path.join(appPath, "typings/" + this.props.typingsFilename))
-      );
-    }
+    this.fs.copy(path.join(this.props.yfilesPath, "lib/yfiles.css"),
+      this.destinationPath(path.join(stylesPath, "yfiles.css")));
 
     if (this.props.useTypeInfo) {
       this.fs.copy(
@@ -414,14 +389,12 @@ module.exports = yeoman.extend({
     pkg.private = pkg.private || true;
 
     //
-    // Write package.json for require.js or system.js
+    // Write package.json for require.js
     //
     if (this.props.useLoader) {
       pkg.dependencies = pkg.dependencies || (pkg.dependencies = {});
       if (this.props.loadingType === promptOptions.loadingType.AMD) {
         pkg.dependencies["requirejs"] = "^2.3.5";
-      } else {
-        pkg.dependencies["systemjs"] = "^0.21.0";
       }
     }
 
@@ -445,98 +418,20 @@ module.exports = yeoman.extend({
       this.props.runScript = "dev";
     }
 
-    if (this.props.useGrunt) {
-      var devDependencies = {
-        "grunt": "^1.0.1",
-        "grunt-contrib-clean": "^1.0.0",
-        "grunt-yfiles-deployment": path.join(this.props.yfilesPath, "deployment/grunt-yfiles-deployment"),
-        "load-grunt-tasks": "^3.5.2"
-      };
-
-      var scripts = {};
-      if(this.props.useBundlingTool||this.props.useTypeScript) {
-        scripts.obfuscate = "grunt";
-      } else {
-        // if we don't bundle, running the deployment tool is already the final production step
-        scripts.production = "grunt";
-      }
-
-      if (this.props.useTypeScript) {
-        scripts.production = this.props.useYarn ? "yarn run dev && yarn run obfuscate" : "npm run dev && npm run obfuscate";
-      }
-      if (this.props.useBrowserify) {
-        devDependencies.browserify = "^16.1.0";
-        devDependencies.watchify = "^3.10.0";
-        // Apparently, browserify and watchify can't create their output directories on their own, so we need mkdirp as well.
-        devDependencies.mkdirp =  "^0.5.1";
-
-        if(this.props.useBabel) {
-          //
-          // Browserify and es6
-          //
-          devDependencies.babelify = "^7.3.0";
-          scripts.dev = "mkdirp app/dist && browserify app/scripts/app.es6 -o app/dist/bundle.js  -t [ babelify --extensions .es6 --presets [ env ] ]";
-          scripts.watch = "mkdirp app/dist && watchify app/scripts/app.es6 -o app/dist/bundle.js  -t [ babelify --extensions .es6 --presets [ env ] ] --poll=100 -v";
-          if (this.props.useYarn) {
-            scripts.production = "yarn run babel && yarn run obfuscate && mkdirp app/dist && browserify build/obf/scripts/app.js -o app/dist/bundle.js";
-          } else {
-            scripts.production = "npm run babel && npm run obfuscate && mkdirp app/dist && browserify build/obf/scripts/app.js -o app/dist/bundle.js";
-          }
-          scripts.babel = "babel -x \".es6\" --presets=env app/scripts --out-dir app/scripts";
-        } else {
-          scripts.dev = "mkdirp app/dist && browserify app/scripts/app.js -o app/dist/bundle.js";
-          scripts.watch = "mkdirp app/dist && watchify app/scripts/app.js -o app/dist/bundle.js --poll=100 -v";
-          if (this.props.useYarn) {
-            scripts.production = "yarn run obfuscate && mkdirp app/dist && browserify build/obf/scripts/app.js -o app/dist/bundle.js";
-          } else {
-            scripts.production = "npm run obfuscate && mkdirp app/dist && browserify build/obf/scripts/app.js -o app/dist/bundle.js";
-          }
-        }
-      }
-
-      extend(pkg, {
-        scripts: scripts,
-        devDependencies: devDependencies
-      });
-
-      this.fs.copyTpl(
-        this.templatePath("Gruntfile.ejs"),
-        this.destinationPath("Gruntfile.js"),
-        templateVars
-      );
-
-    }
-
     if(this.props.useWebpack) {
-      var webpackProps = null;
-      if(this.props.webpack4) {
-        webpackProps = {
-          configTemplate: "webpack4.config.ejs",
-          productionParam: "--mode production",
-          devParam: "--mode development",
-          deps: {
-            "webpack": "^4.22.0",
-            "webpack-cli": "^3.1.2",
-            "webpack-dev-server": "^3.1.10"
-          },
-          tsDeps: {
-            "ts-loader": "^4.0.1",
-            "typescript": "^2.7.2"
-          }
-        }
-      } else {
-        webpackProps = {
-          configTemplate: "webpack.config.ejs",
-          productionParam: "--env=prod",
-          devParam: "--env=dev",
-          deps: {
-            "webpack": "^3.11.0",
-            "webpack-dev-server": "^2.11.2"
-          },
-          tsDeps: {
-            "ts-loader": "^3.5.0",
-            "typescript": "^2.7.2"
-          }
+      var webpackProps = {
+        configTemplate: "webpack4.config.ejs",
+        productionParam: "--mode production",
+        devParam: "--mode development",
+        deps: {
+          "@yworks/optimizer": "^0.1.12",
+          "webpack": "^4.22.0",
+          "webpack-cli": "^3.1.2",
+          "webpack-dev-server": "^3.1.10"
+        },
+        tsDeps: {
+          "ts-loader": "^4.0.1",
+          "typescript": "^2.7.2"
         }
       }
     }
@@ -546,24 +441,20 @@ module.exports = yeoman.extend({
     //
     if (this.props.useWebpack && !this.props.useTypeScript) {
 
-      var devDeps = {
-        "uglifyjs-webpack-plugin": "^1.2.3",
-      };
-
-      extend(devDeps, webpackProps.deps)
+      var devDeps = {};
+      extend(devDeps, webpackProps.deps);
 
       var pkgScripts = {
-        "production": this.props.useYarn ? "yarn run obfuscate && webpack " + webpackProps.productionParam : "npm run obfuscate && webpack "+ webpackProps.productionParam,
+        "production": "webpack " + webpackProps.productionParam,
         "dev": "webpack " + webpackProps.devParam,
         "start": "webpack-dev-server " + webpackProps.devParam + " --open"
       };
 
       this.props.runScript = 'dev';
 
-      if(this.props.useBabel) {
-        devDeps["babel-loader"] = "^7.0.0";
-        pkgScripts.production = (this.props.useYarn ? "yarn run babel && " : "npm run babel && " ) +pkgScripts.production;
-      }
+      devDeps["babel-loader"] = "^8.0.5";
+      devDeps["@babel/core"] = "^7.4.0";
+      devDeps["@babel/preset-env"] = "^7.4.2";
 
       extend(pkg, {
         scripts: pkgScripts,
@@ -595,11 +486,11 @@ module.exports = yeoman.extend({
         templateVars
       );
 
-      var devDependencies = extend(extend({}, webpackProps.deps),webpackProps.tsDeps)
+      var devDependencies = extend(extend({}, webpackProps.deps),webpackProps.tsDeps);
 
       extend(pkg, {
         scripts: {
-          "production": this.props.useYarn ? "tsc --outFile app/scripts/app.js && yarn run obfuscate && webpack " + webpackProps.productionParam: "tsc --outFile app/scripts/app.js && npm run obfuscate && webpack " + webpackProps.productionParam,
+          "production": "webpack " + webpackProps.productionParam,
           "dev": "webpack " + webpackProps.devParam,
           "start": "webpack-dev-server " + webpackProps.devParam + " --open"
         },
@@ -610,25 +501,12 @@ module.exports = yeoman.extend({
 
     }
 
-    if (this.props.useBabel) {
-
-      var scripts =  {
-        "babel": "babel -x \".es6\" --presets=env app/scripts --out-dir app/scripts"
-      };
-
-      if(!this.props.useBundlingTool) {
-        scripts.dev = "babel -x \".es6\" --watch --presets=env app/scripts --out-dir app/scripts";
-        this.props.runScript = 'babel';
-      }
-
+    if (this.props.useLocalNpm) {
       extend(pkg, {
-        scripts: scripts,
-        devDependencies: {
-          "babel-cli": "^6.24.1",
-          "babel-preset-env": "^1.6.1"
+        dependencies: {
+          yfiles: path.join(this.props.yfilesPath, "lib/es-modules/")
         }
       });
-
     }
 
     if (this.props.usePackageJSON) {

@@ -1,21 +1,21 @@
-import {License} from 'yfiles/lang'
+import {License<% if (useViewLayoutBridge) { %>, Class<% } %>} from 'yfiles/lang'
 
 import {GraphComponent, IGraph, INode, Rect, Fill} from 'yfiles/view-component'
 <% if (useShapeNodeStyle) { %>import {ShinyPlateNodeStyle} from 'yfiles/styles-other'
+<% } %>
+<% if (layout) { %>import {HierarchicLayout} from 'yfiles/layout-hierarchic'
+<% } %>
+<% if (useViewLayoutBridge) { %>import {LayoutExecutor} from 'yfiles/view-layout-bridge'
 <% } %>
 <% if (useGraphEditorInputMode) { %>import {GraphEditorInputMode} from 'yfiles/view-editor'
 <% } %>
 <% if (moduleList.indexOf('yfiles/layout-hierarchic')>= 0) { %>import {HierarchicLayout} from 'yfiles/layout-hierarchic'
 <% } %>
-<% if(moduleList.length>1) {
-for(var i=0;i<moduleList.length;i++) {
-  if (['yfiles/lang', 'yfiles/styles-other', 'yfiles/view-editor','yfiles/layout-hierarchic'].indexOf(moduleList[i]) <= 0){
-%>
-import '<%= moduleList[i]%>';<%
-}}
-}%>
 // Tell the library about the license contents
 License.value = <%-licenseContent%>;
+
+<% if (useViewLayoutBridge) { %>Class.ensure(LayoutExecutor);
+<% } %>
 
 /**
  * <% if(description) { %><%- description %><% } else { %>A simple yFiles for HTML powered class.<% } %>

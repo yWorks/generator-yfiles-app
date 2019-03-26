@@ -1,111 +1,111 @@
 {
-  "yfiles/algorithms": [
-    "yfiles/core"
+  "algorithms": [
+    "core"
   ],
-  "yfiles/core": [],
-  "yfiles/layout-core": [
-    "yfiles/core",
-    "yfiles/algorithms"
+  "core": [],
+  "layout-core": [
+    "core",
+    "algorithms"
   ],
-  "yfiles/layout-familytree": [
-    "yfiles/core",
-    "yfiles/algorithms",
-    "yfiles/layout-core",
-    "yfiles/layout-hierarchic",
-    "yfiles/router-other"
+  "layout-familytree": [
+    "core",
+    "algorithms",
+    "layout-core",
+    "layout-hierarchic",
+    "router-other"
   ],
-  "yfiles/layout-hierarchic": [
-    "yfiles/core",
-    "yfiles/algorithms",
-    "yfiles/layout-core"
+  "layout-hierarchic": [
+    "core",
+    "algorithms",
+    "layout-core"
   ],
-  "yfiles/layout-multipage": [
-    "yfiles/core",
-    "yfiles/algorithms",
-    "yfiles/layout-core",
-    "yfiles/layout-organic",
-    "yfiles/router-polyline",
-    "yfiles/router-other"
+  "layout-multipage": [
+    "core",
+    "algorithms",
+    "layout-core",
+    "layout-organic",
+    "router-polyline",
+    "router-other"
   ],
-  "yfiles/layout-organic": [
-    "yfiles/core",
-    "yfiles/algorithms",
-    "yfiles/layout-core"
+  "layout-organic": [
+    "core",
+    "algorithms",
+    "layout-core"
   ],
-  "yfiles/layout-orthogonal-compact": [
-    "yfiles/core",
-    "yfiles/algorithms",
-    "yfiles/layout-orthogonal",
-    "yfiles/router-polyline",
-    "yfiles/router-other",
-    "yfiles/layout-tree",
-    "yfiles/layout-core"
+  "layout-orthogonal-compact": [
+    "core",
+    "algorithms",
+    "layout-orthogonal",
+    "router-polyline",
+    "router-other",
+    "layout-tree",
+    "layout-core"
   ],
-  "yfiles/layout-orthogonal": [
-    "yfiles/core",
-    "yfiles/algorithms",
-    "yfiles/layout-tree",
-    "yfiles/layout-core"
+  "layout-orthogonal": [
+    "core",
+    "algorithms",
+    "layout-tree",
+    "layout-core"
   ],
-  "yfiles/layout-radial": [
-    "yfiles/core",
-    "yfiles/algorithms",
-    "yfiles/layout-core",
-    "yfiles/layout-hierarchic"
+  "layout-radial": [
+    "core",
+    "algorithms",
+    "layout-core",
+    "layout-hierarchic"
   ],
-  "yfiles/layout-seriesparallel": [
-    "yfiles/core",
-    "yfiles/algorithms",
-    "yfiles/layout-core"
+  "layout-seriesparallel": [
+    "core",
+    "algorithms",
+    "layout-core"
   ],
-  "yfiles/layout-tree": [
-    "yfiles/core",
-    "yfiles/algorithms",
-    "yfiles/layout-core"
+  "layout-tree": [
+    "core",
+    "algorithms",
+    "layout-core"
   ],
-  "yfiles/router-other": [
-    "yfiles/core",
-    "yfiles/algorithms",
-    "yfiles/layout-core"
+  "router-other": [
+    "core",
+    "algorithms",
+    "layout-core"
   ],
-  "yfiles/router-polyline": [
-    "yfiles/core",
-    "yfiles/algorithms",
-    "yfiles/layout-core"
+  "router-polyline": [
+    "core",
+    "algorithms",
+    "layout-core"
   ],
-  "yfiles/styles-other": [
-    "yfiles/core",
-    "yfiles/view-component"
+  "styles-other": [
+    "core",
+    "view-component"
   ],
-  "yfiles/styles-template": [
-    "yfiles/core",
-    "yfiles/view-component"
+  "styles-template": [
+    "core",
+    "view-component"
   ],
-  "yfiles/view-component": [
-    "yfiles/core"
+  "view-component": [
+    "core"
   ],
-  "yfiles/view-editor": [
-    "yfiles/core",
-    "yfiles/view-component"
+  "view-editor": [
+    "core",
+    "view-component"
   ],
-  "yfiles/view-folding": [
-    "yfiles/core",
-    "yfiles/view-component"
+  "view-folding": [
+    "core",
+    "view-component"
   ],
-  "yfiles/view-graphml": [
-    "yfiles/core",
-    "yfiles/view-component",
-    "yfiles/view-folding"
+  "view-graphml": [
+    "core",
+    "view-component",
+    "view-folding"
   ],
-  "yfiles/view-layout-bridge": [
-    "yfiles/core",
-    "yfiles/layout-core",
-    "yfiles/view-component"
+  "view-layout-bridge": [
+    "core",
+    "layout-core",
+    "view-component"
   ],
-  "yfiles/view-table": [
-    "yfiles/core",
-    "yfiles/view-component",
-    "yfiles/view-editor",
-    "yfiles/styles-template"
+  "view-table": [
+    "core",
+    "view-component",
+    "view-editor",
+    "styles-template"
   ]
 }

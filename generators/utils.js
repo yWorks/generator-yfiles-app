@@ -68,11 +68,7 @@ module.exports = {
       yfiles: {},
     };
     try {
-      // wrap the file with a function
-      var getModules = new Function("global", fs.readFileSync(path, 'utf8'));
-      // and pass yfiles and lang to it
-      getModules.call(global, global);
-      return global.yfiles.license;
+      return JSON.parse(fs.readFileSync(path, 'utf8'))
     } catch (e) {
       return null;
     }

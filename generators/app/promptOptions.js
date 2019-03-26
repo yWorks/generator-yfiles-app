@@ -1,8 +1,7 @@
 module.exports = {
   loadingType: {
     AMD: "AMD",
-    SCRIPT_TAGS: "script-tags",
-    SYSTEMJS: "systemjs"
+    SCRIPT_TAGS: "script-tags"
   },
   buildChain: {
     YARN: "yarn",
@@ -10,13 +9,12 @@ module.exports = {
   },
   moduleType: {
     UMD: "UMD",
-    ES6_MODULES: "ES6 Modules"
+    ES6_MODULES: "ES Modules",
+    NPM: "Local NPM dependency (recommended)"
   },
   buildTool: {
     NONE: "none",
-    GRUNT: "Grunt",
-    WEBPACK: "webpack",
-    BROWSERIFY: "Browserify"
+    WEBPACK: "webpack"
   },
   language: {
     ES5: "ES5",

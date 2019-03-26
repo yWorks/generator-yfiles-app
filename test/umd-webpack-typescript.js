@@ -1,10 +1,10 @@
 'use strict';
 
+var path = require('path');
 var fs = require('fs');
 var exec = require('child_process').exec;
 var helpers = require('yeoman-test');
 var assert = require('yeoman-assert');
-var opn = require('opn');
 
 var util = require('./support/util');
 var defaultAnswers = require('./support/defaultPromptAnswers');
@@ -12,21 +12,20 @@ var promptOptions = require("../generators/app/promptOptions");
 var defaultInit = require('./support/defaultInit');
 
 var answers = Object.assign({},defaultAnswers, {
-  "language": promptOptions.language.ES6,
-  "moduleType": promptOptions.moduleType.ES6_MODULES,
-  "webpackVersion": 3
+  "moduleType": promptOptions.moduleType.UMD,
+  "buildTool": promptOptions.buildTool.WEBPACK,
+  "language": promptOptions.language.TypeScript
 });
 
+describe('UMD + Webpack + Typescript', function () {
 
-describe('ES6Modules JS', function () {
-
-  this.timeout(55000);
+  this.timeout(120000);
 
   before(function(done) {
     var that = this;
-    this.app = helpers
+    helpers
       .run(require.resolve('../generators/app'))
-      .withGenerators([[helpers.createDummyGenerator(),require.resolve('../generators/class')]])
+      .withGenerators([[helpers.createDummyGenerator(), require.resolve('../generators/class')]])
       .withOptions({
         'skip-welcome-message': true,
         'skip-message': true,
@@ -34,36 +33,29 @@ describe('ES6Modules JS', function () {
       })
       .withPrompts(answers).then(function(dir) {return defaultInit(__filename, dir)}).then(function(dir) {
         that.dir = dir;
+        console.log("temp dir", dir);
         done();
-      })
-  });
+      });
+    });
 
-  describe('check files', function() {
+  describe('check files', function () {
+
     it('generates base files', function () {
       assert.file([
         'app/index.html',
-        'app/scripts/app.js',
+        'app/scripts/app.ts',
         'app/styles/yfiles.css',
-        'package.json',
-        'webpack.config.js',
-        'Gruntfile.js'
-      ]);
-      assert.noFile([
-        'app/lib/complete.js',
-        'bower.json',
-        'tsconfig.json',
-        'jsconfig.json',
-        'app/scripts/license.js',
         'app/typings/yfiles-api-umd-vscode.d.ts',
-        'app/typings/yfiles-api-umd-webstorm.d.ts',
-        'app/typings/yfiles-api-es6-modules-vscode.d.ts',
-        'app/typings/yfiles-api-es6-modules-webstorm.d.ts'
+        'package.json',
+        'tsconfig.json',
+        'webpack.config.js'
       ]);
-    });
+      assert.noFile(['app/scripts/license.json']);
+    })
 
   });
 
-  describe('build result', function() {
+  describe('build result', function () {
 
     it('created the bundles and sourcemaps', function() {
       assert.file([
@@ -73,18 +65,22 @@ describe('ES6Modules JS', function () {
       ]);
     });
 
-    it('uses webpack 3', function() {
-      assert.fileContent('package.json', /"webpack": "\^?3/)
+    it('uses webpack 4', function() {
+      assert.fileContent('package.json', /"webpack": "\^?4/)
+    })
+    it('uses ts-loader 4', function() {
+      assert.fileContent('package.json', /"ts-loader": "\^?4/)
     })
 
     it('runs', function (done) {
-      util.maybeOpenInBrowser(this.dir,done);
+      var dir = this.dir;
+      util.maybeOpenInBrowser(dir,done);
     });
 
     it('succeeds to run production build', function (done) {
       var dir = this.dir;
       exec('npm run production', {cwd: dir}, function(error, stdout, stderr) {
-        assert.ok(error === null, "Production build failed: "+error);
+        assert.ok(error === null, "Production build failed: "+stderr);
         util.maybeOpenInBrowser(dir,done);
       });
     });

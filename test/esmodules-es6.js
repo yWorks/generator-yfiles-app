@@ -1,6 +1,5 @@
 'use strict';
 
-var path = require('path');
 var fs = require('fs');
 var exec = require('child_process').exec;
 var helpers = require('yeoman-test');
@@ -13,13 +12,14 @@ var promptOptions = require("../generators/app/promptOptions");
 var defaultInit = require('./support/defaultInit');
 
 var answers = Object.assign({},defaultAnswers, {
-  "buildTool": promptOptions.buildTool.WEBPACK,
-  "webpackVersion": 3
+  "moduleType": promptOptions.moduleType.ES6_MODULES,
+  "language": promptOptions.language.ES6
 });
 
-describe('Webpack Only', function () {
 
-  this.timeout(60000);
+describe('ES Modules + ES6', function () {
+
+  this.timeout(55000);
 
   before(function(done) {
     var that = this;
@@ -43,16 +43,21 @@ describe('Webpack Only', function () {
         'app/index.html',
         'app/scripts/app.js',
         'app/styles/yfiles.css',
-        'Gruntfile.js',
         'package.json',
-        'webpack.config.js'
+        'webpack.config.js',
+        'app/lib/yfiles/yfiles.js',
+        'app/lib/es2015-shim.js'
       ]);
       assert.noFile([
-        'app/scripts/license.js',
+        'bower.json',
+        'tsconfig.json',
+        'jsconfig.json',
+        'app/scripts/license.json',
         'app/typings/yfiles-api-umd-vscode.d.ts',
         'app/typings/yfiles-api-umd-webstorm.d.ts',
-        'app/typings/yfiles-api-es6-modules-vscode.d.ts',
-        'app/typings/yfiles-api-es6-modules-webstorm.d.ts'
+        'app/typings/yfiles-api-es-modules-vscode.d.ts',
+        'app/typings/yfiles-api-es-modules-webstorm.d.ts',
+        'Gruntfile.js'
       ]);
     });
 
@@ -68,8 +73,8 @@ describe('Webpack Only', function () {
       ]);
     });
 
-    it('uses webpack 3', function() {
-      assert.fileContent('package.json', /"webpack": "\^?3/)
+    it('uses webpack 4', function() {
+      assert.fileContent('package.json', /"webpack": "\^?4/)
     })
 
     it('runs', function (done) {
@@ -83,6 +88,7 @@ describe('Webpack Only', function () {
         util.maybeOpenInBrowser(dir,done);
       });
     });
+
   });
 
 });

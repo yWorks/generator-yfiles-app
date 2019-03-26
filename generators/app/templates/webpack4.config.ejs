@@ -1,7 +1,7 @@
 'use strict';
 var path = require("path");
-var webpack = require('webpack')
-var UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+var webpack = require('webpack');
+var YFilesOptimizerPlugin = require('@yworks/optimizer/webpack-plugin');
 
 
 var baseConfig = {
@@ -13,21 +13,22 @@ var baseConfig = {
   <% if (useTypeInfo) { %>
   alias: {
     "yfiles-typeinfo": path.resolve(scriptsSrc + "yfiles-typeinfo.js")
-  }
+  },
   <% } %><% if (useTypeScript) { %>
   module: {
     rules: [
       { test: /\.tsx?$/, loader: "ts-loader" }
     ]
   },
-  <% } %><% if (useBabel && !useTypeScript) { %>
+  <% } %><% if (!useTypeScript) { %>
   module: {
     rules: [
       {
-        test: /\.es6$/,
+        test: /\.js$/,
+        exclude: /(node_modules|bower_components|lib)/,
         loader: 'babel-loader',
         options: {
-          presets: ['env']
+          presets: ['@babel/preset-env']
         }
       }
     ]
@@ -36,18 +37,18 @@ var baseConfig = {
     splitChunks: {
       cacheGroups: {
         lib: {
-          test: /([\\/]lib[\\/]yfiles)|([\\/]node_modules[\\/])/,
+          test: /([\\/]lib)|([\\/]node_modules[\\/])/,
           name: 'lib',
           chunks: 'all'
         }
       }
     }
   }
-}
+};
 
 module.exports = function (env, options) {
 
-  console.log("Running webpack...")
+  console.log("Running webpack...");
 
   if (options.mode === 'development') {
     return Object.assign({
@@ -55,9 +56,10 @@ module.exports = function (env, options) {
       entry: {
         app: path.resolve('<%= scriptsPath + appScript %>')
       },
+      <% if (!useLocalNpm) { %>
       resolve: {
         modules: ['node_modules', path.resolve('<%= libPath %>')],
-      },
+      },<% } %>
       devServer: {
         contentBase: [path.join(__dirname, './app')],
         compress: true,
@@ -77,22 +79,17 @@ module.exports = function (env, options) {
     return Object.assign({
       mode: 'production',
       entry: {
-        app: path.resolve('<%= obfDest %>scripts/app.js')
+        app: path.resolve('<%= scriptsPath + appScript %>')
       },
+      <% if (!useLocalNpm) { %>
       resolve: {
-        modules: ['node_modules', path.resolve('<%= obfDest %>lib/')],
-      },
+        modules: ['node_modules', path.resolve('<%= libPath %>')],
+      },<% } %>
       plugins: [
-        new UglifyJsPlugin({
-          uglifyOptions: {
-            beautify: false,
-            compress: {
-              dead_code: false,
-              conditionals: false
-            }
-          }
+        new YFilesOptimizerPlugin({
+          logLevel: 'info'
         })
       ]
     }, baseConfig);
   }
-}
+};

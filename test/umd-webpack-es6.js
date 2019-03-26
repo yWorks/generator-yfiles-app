@@ -12,15 +12,13 @@ var promptOptions = require("../generators/app/promptOptions");
 var defaultInit = require('./support/defaultInit');
 
 var answers = Object.assign({},defaultAnswers, {
-  "loadingType": promptOptions.loadingType.SYSTEMJS,
-  "advancedOptions": [
-    "Use yfiles-typeinfo.js"
-  ]
+  "moduleType": promptOptions.moduleType.UMD,
+  "language": promptOptions.language.ES6,
+  "buildTool": promptOptions.buildTool.WEBPACK
 });
 
-console.log(JSON.stringify(answers,null,2));
 
-describe('SystemJS', function () {
+describe('UMD + Webpack + ES6', function () {
 
   this.timeout(55000);
 
@@ -45,16 +43,20 @@ describe('SystemJS', function () {
       assert.file([
         'app/index.html',
         'app/scripts/app.js',
-        'app/scripts/yfiles-typeinfo.js',
         'app/styles/yfiles.css',
         'package.json',
+        'webpack.config.js',
       ]);
       assert.noFile([
         'bower.json',
-        'app/scripts/license.js',
-        'webpack.config.js',
         'tsconfig.json',
-        'Gruntfile.js'
+        'app/scripts/license.json',
+        'Gruntfile.js',
+        '.idea/jsLibraryMappings.xml',
+        '.idea/misc.xml',
+        '.idea/modules.xml',
+        '.idea/testApp.iml',
+        '.idea/libraries/yFiles_for_HTML.xml',
       ]);
     });
 
@@ -62,15 +64,16 @@ describe('SystemJS', function () {
 
   describe('build result', function() {
 
-    it('installed package.json files', function() {
+    it('installed npm files', function() {
       assert.file([
-        'node_modules/systemjs/dist/system.js'
+        'node_modules/@yworks/optimizer/index.js'
       ]);
     });
 
     it('runs', function (done) {
       util.maybeOpenInBrowser(this.dir,done);
     });
+
   });
 
 });
