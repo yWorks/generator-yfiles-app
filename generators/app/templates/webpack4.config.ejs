@@ -10,11 +10,7 @@ var baseConfig = {
     publicPath: 'dist',
     filename: '[name].js'
   },
-  <% if (useTypeInfo) { %>
-  alias: {
-    "yfiles-typeinfo": path.resolve(scriptsSrc + "yfiles-typeinfo.js")
-  },
-  <% } %><% if (useTypeScript) { %>
+  <% if (useTypeScript) { %>
   module: {
     rules: [
       { test: /\.tsx?$/, loader: "ts-loader" }
@@ -52,10 +48,15 @@ module.exports = function (env, options) {
 
   if (options.mode === 'development') {
     return Object.assign({
-      mode: 'development',
+      mode: 'development',<% if (useTypeInfo) { %>
       entry: {
+        app: [
+          path.resolve('<%= scriptsPath%>/yfiles-typeinfo.js'),
+          path.resolve('<%= scriptsPath + appScript %>')
+        ]
+      },<% } else { %>entry: {
         app: path.resolve('<%= scriptsPath + appScript %>')
-      },
+      },<% } %>
       <% if (!useLocalNpm) { %>
       resolve: {
         modules: ['node_modules', path.resolve('<%= libPath %>')],

@@ -13,7 +13,10 @@ var defaultInit = require('./support/defaultInit');
 
 var answers = Object.assign({},defaultAnswers, {
   "moduleType": promptOptions.moduleType.NPM,
-  "language": promptOptions.language.ES6
+  "language": promptOptions.language.ES6,
+  "advancedOptions": [
+    promptOptions.advanced.TYPEINFO
+  ]
 });
 
 
@@ -42,6 +45,7 @@ describe('Local NPM module + ES6', function () {
       assert.file([
         'app/index.html',
         'app/scripts/app.js',
+        'app/scripts/yfiles-typeinfo.js',
         'app/styles/yfiles.css',
         'package.json',
         'webpack.config.js',

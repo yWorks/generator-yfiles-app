@@ -47,7 +47,7 @@ module.exports = yeoman.extend({
       name: this.options.name,
       appPath: utils.unixPath(appPath),
       scriptsPath: utils.unixPath(scriptsPath),
-      layout: modules.indexOf('layout-hierarchic') >= 0 ? (useES6Modules || useLocalNpm ? 'HierarchicLayout' : 'yfiles.hierarchic.HierarchicLayout') : false,
+      layout: modules.indexOf('layout-hierarchic') >= 0 ? (useES6Modules ? 'HierarchicLayout' : 'yfiles.hierarchic.HierarchicLayout') : false,
       useShapeNodeStyle: useES6Modules ? modules.indexOf('styles-other') >= 0 : true,
       useGraphEditorInputMode: modules.indexOf('view-editor') >= 0,
       moduleList: useWebpack ? modules.map(function(module) { return '../lib/'+module.replace('yfiles/', '')}) : modules,
@@ -64,7 +64,7 @@ module.exports = yeoman.extend({
       appScript: this.options.appScript
     };
 
-    vars.useViewLayoutBridge = (useES6Modules || useLocalNpm) ? vars.layout || modules.indexOf('view-layout-bridge') >= 0 : false
+    vars.useViewLayoutBridge = useES6Modules ? vars.layout || modules.indexOf('view-layout-bridge') >= 0 : false
 
     if (language === "javascript" || language === "es6") {
 

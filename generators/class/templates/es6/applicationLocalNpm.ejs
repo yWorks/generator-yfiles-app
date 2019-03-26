@@ -1,20 +1,20 @@
 import {
   License,
-  GraphComponent<% if (useShapeNodeStyle) { %>,
-  ShinyPlateNodeStyle<% } %><% if (layout) { %>,
-  HierarchicLayout<% } %><% if (useViewLayoutBridge) { %>,
+  GraphComponent,
+  ShinyPlateNodeStyle,
+  HierarchicLayout,
   Class,
-  LayoutExecutor<% } %><% if (useGraphEditorInputMode) { %>,
-  GraphEditorInputMode<% } %>
+  LayoutExecutor,
+  GraphEditorInputMode
 } from 'yfiles'
 
 // Tell the library about the license contents
 License.value = <%-licenseContent%>;
-<% if (useViewLayoutBridge) { %>
+
 // We need to load the yfiles/view-layout-bridge module explicitly to prevent the webpack
 // tree shaker from removing this dependency which is needed for 'morphLayout' in this demo.
 Class.ensure(LayoutExecutor);
-<% } %>
+
 
 /**
 * <% if(description) { %><%- description %><% } else { %>A yfiles class.<% } %>
@@ -27,13 +27,12 @@ class <%- name %> {
 
     // get the IGraph
     const graph = graphComponent.graph;
-    <% if (useShapeNodeStyle) { %>
+
     // create and configure a default node style
     graph.nodeDefaults.style = new ShinyPlateNodeStyle({
       fill: "orange",
       drawShadow: true
     });
-    <%}%>
 
     // create some nodes
     const node1 = graph.createNode([50, 50, 30, 30]);
@@ -41,14 +40,12 @@ class <%- name %> {
 
     // create an edge
     graph.createEdge(node1, node2);
-    <% if (useGraphEditorInputMode) { %>
+
     // create an input mode
     graphComponent.inputMode = new GraphEditorInputMode();
-    <% }%>
-    <% if (layout) { %>
+
     // execute a layout
-    graphComponent.morphLayout(new <%=layout%>());
-    <% } %>
+    graphComponent.morphLayout(new HierarchicLayout());
   }
 
   constructor() {

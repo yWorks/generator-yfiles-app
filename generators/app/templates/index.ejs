@@ -17,7 +17,7 @@
 <body>
 <div id="graphComponent"></div>
 
-<% if (useTypeInfo) { %>
+<% if (useTypeInfo && !useBundlingTool) { %>
 <!-- Adding type information support during application development. -->
 <script src="scripts/yfiles-typeinfo.js"></script>
 
@@ -25,12 +25,10 @@
 <script src="<% if (useLocalNpm) { %>shim<% } else { %>lib<% } %>/es2015-shim.js"></script>
 <%
 if (useBundlingTool) { %>
-<% if (useBrowserify) { %>
-<script src="dist/bundle.js"></script>
-<% } else if (useWebpack) { %>
+<% if (useWebpack) { %>
 <script src="dist/lib.js"></script>
 <script src="dist/app.js"></script>
-<% } if (language === "es6" && useTypeInfo) { %><script src="scripts/yfiles-typeinfo.js"></script><% } %>
+<% } %>
 <% }
 else if (language === "typescript") {
 %><script src="../node_modules/requirejs/require.js"></script>

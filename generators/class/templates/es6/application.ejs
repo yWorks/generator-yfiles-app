@@ -8,9 +8,7 @@
 <%
     }
   });
-} else if (loadingType === "systemjs") { %>
-/**typeof yfiles*/ const yfiles = require('<%= moduleList[0] %>');
-<% } %>
+} %>
 
 yfiles.license = <%-licenseContent%>;
 

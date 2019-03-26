@@ -6,7 +6,6 @@ var yosay = require("yosay");
 var path = require("path");
 var fs = require("fs");
 var extend = require("deep-extend");
-var toSlugCase = require('to-slug-case');
 var yfilesModules = require("./yfiles-modules.json");
 var yfilesES6Modules = require("./yfiles-es6-modules.json");
 var yfilesScriptModules = require("./yfiles-script-modules.json");
@@ -27,11 +26,6 @@ module.exports = yeoman.extend({
     ));
 
     this.log(chalk.green("Take a look at the README for further information how to use this generator."));
-
-    var advancedOptions = [
-      {name: "Visual Studio Code integration", checked: false},
-      {name: "WebStorm/PHP-Storm/Intellij IDEA Ultimate Project files", checked: false}
-    ];
 
     var prompts = [{
       type: "input",
@@ -104,7 +98,7 @@ module.exports = yeoman.extend({
       message: "Which modules do you want to use?",
       store: true,
       when: function (props) {
-        return props.moduleType !== promptOptions.moduleType.UMD // UMD always loads complete
+        return props.moduleType === promptOptions.moduleType.ES6_MODULES // UMD always loads complete, local npm does not split modules
       },
       choices: function(props) {
         return (props.moduleType === promptOptions.moduleType.ES6_MODULES ? Object.keys(yfilesES6Modules) : utils.flattenTree(yfilesModules, "complete")).map(function (mod) {
@@ -133,14 +127,11 @@ module.exports = yeoman.extend({
       type: "checkbox",
       name: "advancedOptions",
       message: "What else do you want?",
-      choices: function (props) {
-       if (props.buildTool && props.buildTool.indexOf("none") >= 0) {
-          return advancedOptions.concat([
-            {name: "Use yfiles-typeinfo.js", checked: true}
-          ]);
-        }
-        return advancedOptions;
-      },
+      choices: [
+        {name: "Use yfiles-typeinfo.js", checked: true},
+        {name: "Visual Studio Code integration", checked: false},
+        {name: "WebStorm/PHP-Storm/Intellij IDEA Ultimate Project files", checked: false}
+      ],
       store: true
     }, {
       type: "list",
@@ -165,7 +156,7 @@ module.exports = yeoman.extend({
       this.props.useEs6 = answers.language === promptOptions.language.ES6;
       this.props.useEs5 = answers.language === promptOptions.language.ES5;
       this.props.useEs6Babel = answers.language === promptOptions.language.ES6Babel;
-      this.props.useTypeInfo = answers.advancedOptions.indexOf("Use yfiles-typeinfo.js") >= 0 && !this.props.useTypeScript;
+      this.props.useTypeInfo = answers.advancedOptions.indexOf("Use yfiles-typeinfo.js") >= 0;
       this.props.useIdeaProject = answers.advancedOptions.indexOf("WebStorm/PHP-Storm/Intellij IDEA Ultimate Project files") >= 0;
 
       this.props.useVsCode = answers.advancedOptions.indexOf("Visual Studio Code integration") >= 0;
@@ -177,7 +168,7 @@ module.exports = yeoman.extend({
           : "javascript";
 
       this.props.loadingType = this.props.useTypeScript && answers.loadingType === promptOptions.loadingType.SCRIPT_TAGS ? promptOptions.loadingType.AMD : answers.loadingType;
-      this.props.modules = utils.joinArrays(this.minimumModules, answers.moduleType !== promptOptions.moduleType.UMD ? answers.modules : ["complete"]);
+      this.props.modules = utils.joinArrays(this.minimumModules, answers.moduleType === promptOptions.moduleType.ES6_MODULES ? answers.modules : ["complete"]);
 
       if (answers.loadingType === promptOptions.loadingType.SCRIPT_TAGS) {
         const modules = utils.insertChildren(this.props.modules, yfilesScriptModules);
@@ -241,11 +232,10 @@ module.exports = yeoman.extend({
       stylesPath: this.config.get("stylesPath"),
       postClassContent: this.props.language === "es6" ?
         "new " + this.props.applicationName + "();" :
-        this.props.language === "javascript" && !(this.props.loadingType === promptOptions.loadingType.SYSTEMJS) && !(this.props.useBrowserify || this.props.useWebpack) ?
+        this.props.language === "javascript" && !this.props.useWebpack ?
           "new app." + this.props.applicationName + "();" :
-          this.props.language === "typescript" && (this.props.useBrowserify || this.props.useWebpack || this.props.loadingType === promptOptions.loadingType.SYSTEMJS) ?
-            "new " + this.props.applicationName + "();" :
-            this.props.useBrowserify || this.props.useWebpack || this.props.loadingType === promptOptions.loadingType.SYSTEMJS?
+          this.props.language === "typescript" && this.props.useWebpack ?
+            "new " + this.props.applicationName + "();" : this.props.useWebpack ?
               "new (yfiles.module(\"app\"))." + this.props.applicationName + "();" : ""
     });
 
@@ -295,7 +285,6 @@ module.exports = yeoman.extend({
       useES6: this.props.useEs6,
       useTypeInfo: this.props.useTypeInfo,
       useYarn: this.props.useYarn,
-      useBrowserify: this.props.useBrowserify,
       useIdeaProject: this.props.useIdeaProject,
       useVsCode: this.props.useVsCode,
       useWebpack: this.props.useWebpack,
