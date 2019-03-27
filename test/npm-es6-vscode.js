@@ -12,15 +12,18 @@ var promptOptions = require("../generators/app/promptOptions");
 var defaultInit = require('./support/defaultInit');
 
 var answers = Object.assign({},defaultAnswers, {
-  "moduleType": promptOptions.moduleType.UMD,
+  "moduleType": promptOptions.moduleType.NPM,
   "language": promptOptions.language.ES6,
-  "buildTool": promptOptions.buildTool.WEBPACK
+  "advancedOptions": [
+    promptOptions.advanced.TYPEINFO,
+    promptOptions.advanced.VSCODE
+  ]
 });
 
 
-describe('UMD + Webpack + ES6', function () {
+describe('Local NPM module + ES6 + VSCode', function () {
 
-  this.timeout(100000);
+  this.timeout(55000);
 
   before(function(done) {
     var that = this;
@@ -43,20 +46,25 @@ describe('UMD + Webpack + ES6', function () {
       assert.file([
         'app/index.html',
         'app/scripts/app.js',
+        'app/scripts/yfiles-typeinfo.js',
         'app/styles/yfiles.css',
+        'jsconfig.json',
         'package.json',
         'webpack.config.js',
+        'app/shim/es2015-shim.js',
+        'node_modules/yfiles/yfiles.js',
+        'node_modules/yfiles/typings/yfiles-api-npm.d.ts'
       ]);
       assert.noFile([
         'bower.json',
         'tsconfig.json',
         'app/scripts/license.json',
+        'app/typings/yfiles-api-umd-vscode.d.ts',
+        'app/typings/yfiles-api-umd-webstorm.d.ts',
+        'app/typings/yfiles-api-es-modules-vscode.d.ts',
+        'app/typings/yfiles-api-es-modules-webstorm.d.ts',
         'Gruntfile.js',
-        '.idea/jsLibraryMappings.xml',
-        '.idea/misc.xml',
-        '.idea/modules.xml',
-        '.idea/testApp.iml',
-        '.idea/libraries/yFiles_for_HTML.xml',
+        'app/lib/yfiles/yfiles.js',
       ]);
     });
 
@@ -64,21 +72,26 @@ describe('UMD + Webpack + ES6', function () {
 
   describe('build result', function() {
 
-    it('installed npm files', function() {
+    it('created the bundles and sourcemaps', function() {
       assert.file([
-        'node_modules/@yworks/optimizer/index.js'
+        'app/dist/app.js',
+        'app/dist/app.js.map',
+        'app/dist/lib.js'
       ]);
     });
+
+    it('uses webpack 4', function() {
+      assert.fileContent('package.json', /"webpack": "\^?4/)
+    })
 
     it('runs', function (done) {
       util.maybeOpenInBrowser(this.dir,done);
     });
 
     it('succeeds to run production build', function (done) {
-      // takes some time, because yfiles/complete is bundled
       var dir = this.dir;
       exec('npm run production', {cwd: dir}, function(error, stdout, stderr) {
-        assert.ok(error === null, "Production build failed: "+stderr);
+        assert.ok(error === null, "Production build failed: "+error);
         util.maybeOpenInBrowser(dir,done);
       });
     });

@@ -155,7 +155,6 @@ module.exports = yeoman.extend({
       this.props.useTypeScript = answers.language === "TypeScript";
       this.props.useEs6 = answers.language === promptOptions.language.ES6;
       this.props.useEs5 = answers.language === promptOptions.language.ES5;
-      this.props.useEs6Babel = answers.language === promptOptions.language.ES6Babel;
       this.props.useTypeInfo = answers.advancedOptions.indexOf("Use yfiles-typeinfo.js") >= 0;
       this.props.useIdeaProject = answers.advancedOptions.indexOf("WebStorm/PHP-Storm/Intellij IDEA Ultimate Project files") >= 0;
 
@@ -164,7 +163,7 @@ module.exports = yeoman.extend({
 
       this.props.licensePath = answers.licensePath;
       this.props.language = this.props.useTypeScript ? "typescript"
-        : (this.props.useEs6 || this.props.useEs6Babel) ? "es6"
+        : this.props.useEs6 ? "es6"
           : "javascript";
 
       this.props.loadingType = this.props.useTypeScript && answers.loadingType === promptOptions.loadingType.SCRIPT_TAGS ? promptOptions.loadingType.AMD : answers.loadingType;
@@ -320,6 +319,29 @@ module.exports = yeoman.extend({
           this.destinationPath(path.join(appPath, "typings/" + this.props.typingsFilename)));
       }
     } else {
+      var createNpmTypingsPath = path.join(path.relative("./", this.props.yfilesPath), "tools/create-npm-typings/");
+      if (this.props.useVsCode) {
+        // we need to build the vscode typings for local npm modules
+        this.log(chalk.green("\nBuilding yFiles typings for VSCode ...\n"));
+        if (this.props.useYarn) {
+          this.spawnCommandSync( "yarn",["--cwd", createNpmTypingsPath, "install"]);
+          this.spawnCommandSync( "yarn",["--cwd", createNpmTypingsPath, "npm-module-vscode"]);
+        } else {
+          this.spawnCommandSync( "npm" ,["--prefix", createNpmTypingsPath, "install", createNpmTypingsPath]);
+          this.spawnCommandSync( "npm" ,["--prefix", createNpmTypingsPath, "run", "npm-module-vscode"]);
+        }
+      } else {
+        // build the webstorm npm typings (there may be the vscode typings currently)
+        this.log(chalk.green("\nBuilding yFiles typings for WebStorm ...\n"));
+        if (this.props.useYarn) {
+          this.spawnCommandSync( "yarn",["--cwd", createNpmTypingsPath, "install"]);
+          this.spawnCommandSync( "yarn",["--cwd", createNpmTypingsPath, "npm-module-webstorm"]);
+        } else {
+          this.spawnCommandSync( "npm" ,["--prefix", createNpmTypingsPath, "install", createNpmTypingsPath]);
+          this.spawnCommandSync( "npm" ,["--prefix", createNpmTypingsPath, "run", "npm-module-webstorm"]);
+        }
+      }
+
       this.fs.copy(path.join(this.props.yfilesPath, "lib/umd/es2015-shim.js"),
         this.destinationPath(path.join(path.join(appPath, "shim"), "es2015-shim.js")));
     }

@@ -52,6 +52,7 @@ describe('Local NPM module + TypeScript', function () {
         'webpack.config.js',
         'app/shim/es2015-shim.js',
         'node_modules/yfiles/yfiles.js',
+        'node_modules/yfiles/typings/yfiles-api-npm.d.ts'
       ]);
       assert.noFile([
         'bower.json',

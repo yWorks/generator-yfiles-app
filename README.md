@@ -65,7 +65,7 @@ The name of the app and of the first class. Only valid JavaScript identifiers (c
 #### Path of yFiles for HTML package
 The path to the root of a valid yFiles for HTML package (e.g. "path/to/yFilesPackage"). This package must contain the following folders: 
  * "lib/yfiles"
- * "deployment"
+ * "tools"
  * "ide-support"
 
 #### Path of license file

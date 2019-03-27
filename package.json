@@ -24,6 +24,7 @@
     "test-esmodules-es6": "cross-env OPEN_IN_BROWSER=true mocha test/esmodules-es6.js",
     "test-esmodules-typescript": "cross-env OPEN_IN_BROWSER=true mocha test/esmodules-typescipt.js",
     "test-npm-es6": "cross-env OPEN_IN_BROWSER=true mocha test/npm-es6.js",
+    "test-npm-es6-vscode": "cross-env OPEN_IN_BROWSER=true mocha test/npm-es6-vscode.js",
     "test-npm-typescript": "cross-env OPEN_IN_BROWSER=true mocha test/npm-typescript.js",
     "test-umd-none-amd-es5": "cross-env OPEN_IN_BROWSER=true mocha test/umd-none-amd-es5.js",
     "test-umd-none-amd-es6": "cross-env OPEN_IN_BROWSER=true mocha test/umd-none-amd-es6.js",

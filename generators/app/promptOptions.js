@@ -19,7 +19,6 @@ module.exports = {
   language: {
     ES5: "ES5",
     ES6: "ES6",
-    ES6Babel: "ES6 & babel",
     TypeScript: "TypeScript"
   },
   advanced: {
