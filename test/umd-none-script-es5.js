@@ -22,8 +22,6 @@ var answers = Object.assign({},defaultAnswers, {
   "modules": ["yfiles/complete"]
 });
 
-console.log(JSON.stringify(answers,null,2));
-
 describe('Script Tags', function () {
 
   this.timeout(55000);

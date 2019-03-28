@@ -1,15 +1,23 @@
 'use strict';
-var path = require("path");
-var webpack = require('webpack');
-var YFilesOptimizerPlugin = require('@yworks/optimizer/webpack-plugin');
+const path = require("path");
+const webpack = require('webpack');
+const YFilesOptimizerPlugin = require('@yworks/optimizer/webpack-plugin');
 
+const config = {
 
-var baseConfig = {
+  entry: {
+    app: [path.resolve('<%= scriptsPath + appScript %>')]
+  },
+
   output: {
     path: path.resolve(__dirname, 'app/dist/'),
     publicPath: 'dist',
     filename: '[name].js'
   },
+  <% if (!useLocalNpm) { %>
+  resolve: {
+    modules: ['node_modules', path.resolve('<%= libPath %>')],
+  },<% } %>
   <% if (useTypeScript) { %>
   module: {
     rules: [
@@ -46,51 +54,32 @@ module.exports = function (env, options) {
 
   console.log("Running webpack...");
 
-  if (options.mode === 'development') {
-    return Object.assign({
-      mode: 'development',<% if (useTypeInfo) { %>
-      entry: {
-        app: [
-          path.resolve('<%= scriptsPath%>/yfiles-typeinfo.js'),
-          path.resolve('<%= scriptsPath + appScript %>')
-        ]
-      },<% } else { %>entry: {
-        app: path.resolve('<%= scriptsPath + appScript %>')
-      },<% } %>
-      <% if (!useLocalNpm) { %>
-      resolve: {
-        modules: ['node_modules', path.resolve('<%= libPath %>')],
-      },<% } %>
-      devServer: {
-        contentBase: [path.join(__dirname, './app')],
-        compress: true,
-        port: 9003
-      },
-      // don't add the default SourceMapDevToolPlugin config
-      devtool: false,
-      plugins: [
-        new webpack.SourceMapDevToolPlugin({
-          filename: '[file].map',
-          // add source maps for non-library code to enable convenient debugging
-          exclude: ['lib.js']
-        })
-      ]
-    }, baseConfig);
-  } else {
-    return Object.assign({
-      mode: 'production',
-      entry: {
-        app: path.resolve('<%= scriptsPath + appScript %>')
-      },
-      <% if (!useLocalNpm) { %>
-      resolve: {
-        modules: ['node_modules', path.resolve('<%= libPath %>')],
-      },<% } %>
-      plugins: [
-        new YFilesOptimizerPlugin({
-          logLevel: 'info'
-        })
-      ]
-    }, baseConfig);
+  if (options.mode === 'development') {<% if (useTypeInfo) { %>
+    config.entry.app.unshift(path.resolve('<%= scriptsPath%>yfiles-typeinfo.js'))
+    <% } %>
+    config.devServer = {
+      contentBase: [path.join(__dirname, './app')],
+      compress: true,
+      port: 9003
+    }
+    // don't add the default SourceMapDevToolPlugin config
+    config.devtool = false
+    config.plugins = [
+      new webpack.SourceMapDevToolPlugin({
+        filename: '[file].map',
+        // add source maps for non-library code to enable convenient debugging
+        exclude: ['lib.js']
+      })
+    ]
   }
+
+  if(options.mode === 'production') {
+    config.plugins = [
+      new YFilesOptimizerPlugin({
+        logLevel: 'info'
+      })
+    ]
+  }
+
+  return config
 };

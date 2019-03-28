@@ -1,17 +1,17 @@
 'use strict';
 
-var fs = require('fs');
-var exec = require('child_process').exec;
-var helpers = require('yeoman-test');
-var assert = require('yeoman-assert');
-var opn = require('opn');
+const fs = require('fs');
+const exec = require('child_process').exec;
+const helpers = require('yeoman-test');
+const assert = require('yeoman-assert');
+const opn = require('opn');
 
-var util = require('./support/util');
-var defaultAnswers = require('./support/defaultPromptAnswers');
-var promptOptions = require("../generators/app/promptOptions");
-var defaultInit = require('./support/defaultInit');
+const util = require('./support/util');
+const defaultAnswers = require('./support/defaultPromptAnswers');
+const promptOptions = require("../generators/app/promptOptions");
+const defaultInit = require('./support/defaultInit');
 
-var answers = Object.assign({},defaultAnswers, {
+const answers = Object.assign({},defaultAnswers, {
   "moduleType": promptOptions.moduleType.ES6_MODULES,
   "language": promptOptions.language.ES6
 });
@@ -22,7 +22,7 @@ describe('ES Modules + ES6', function () {
   this.timeout(55000);
 
   before(function(done) {
-    var that = this;
+    const that = this;
     this.app = helpers
       .run(require.resolve('../generators/app'))
       .withGenerators([[helpers.createDummyGenerator(),require.resolve('../generators/class')]])
@@ -82,10 +82,14 @@ describe('ES Modules + ES6', function () {
     });
 
     it('succeeds to run production build', function (done) {
-      var dir = this.dir;
-      exec('npm run production', {cwd: dir}, function(error, stdout, stderr) {
+      const dir = this.dir;
+      const child = exec('npm run production', {cwd: dir}, function(error, stdout, stderr) {
+        console.log("\nbuild done!")
         assert.ok(error === null, "Production build failed: "+error);
         util.maybeOpenInBrowser(dir,done);
+      });
+      child.stdout.on('data', function(data) {
+        console.log(data.toString());
       });
     });
 

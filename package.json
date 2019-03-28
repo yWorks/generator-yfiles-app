@@ -18,7 +18,7 @@
     "yfiles for html"
   ],
   "scripts": {
-    "test": "mocha",
+    "test": "mocha test",
     "test-open-in-browser": "cross-env OPEN_IN_BROWSER=true mocha",
     "test-amd-vscode": "cross-env OPEN_IN_BROWSER=true mocha test/amd-vscode.js",
     "test-esmodules-es6": "cross-env OPEN_IN_BROWSER=true mocha test/esmodules-es6.js",
@@ -41,7 +41,7 @@
     "generator-node": "latest",
     "lodash": "latest",
     "to-slug-case": "^1.0.0",
-    "yeoman-generator": "^1.0.1",
+    "yeoman-generator": "^3.2.0",
     "yosay": "^1.2.1"
   },
   "devDependencies": {
@@ -55,10 +55,10 @@
     "gulp-mocha": "^2.0.0",
     "gulp-nsp": "^2.1.0",
     "gulp-plumber": "^1.0.0",
-    "mocha": "^3.3.0",
+    "mocha": "^6.0.2",
     "opn": "^4.0.2",
-    "yeoman-assert": "^3.1.0",
-    "yeoman-test": "^1.7.0"
+    "yeoman-assert": "^3.1.1",
+    "yeoman-test": "^2.0.0"
   },
   "eslintConfig": {
     "extends": "xo-space",

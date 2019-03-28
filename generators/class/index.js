@@ -1,25 +1,24 @@
 "use strict";
-var yeoman = require("yeoman-generator");
-var yosay = require("yosay");
-var utils = require("../utils");
-var path = require("path");
+const Generator = require('yeoman-generator');
+const utils = require("../utils");
+const path = require("path");
 
-module.exports = yeoman.extend({
-  writing: function () {
-    var appPath = this.options.appPath || this.config.get("appPath") || "app";
-    var scriptsPath = this.options.scriptsPath || this.config.get("scriptsPath") || path.join(appPath, "scripts");
-    var libPath = this.options.libPath || this.config.get("libPath") || path.join(appPath, "lib");
-    var stylesPath = this.options.stylesPath || this.config.get("stylesPath") || path.join(appPath, "styles");
+module.exports = class extends Generator {
+  writing() {
+    const appPath = this.options.appPath || this.config.get("appPath") || "app";
+    const scriptsPath = this.options.scriptsPath || this.config.get("scriptsPath") || path.join(appPath, "scripts");
+    const libPath = this.options.libPath || this.config.get("libPath") || path.join(appPath, "lib");
+    const stylesPath = this.options.stylesPath || this.config.get("stylesPath") || path.join(appPath, "styles");
 
-    var buildTool = this.options.buildTool || this.config.get("buildTool") || "none";
+    const buildTool = this.options.buildTool || this.config.get("buildTool") || "none";
 
-    var language = this.options.language || this.config.get("language") || "javascript";
+    const language = this.options.language || this.config.get("language") || "javascript";
 
-    var useWebpack = this.options.useWebpack;
-    var useES6Modules = this.options.useES6Modules;
-    var useLocalNpm = this.options.useLocalNpm;
+    const useWebpack = this.options.useWebpack;
+    const useES6Modules = this.options.useES6Modules;
+    const useLocalNpm = this.options.useLocalNpm;
 
-    var indent = "";
+    let indent = "";
     if (language === "es6") {
       if (this.options.loadingType === "AMD" && !useWebpack) {
         // es6+AMD: 4 spaces
@@ -41,9 +40,9 @@ module.exports = yeoman.extend({
       }
     }
 
-    var modules = this.config.get("modules");
+    const modules = this.config.get("modules");
 
-    var vars = {
+    const vars = {
       name: this.options.name,
       appPath: utils.unixPath(appPath),
       scriptsPath: utils.unixPath(scriptsPath),
@@ -68,7 +67,7 @@ module.exports = yeoman.extend({
 
     if (language === "javascript" || language === "es6") {
 
-      var template;
+      let template;
       if(useES6Modules) {
         template = "applicationES6Modules.ejs"
       } else if(vars.loadingType === "AMD" && !vars.useWebpack) {
@@ -86,7 +85,7 @@ module.exports = yeoman.extend({
       );
     } else {
 
-      var template;
+      let template;
       if(useES6Modules) {
         template = "applicationES6Modules.ejs"
       } else if(useLocalNpm) {
@@ -102,4 +101,4 @@ module.exports = yeoman.extend({
       );
     }
   }
-});
+}
