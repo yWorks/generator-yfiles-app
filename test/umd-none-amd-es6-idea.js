@@ -54,7 +54,8 @@ describe('AMD + Pure ES6 + IDEA', function () {
         '.idea/modules.xml',
         '.idea/testApp.iml',
         '.idea/libraries/yFiles_for_HTML.xml',
-        'package.json'
+        'package.json',
+        'app/scripts/yfiles-typeinfo.js'
       ]);
       assert.noFile([
         'bower.json',

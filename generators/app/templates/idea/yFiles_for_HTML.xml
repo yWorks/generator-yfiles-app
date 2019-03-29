@@ -2,11 +2,11 @@
   <library name="yFiles for HTML" type="javaScript">
     <properties>
       <sourceFilesUrls>
-        <% if(!useLocalNpm) { if(useES6Modules) {%><item url="<%= decodeURIComponent(yFilesUrl) %>/ide-support/yfiles-api-es-modules-webstorm.d.ts" /><%} else {%><item url="<%= decodeURIComponent(yFilesUrl) %>/ide-support/yfiles-api-umd-webstorm.d.ts" /><%} }%>
+        <% if(!useLocalNpm) { if(useES6Modules) {%><item url="file://$PROJECT_DIR$/typings/yfiles-api-es-modules-webstorm.d.ts" /><%} else {%><item url="file://$PROJECT_DIR$/typings/yfiles-api-umd-webstorm.d.ts" /><%} }%>
       </sourceFilesUrls>
     </properties>
     <CLASSES>
-      <% if(!useLocalNpm) { if(useES6Modules) {%><root url="<%= decodeURIComponent(yFilesUrl) %>/ide-support/yfiles-api-es-modules-webstorm.d.ts" /><%} else {%><root url="<%= decodeURIComponent(yFilesUrl) %>/ide-support/yfiles-api-umd-webstorm.d.ts" /><%} }%>
+      <% if(!useLocalNpm) { if(useES6Modules) {%><root url="file://$PROJECT_DIR$/typings/yfiles-api-es-modules-webstorm.d.ts" /><%} else {%><root url="file://$PROJECT_DIR$/typings/yfiles-api-umd-webstorm.d.ts" /><%} }%>
     </CLASSES>
     <SOURCES />
   </library>

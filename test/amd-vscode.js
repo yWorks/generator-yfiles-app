@@ -49,6 +49,7 @@ describe('AMD + VS Code', function () {
         'app/styles/yfiles.css',
         'jsconfig.json',
         'package.json',
+        'app/scripts/yfiles-typeinfo.js'
       ]);
       assert.noFile([
         'bower.json',

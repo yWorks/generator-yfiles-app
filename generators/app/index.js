@@ -419,17 +419,15 @@ module.exports = class extends Generator {
           this.destinationPath(libPath)
         );
       }
-      if (this.props.useTypeScript) {
-        this.fs.copy(
-          path.join(
-            this.props.yfilesPath,
-            "ide-support/" + this.props.typingsFilename
-          ),
-          this.destinationPath(
-            path.join(appPath, "typings/" + this.props.typingsFilename)
-          )
-        );
-      }
+      this.fs.copy(
+        path.join(
+          this.props.yfilesPath,
+          "ide-support/" + this.props.typingsFilename
+        ),
+        this.destinationPath(
+          path.join(appPath, "typings/" + this.props.typingsFilename)
+        )
+      );
     } else {
       const createNpmTypingsPath = path.join(
         path.relative("./", this.props.yfilesPath),

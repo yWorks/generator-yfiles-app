@@ -50,7 +50,8 @@ describe('UMD + Webpack + Typescript', function () {
         'tsconfig.json',
         'webpack.config.js'
       ]);
-      assert.noFile(['app/scripts/license.json']);
+      assert.noFile(['app/scripts/license.json',
+        'app/scripts/yfiles-typeinfo.js']);
     })
 
   });
