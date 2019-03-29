@@ -47,7 +47,7 @@ describe('ES Modules + ES6 + WebStorm', function () {
         'app/index.html',
         'app/scripts/app.js',
         'app/styles/yfiles.css',
-        'app/typings/yfiles-api-es-modules-vscode.d.ts',
+        'app/typings/yfiles-api-es-modules-webstorm.d.ts',
         'package.json',
         'webpack.config.js',
         'app/lib/yfiles/yfiles.js',

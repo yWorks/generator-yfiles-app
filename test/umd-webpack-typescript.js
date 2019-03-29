@@ -1,17 +1,17 @@
 'use strict';
 
-var path = require('path');
-var fs = require('fs');
-var exec = require('child_process').exec;
-var helpers = require('yeoman-test');
-var assert = require('yeoman-assert');
+const path = require('path');
+const fs = require('fs');
+const exec = require('child_process').exec;
+const helpers = require('yeoman-test');
+const assert = require('yeoman-assert');
 
-var util = require('./support/util');
-var defaultAnswers = require('./support/defaultPromptAnswers');
-var promptOptions = require("../generators/app/promptOptions");
-var defaultInit = require('./support/defaultInit');
+const util = require('./support/util');
+const defaultAnswers = require('./support/defaultPromptAnswers');
+const promptOptions = require("../generators/app/promptOptions");
+const defaultInit = require('./support/defaultInit');
 
-var answers = Object.assign({},defaultAnswers, {
+const answers = Object.assign({},defaultAnswers, {
   "moduleType": promptOptions.moduleType.UMD,
   "buildTool": promptOptions.buildTool.WEBPACK,
   "language": promptOptions.language.TypeScript
@@ -22,7 +22,7 @@ describe('UMD + Webpack + Typescript', function () {
   this.timeout(120000);
 
   before(function(done) {
-    var that = this;
+    const that = this;
     helpers
       .run(require.resolve('../generators/app'))
       .withGenerators([[helpers.createDummyGenerator(), require.resolve('../generators/class')]])
@@ -74,12 +74,12 @@ describe('UMD + Webpack + Typescript', function () {
     })
 
     it('runs', function (done) {
-      var dir = this.dir;
+      const dir = this.dir;
       util.maybeOpenInBrowser(dir,done);
     });
 
     it('succeeds to run production build', function (done) {
-      var dir = this.dir;
+      const dir = this.dir;
       exec('npm run production', {cwd: dir}, function(error, stdout, stderr) {
         assert.ok(error === null, "Production build failed: "+stderr);
         util.maybeOpenInBrowser(dir,done);

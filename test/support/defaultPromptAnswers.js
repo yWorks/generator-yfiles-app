@@ -1,15 +1,15 @@
 'use strict';
 
-var path = require('path');
-var localConfig = require('./getLocalConfig');
-var validatePrompts = require('../../generators/app/validatePrompts')
-var assert = require('yeoman-assert');
+const path = require('path');
+const localConfig = require('./getLocalConfig');
+const validatePrompts = require('../../generators/app/validatePrompts')
+const assert = require('yeoman-assert');
 
-var promptOptions = require("../../generators/app/promptOptions")
+const promptOptions = require("../../generators/app/promptOptions")
 
 const yfilesPath = localConfig.yfilesPath
 const licensePath = path.resolve(yfilesPath, 'lib/license.json')
-var answers = {
+const answers = {
   "applicationName": "testApp",
   "yfilesPath": localConfig.yfilesPath,
   "licensePath": path.resolve(localConfig.yfilesPath, 'lib/license.json'),
