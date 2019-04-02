@@ -629,6 +629,7 @@ module.exports = class extends Generator {
       devDeps["babel-loader"] = "^8.0.5";
       devDeps["@babel/core"] = "^7.4.0";
       devDeps["@babel/preset-env"] = "^7.4.2";
+      devDeps["@babel/polyfill"] = "^7.4.0";
 
       extend(pkg, {
         scripts: pkgScripts,
