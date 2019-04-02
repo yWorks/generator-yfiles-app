@@ -39,7 +39,7 @@ module.exports = class extends Generator {
         type: "input",
         name: "applicationName",
         message: "Application name",
-        default: path.basename(process.cwd().replace("-", "_")),
+        default: utils.toValidName(path.basename(process.cwd())),
         filter: function(name) {
           name = utils.camelCase(name);
           return name.charAt(0).toUpperCase() + name.slice(1);

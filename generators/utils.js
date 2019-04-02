@@ -59,8 +59,14 @@ module.exports = {
     });
   },
 
+  toValidName: function (name) {
+    name = name.replace(/^[^a-zA-Z_$]/,'_')
+    name = name.replace(/[^0-9a-zA-Z_$]/g,'_')
+    return name
+  },
+
   isValidName: function (name) {
-    return /[^a-zA-Z_$ ]/.test(name) ? "This is not a valid name, only [a-zA-Z_$ ] are allowed." : true;
+    return !/^[a-zA-Z_$][0-9a-zA-Z_$]*$/.test(name) ? '"'+ name + "\" is not a valid name - please make sure the name can be used as a JavaScript identifier." : true;
   },
 
   parseLicense: function(path) {
