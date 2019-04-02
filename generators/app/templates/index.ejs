@@ -20,11 +20,11 @@
 <% if (useTypeInfo && !useBundlingTool) { %>
 <!-- Adding type information support during application development. -->
 <script src="scripts/yfiles-typeinfo.js"></script>
-
 <% } %>
+<% if(!useWebpack) {%>
 <script src="<% if (useLocalNpm) { %>shim<% } else { %>lib<% } %>/es2015-shim.js"></script>
-<%
-if (useBundlingTool) { %>
+<%}%>
+<% if (useBundlingTool) { %>
 <% if (useWebpack) { %>
 <script src="dist/lib.js"></script>
 <script src="dist/app.js"></script>
@@ -44,17 +44,11 @@ else if (language === "typescript") {
     new app.<%= applicationName %>();
   });
 </script><%
-}
-
-
-else if (loadingType === "AMD" && !useBundlingTool) {
+} else if (loadingType === "AMD" && !useBundlingTool) {
 %><script src="../node_modules/requirejs/require.js"></script>
 <script src="scripts/app.js"></script>
 <%
-}
-
-
-else {
+} else {
   if (!useBundlingTool) {
     if (loadingType === "script-tags") { %>
 <script src="<%= libPath %>impl/lang.js"></script>

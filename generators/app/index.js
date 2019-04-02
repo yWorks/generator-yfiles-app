@@ -410,10 +410,13 @@ module.exports = class extends Generator {
           path.join(this.props.yfilesPath, "lib/es-modules/**/*js"),
           this.destinationPath(path.join(libPath, "yfiles"))
         );
-        this.fs.copy(
-          path.join(this.props.yfilesPath, "lib/umd/es2015-shim.js"),
-          this.destinationPath(path.join(libPath, "es2015-shim.js"))
-        );
+        if (!this.props.useWebpack) {
+          // with webpack, we use babel-polyfill instead
+          this.fs.copy(
+            path.join(this.props.yfilesPath, "lib/umd/es2015-shim.js"),
+            this.destinationPath(path.join(libPath, "es2015-shim.js"))
+          );
+        }
       } else {
         this.fs.copy(
           path.join(this.props.yfilesPath, "lib/umd/"),
@@ -492,12 +495,15 @@ module.exports = class extends Generator {
         }
       }
 
-      this.fs.copy(
-        path.join(this.props.yfilesPath, "lib/umd/es2015-shim.js"),
-        this.destinationPath(
-          path.join(path.join(appPath, "shim"), "es2015-shim.js")
-        )
-      );
+      if (!this.props.useWebpack) {
+        // with webpack, we use babel-polyfill instead
+        this.fs.copy(
+          path.join(this.props.yfilesPath, "lib/umd/es2015-shim.js"),
+          this.destinationPath(
+            path.join(path.join(appPath, "shim"), "es2015-shim.js")
+          )
+        );
+      }
     }
 
     this.fs.copy(
