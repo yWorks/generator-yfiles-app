@@ -10,6 +10,7 @@ const yfilesES6Modules = require("./yfiles-es6-modules.json");
 const yfilesScriptModules = require("./yfiles-script-modules.json");
 const utils = require("../utils");
 const validatePrompts = require("./validatePrompts");
+const toSlugCase = require('to-slug-case')
 
 const Generator = require("yeoman-generator");
 
@@ -558,7 +559,7 @@ module.exports = class extends Generator {
       private: true
     });
 
-    pkg.name = pkg.name || this.props.applicationName.toLowerCase();
+    pkg.name = pkg.name || toSlugCase(this.props.applicationName);
     pkg.version = pkg.version || "1.0.0";
     pkg.private = pkg.private || true;
 
