@@ -77,7 +77,7 @@ module.exports = class extends Generator {
           }
           return "";
         }.bind(this),
-        store: true,
+        store: false,
         validate: validatePrompts.isValidYfilesLicense
       },
       {
@@ -85,9 +85,9 @@ module.exports = class extends Generator {
         name: "moduleType",
         message: "Which kind of yFiles modules do you want to use?",
         choices: [
-          promptOptions.moduleType.UMD,
+          promptOptions.moduleType.NPM,
           promptOptions.moduleType.ES6_MODULES,
-          promptOptions.moduleType.NPM
+          promptOptions.moduleType.UMD
         ],
         default: promptOptions.moduleType.NPM,
         store: true
