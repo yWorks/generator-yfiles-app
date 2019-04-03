@@ -22,7 +22,7 @@ const answers = Object.assign({},defaultAnswers, {
 
 describe('ES Modules + TypeScript', function () {
 
-  this.timeout(55000);
+  this.timeout(75000);
 
   before(function(done) {
     const that = this;
@@ -45,16 +45,16 @@ describe('ES Modules + TypeScript', function () {
       assert.file([
         'app/index.html',
         'app/scripts/app.ts',
-        'app/styles/yfiles.css',
         'app/typings/yfiles-api-es-modules-vscode.d.ts',
         'package.json',
         'tsconfig.json',
         'webpack.config.js',
-        'app/lib/yfiles/yfiles.js',
-        'app/lib/es2015-shim.js'
+        'app/lib/yfiles/yfiles.js'
       ]);
       assert.noFile([
+        'app/lib/es2015-shim.js',
         'bower.json',
+        'app/styles/yfiles.css',
         'jsconfig.json',
         'app/scripts/license.json',
         'Gruntfile.js',

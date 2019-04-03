@@ -23,7 +23,7 @@ const answers = Object.assign({},defaultAnswers, {
 
 describe('ES Modules + ES6 + vscode', function () {
 
-  this.timeout(55000);
+  this.timeout(75000);
 
   before(function(done) {
     const that = this;
@@ -46,17 +46,17 @@ describe('ES Modules + ES6 + vscode', function () {
       assert.file([
         'app/index.html',
         'app/scripts/app.js',
-        'app/styles/yfiles.css',
         'jsconfig.json',
         'app/typings/yfiles-api-es-modules-vscode.d.ts',
         'package.json',
         'webpack.config.js',
         'app/lib/yfiles/yfiles.js',
-        'app/lib/es2015-shim.js',
         'app/scripts/yfiles-typeinfo.js',
       ]);
       assert.noFile([
+        'app/lib/es2015-shim.js',
         '.idea/misc.xml',
+        'app/styles/yfiles.css',
         'bower.json',
         'tsconfig.json',
         'app/scripts/license.json',

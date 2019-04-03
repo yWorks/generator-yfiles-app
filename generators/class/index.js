@@ -84,14 +84,16 @@ module.exports = class extends Generator {
         vars
       );
     } else {
-
+      //
+      // TypeScript
+      //
       let template;
       if(useES6Modules) {
         template = "applicationES6Modules.ejs"
       } else if(useLocalNpm) {
         template = "applicationLocalNpm.ejs";
       } else {
-        template = "application.ejs";
+        template = "applicationUMD.ejs";
       }
 
       this.fs.copyTpl(

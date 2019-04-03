@@ -44,13 +44,13 @@ describe('UMD + Webpack + Typescript', function () {
       assert.file([
         'app/index.html',
         'app/scripts/app.ts',
-        'app/styles/yfiles.css',
         'app/typings/yfiles-api-umd-vscode.d.ts',
         'package.json',
         'tsconfig.json',
         'webpack.config.js'
       ]);
       assert.noFile(['app/scripts/license.json',
+        'app/styles/yfiles.css',
         'app/scripts/yfiles-typeinfo.js']);
     })
 

@@ -23,7 +23,7 @@ const answers = Object.assign({},defaultAnswers, {
 
 describe('ES Modules + ES6 + WebStorm', function () {
 
-  this.timeout(55000);
+  this.timeout(75000);
 
   before(function(done) {
     const that = this;
@@ -46,28 +46,27 @@ describe('ES Modules + ES6 + WebStorm', function () {
       assert.file([
         'app/index.html',
         'app/scripts/app.js',
-        'app/styles/yfiles.css',
         'app/typings/yfiles-api-es-modules-webstorm.d.ts',
         'package.json',
         'webpack.config.js',
         'app/lib/yfiles/yfiles.js',
-        'app/lib/es2015-shim.js',
         'app/scripts/yfiles-typeinfo.js',
         '.idea/libraries/yFiles_for_HTML.xml',
         '.idea/jsLibraryMappings.xml',
-        '.idea/testApp.xml',
+        '.idea/testApp.iml',
         '.idea/modules.xml',
         '.idea/misc.xml',
         '.idea/webResources.xml'
       ]);
       assert.noFile([
+        'app/lib/es2015-shim.js',
+        'app/styles/yfiles.css',
         'jsconfig.json',
         'bower.json',
         'tsconfig.json',
         'app/scripts/license.json',
         'app/typings/yfiles-api-umd-vscode.d.ts',
         'app/typings/yfiles-api-umd-webstorm.d.ts',
-        'app/typings/yfiles-api-es-modules-webstorm.d.ts',
         'Gruntfile.js'
       ]);
     });

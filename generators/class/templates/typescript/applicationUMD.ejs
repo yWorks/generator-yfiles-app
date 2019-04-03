@@ -1,4 +1,4 @@
-<% if(moduleList.length>0) { %>import yfiles = require('<%= moduleList[0]%>'); <%}%><% if(moduleList.length>1) {
+<% if(moduleList.length>0) { %>import yfiles from '<%= moduleList[0]%>'; <%}%><% if(moduleList.length>1) {
 for(var i=1;i<moduleList.length;i++) {
   %>
 import '<%= moduleList[i]%>';<%

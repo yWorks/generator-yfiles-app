@@ -2,9 +2,11 @@
 <html>
 <head>
   <title><%= title %></title>
-
+  <% if (!useWebpack) { %>
   <link type="text/css" rel="stylesheet" href="styles/yfiles.css">
-
+  <% } else { %>
+  <link type="text/css" rel="stylesheet" href="dist/lib.css">
+  <% } %>
   <style>
     html, body, #graphComponent {
       width: 100%;

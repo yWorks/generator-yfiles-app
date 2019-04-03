@@ -22,7 +22,7 @@ const answers = Object.assign({},defaultAnswers, {
 
 describe('Local NPM module + ES6', function () {
 
-  this.timeout(55000);
+  this.timeout(75000);
 
   before(function(done) {
     const that = this;
@@ -46,15 +46,15 @@ describe('Local NPM module + ES6', function () {
         'app/index.html',
         'app/scripts/app.js',
         'app/scripts/yfiles-typeinfo.js',
-        'app/styles/yfiles.css',
         'package.json',
         'webpack.config.js',
-        'app/shim/es2015-shim.js',
         'node_modules/yfiles/yfiles.js',
         'node_modules/yfiles/typings/yfiles-api-npm.d.ts'
       ]);
       assert.noFile([
         'bower.json',
+        'app/shim/es2015-shim.js',
+        'app/styles/yfiles.css',
         'tsconfig.json',
         'jsconfig.json',
         'app/scripts/license.json',

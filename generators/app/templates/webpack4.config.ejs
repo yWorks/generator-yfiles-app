@@ -1,6 +1,7 @@
 'use strict';
 const path = require("path");
 const webpack = require('webpack');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const YFilesOptimizerPlugin = require('@yworks/optimizer/webpack-plugin');
 
 const config = {
@@ -21,7 +22,19 @@ const config = {
   <% if (useTypeScript) { %>
   module: {
     rules: [
-      { test: /\.tsx?$/, loader: "ts-loader" }
+      {
+        // Include ts, tsx, js, and jsx files.
+        test: /\.(ts|js)x?$/,
+        exclude: /node_modules/,
+        loader: 'babel-loader',
+        options: {
+          presets: ['@babel/preset-env', '@babel/preset-typescript']
+        }
+      },
+      {
+        test: /\.css$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader']
+      }
     ]
   },
   <% } %><% if (!useTypeScript) { %>
@@ -34,6 +47,10 @@ const config = {
         options: {
           presets: ['@babel/preset-env']
         }
+      },
+      {
+        test: /\.css$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader']
       }
     ]
   },<% } %>
@@ -47,7 +64,13 @@ const config = {
         }
       }
     }
-  }
+  },
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: '[name].css',
+      chunkFilename: '[id].css'
+    })
+  ]
 };
 
 module.exports = function (env, options) {
@@ -64,21 +87,21 @@ module.exports = function (env, options) {
     }
     // don't add the default SourceMapDevToolPlugin config
     config.devtool = false
-    config.plugins = [
+    config.plugins.push(
       new webpack.SourceMapDevToolPlugin({
         filename: '[file].map',
         // add source maps for non-library code to enable convenient debugging
         exclude: ['lib.js']
       })
-    ]
+    )
   }
 
   if(options.mode === 'production') {
-    config.plugins = [
+    config.plugins.unshift(
       new YFilesOptimizerPlugin({
         logLevel: 'info'
       })
-    ]
+    )
   }
 
   return config

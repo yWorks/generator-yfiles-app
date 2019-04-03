@@ -23,7 +23,7 @@ const answers = Object.assign({},defaultAnswers, {
 
 describe('Local NPM module + ES6 + VSCode', function () {
 
-  this.timeout(55000);
+  this.timeout(75000);
 
   before(function(done) {
     const that = this;
@@ -47,17 +47,17 @@ describe('Local NPM module + ES6 + VSCode', function () {
         'app/index.html',
         'app/scripts/app.js',
         'app/scripts/yfiles-typeinfo.js',
-        'app/styles/yfiles.css',
         'jsconfig.json',
         'package.json',
         'webpack.config.js',
-        'app/shim/es2015-shim.js',
         'node_modules/yfiles/yfiles.js',
         'node_modules/yfiles/typings/yfiles-api-npm.d.ts'
       ]);
       assert.noFile([
         'bower.json',
         'tsconfig.json',
+        'app/shim/es2015-shim.js',
+        'app/styles/yfiles.css',
         'app/scripts/license.json',
         'app/typings/yfiles-api-umd-vscode.d.ts',
         'app/typings/yfiles-api-umd-webstorm.d.ts',

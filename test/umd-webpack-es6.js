@@ -20,7 +20,7 @@ const answers = Object.assign({},defaultAnswers, {
 
 describe('UMD + Webpack + ES6', function () {
 
-  this.timeout(100000);
+  this.timeout(120000);
 
   before(function(done) {
     const that = this;
@@ -43,11 +43,11 @@ describe('UMD + Webpack + ES6', function () {
       assert.file([
         'app/index.html',
         'app/scripts/app.js',
-        'app/styles/yfiles.css',
         'package.json',
         'webpack.config.js',
       ]);
       assert.noFile([
+        'app/styles/yfiles.css',
         'bower.json',
         'tsconfig.json',
         'app/scripts/license.json',

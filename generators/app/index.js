@@ -10,7 +10,7 @@ const yfilesES6Modules = require("./yfiles-es6-modules.json");
 const yfilesScriptModules = require("./yfiles-script-modules.json");
 const utils = require("../utils");
 const validatePrompts = require("./validatePrompts");
-const toSlugCase = require('to-slug-case')
+const toSlugCase = require("to-slug-case");
 
 const Generator = require("yeoman-generator");
 
@@ -407,7 +407,7 @@ module.exports = class extends Generator {
     if (!this.props.useLocalNpm) {
       if (this.props.useES6Modules) {
         this.fs.copy(
-          path.join(this.props.yfilesPath, "lib/es-modules/**/*js"),
+          path.join(this.props.yfilesPath, "lib/es-modules/**/*"),
           this.destinationPath(path.join(libPath, "yfiles"))
         );
         if (!this.props.useWebpack) {
@@ -506,10 +506,12 @@ module.exports = class extends Generator {
       }
     }
 
-    this.fs.copy(
-      path.join(this.props.yfilesPath, "lib/yfiles.css"),
-      this.destinationPath(path.join(stylesPath, "yfiles.css"))
-    );
+    if (!this.props.useWebpack) {
+      this.fs.copy(
+        path.join(this.props.yfilesPath, "lib/es-modules/yfiles.css"),
+        this.destinationPath(path.join(stylesPath, "yfiles.css"))
+      );
+    }
 
     if (this.props.useTypeInfo) {
       this.fs.copy(
@@ -609,9 +611,16 @@ module.exports = class extends Generator {
           "@yworks/optimizer": "^0.1.12",
           webpack: "^4.22.0",
           "webpack-cli": "^3.1.2",
-          "webpack-dev-server": "^3.1.10"
+          "webpack-dev-server": "^3.1.10",
+          "css-loader": "^2.1.1",
+          "mini-css-extract-plugin": "^0.5.0",
+          "babel-loader": "^8.0.5",
+          "@babel/core": "^7.4.0",
+          "@babel/preset-env": "^7.4.2",
+          "@babel/polyfill": "^7.4.0"
         },
         tsDeps: {
+          "@babel/preset-typescript": "^7.3.2",
           "ts-loader": "^4.0.1",
           typescript: "^2.7.2"
         }
@@ -632,11 +641,6 @@ module.exports = class extends Generator {
       };
 
       this.props.runScript = "dev";
-
-      devDeps["babel-loader"] = "^8.0.5";
-      devDeps["@babel/core"] = "^7.4.0";
-      devDeps["@babel/preset-env"] = "^7.4.2";
-      devDeps["@babel/polyfill"] = "^7.4.0";
 
       extend(pkg, {
         scripts: pkgScripts,
@@ -719,21 +723,21 @@ module.exports = class extends Generator {
 
         Object.keys(npmScripts).forEach(function(scriptName) {
           const taskDef = {
-            taskName: scriptName,
-            args: ["run-script", scriptName]
+            type: "npm",
+            problemMatcher: [],
+            script: scriptName
           };
           if (scriptName === "build" || scriptName === "dev") {
-            taskDef.isBuildCommand = true;
+            taskDef.group = {
+              kind: "build",
+              isDefault: true
+            };
           }
           tasks.push(taskDef);
         });
 
         extend(tasksJson, {
-          version: "0.1.0",
-          command: "npm",
-          isShellCommand: true,
-          showOutput: "always",
-          suppressTaskName: true,
+          version: "2.0.0",
           tasks: tasks
         });
 
@@ -758,8 +762,8 @@ module.exports = class extends Generator {
         this.log(
           chalk.green(
             "\nFinished your scaffold. Running '" +
-            this.props.runScript +
-            "' for you...\n"
+              this.props.runScript +
+              "' for you...\n"
           )
         );
         this.spawnCommandSync(this.props.useYarn ? "yarn" : "npm", [
@@ -771,8 +775,8 @@ module.exports = class extends Generator {
         this.log(
           chalk.green(
             "\nAlmost done. Now running '" +
-            this.props.runPostInstall +
-            "' for you...\n"
+              this.props.runPostInstall +
+              "' for you...\n"
           )
         );
         this.spawnCommandSync(this.props.runPostInstall);

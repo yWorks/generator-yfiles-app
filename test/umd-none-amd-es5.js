@@ -24,7 +24,7 @@ const answers = Object.assign({},defaultAnswers, {
 
 console.log(JSON.stringify(answers,null,2));
 
-describe('Script Tags', function () {
+describe('UMD + ES5', function () {
 
   this.timeout(55000);
 
