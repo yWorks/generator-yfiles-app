@@ -93,6 +93,26 @@ module.exports = class extends Generator {
         store: true
       },
       {
+        type: "checkbox",
+        name: "modules",
+        message: "Which modules do you want to use?",
+        store: true,
+        when: function(props) {
+          // es-modules and npm always use webpack and can benefit from tree-shaking.
+          return props.moduleType === promptOptions.moduleType.UMD;
+        },
+        choices: function(props) {
+          return utils.flattenTree(yfilesModules, "complete").map(
+            function(mod) {
+              return {
+                name: mod,
+                checked: this.minimumModules.indexOf(mod) >= 0
+              };
+            }.bind(this)
+          );
+        }.bind(this)
+      },
+      {
         type: "list",
         name: "buildTool",
         message: "Which build tool do you want to use?",
@@ -122,28 +142,6 @@ module.exports = class extends Generator {
             props.buildTool === promptOptions.buildTool.NONE
           );
         }
-      },
-      {
-        type: "checkbox",
-        name: "modules",
-        message: "Which modules do you want to use?",
-        store: true,
-        when: function(props) {
-          return props.moduleType === promptOptions.moduleType.ES6_MODULES; // UMD always loads complete, local npm does not split modules
-        },
-        choices: function(props) {
-          return (props.moduleType === promptOptions.moduleType.ES6_MODULES
-            ? Object.keys(yfilesES6Modules)
-            : utils.flattenTree(yfilesModules, "complete")
-          ).map(
-            function(mod) {
-              return {
-                name: mod,
-                checked: this.minimumModules.indexOf(mod) >= 0
-              };
-            }.bind(this)
-          );
-        }.bind(this)
       },
       {
         type: "list",
@@ -234,12 +232,12 @@ module.exports = class extends Generator {
           answers.loadingType === promptOptions.loadingType.SCRIPT_TAGS
             ? promptOptions.loadingType.AMD
             : answers.loadingType;
-        this.props.modules = utils.joinArrays(
-          this.minimumModules,
-          answers.moduleType === promptOptions.moduleType.ES6_MODULES
-            ? answers.modules
-            : ["complete"]
-        );
+        if (answers.modules) {
+          this.props.modules = utils.joinArrays(
+            this.minimumModules,
+            answers.modules
+          );
+        }
 
         if (answers.loadingType === promptOptions.loadingType.SCRIPT_TAGS) {
           const modules = utils.insertChildren(
@@ -251,7 +249,7 @@ module.exports = class extends Generator {
               return module.indexOf("impl/") >= 0;
             })
             .reverse();
-        } else {
+        } else if(this.props.modules) {
           this.props.modules = utils.removeChildren(
             this.props.modules,
             this.props.useES6Modules ? yfilesES6Modules : yfilesModules

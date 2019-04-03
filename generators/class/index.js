@@ -40,7 +40,7 @@ module.exports = class extends Generator {
       }
     }
 
-    const modules = this.config.get("modules");
+    const modules = this.config.get("modules") || []
 
     const vars = {
       name: this.options.name,

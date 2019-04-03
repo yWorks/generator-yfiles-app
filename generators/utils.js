@@ -1,9 +1,9 @@
-var path = require("path");
-var fs = require('fs')
+const path = require("path");
+const fs = require('fs')
 
 module.exports = {
   joinArrays: function (a, b) {
-    var result = a.slice(0);
+    const result = a.slice(0);
     b.forEach(function (element) {
       result.indexOf(element) >= 0 || result.push(element);
     });
@@ -11,9 +11,10 @@ module.exports = {
   },
 
   flattenTree: function (tree, root) {
-    var result = [], queue = [root];
+    const result = [];
+    let queue = [root];
     while (queue.length > 0) {
-      var node = queue.shift();
+      const node = queue.shift();
       result.indexOf(node) >= 0 || result.push(node);
       queue = queue.concat(tree[node]);
     }
@@ -23,7 +24,7 @@ module.exports = {
 
   removeChildren: function (array, tree) {
     function worker(node) {
-      var children = tree[node];
+      const children = tree[node];
       array = array.filter(function (element) {
         return children.indexOf(element) < 0;
       });
@@ -32,7 +33,7 @@ module.exports = {
       });
     }
 
-    for (var i = 0; i < array.length; i++) {
+    for (let i = 0; i < array.length; i++) {
       worker(array[i]);
     }
 
@@ -40,8 +41,8 @@ module.exports = {
   },
 
   insertChildren: function (array, tree) {
-    for (var i = 0; i < array.length; i++) {
-      var key = array[i];
+    for (let i = 0; i < array.length; i++) {
+      const key = array[i];
         array = array.concat(tree[key]);
     }
     return array.filter(function (node, index, array) {
@@ -70,7 +71,7 @@ module.exports = {
   },
 
   parseLicense: function(path) {
-    var global = {
+    const global = {
       yfiles: {},
     };
     try {
