@@ -23,7 +23,7 @@ const answers = Object.assign({},defaultAnswers, {
 
 describe('AMD + VS Code', function () {
 
-  this.timeout(55000);
+  this.timeout(125000)
 
   before(function(done) {
     const that = this;

@@ -24,7 +24,7 @@ const answers = Object.assign({},defaultAnswers, {
 
 describe('UMD + None + AMD + ES6', function () {
 
-  this.timeout(55000);
+  this.timeout(125000)
 
   before(function(done) {
     const that = this;

@@ -22,7 +22,7 @@ const answers = Object.assign({},defaultAnswers, {
 
 describe('Local NPM module + ES6', function () {
 
-  this.timeout(75000);
+  this.timeout(125000)
 
   before(function(done) {
     const that = this;

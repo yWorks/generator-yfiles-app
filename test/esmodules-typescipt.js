@@ -22,7 +22,7 @@ const answers = Object.assign({},defaultAnswers, {
 
 describe('ES Modules + TypeScript', function () {
 
-  this.timeout(75000);
+  this.timeout(125000)
 
   before(function(done) {
     const that = this;

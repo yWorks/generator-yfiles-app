@@ -25,7 +25,7 @@ const answers = Object.assign({},defaultAnswers, {
 
 describe('AMD + Pure ES6 + IDEA', function () {
 
-  this.timeout(55000);
+  this.timeout(125000)
 
   before(function(done) {
     const that = this;

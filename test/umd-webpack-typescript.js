@@ -19,7 +19,7 @@ const answers = Object.assign({},defaultAnswers, {
 
 describe('UMD + Webpack + Typescript', function () {
 
-  this.timeout(120000);
+  this.timeout(125000)
 
   before(function(done) {
     const that = this;

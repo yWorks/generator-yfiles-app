@@ -19,12 +19,12 @@ const answers = Object.assign({},defaultAnswers, {
   "advancedOptions": [
     "Use yfiles-typeinfo.js"
   ],
-  "modules": ["yfiles/complete"]
+  "modules": ["complete"]
 });
 
 describe('Script Tags', function () {
 
-  this.timeout(55000);
+  this.timeout(125000)
 
   before(function(done) {
     const that = this;

@@ -20,7 +20,7 @@ const answers = Object.assign({},defaultAnswers, {
 
 describe('UMD + Webpack + ES6', function () {
 
-  this.timeout(120000);
+  this.timeout(125000)
 
   before(function(done) {
     const that = this;

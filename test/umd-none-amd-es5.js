@@ -19,14 +19,14 @@ const answers = Object.assign({},defaultAnswers, {
   "advancedOptions": [
     "Use yfiles-typeinfo.js"
   ],
-  "modules": ["yfiles/complete"]
+  "modules": ["complete"]
 });
 
 console.log(JSON.stringify(answers,null,2));
 
 describe('UMD + ES5', function () {
 
-  this.timeout(55000);
+  this.timeout(125000)
 
   before(function(done) {
     const that = this;
