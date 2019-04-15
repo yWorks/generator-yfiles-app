@@ -6,7 +6,7 @@ Watch [this Youtube screencast](https://www.youtube.com/watch?v=Pj0yd1iFp9g) to 
 ## Installation
 
 First, install [Yeoman](http://yeoman.io) and generator-yfiles-app using [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/) (we assume you have pre-installed [node.js](https://nodejs.org/)). 
-The current version scaffolds yFiles for HTML 2.0 projects.
+The current version scaffolds yFiles for HTML 2.2 projects.
 
 ```bash
 npm install -g yo
@@ -64,12 +64,13 @@ The name of the app and of the first class. Only valid JavaScript identifiers (c
 
 #### Path of yFiles for HTML package
 The path to the root of a valid yFiles for HTML package (e.g. "path/to/yFilesPackage"). This package must contain the following folders: 
- * "lib/yfiles"
+ * "lib/umd"
+ * "lib/es-modules"
  * "tools"
  * "ide-support"
 
 #### Path of license file
-The path to a yFiles for HTML license.js file. The generator tries to guess the location of the license file
+The path to a yFiles for HTML license.json file. The generator tries to guess the location of the license file
 based on the yFiles for HTML package path. You may however want to specify a custom path here ("path/to/license.json").
 
 #### Which kind of yFiles modules do you want to use?
