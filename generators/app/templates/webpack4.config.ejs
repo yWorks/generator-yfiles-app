@@ -15,10 +15,10 @@ const config = {
     publicPath: 'dist',
     filename: '[name].js'
   },
-  <% if (!useLocalNpm) { %>
   resolve: {
-    modules: ['node_modules', path.resolve('<%= libPath %>')],
-  },<% } %>
+    <% if (!useLocalNpm) { %>modules: ['node_modules', path.resolve('<%= libPath %>')],
+    <% } %>extensions: [".js", ".jsx"<% if (useTypeScript) { %>, ".ts", ".tsx"<% } %>]
+  },
   <% if (useTypeScript) { %>
   module: {
     rules: [
