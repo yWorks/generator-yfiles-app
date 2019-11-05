@@ -686,9 +686,13 @@ module.exports = class extends Generator {
     }
 
     if (this.props.useLocalNpm) {
+      const yfilesLibPath = path.join(this.props.yfilesPath, 'lib/es-modules')
+      const yFilesPackageJson = require(path.join(yfilesLibPath, 'package.json'))
+      const yFilesNpmVersion = yFilesPackageJson.version
+      let yFilesDepPath = path.resolve(yfilesLibPath, 'yfiles-' + yFilesNpmVersion + '.tgz')
       extend(pkg, {
         dependencies: {
-          yfiles: path.join(this.props.yfilesPath, "lib/es-modules/")
+          yfiles: yFilesDepPath
         }
       });
     }
@@ -745,6 +749,17 @@ module.exports = class extends Generator {
   }
 
   install() {
+
+    if (this.props.useLocalNpm) {
+      chalk.green(
+        "\nCreating an .tgz npm package of the yFiles lib...\n"
+      )
+      const yfilesLibPath = path.join(this.props.yfilesPath, 'lib/es-modules')
+      this.spawnCommandSync("npm", [
+        "pack"
+      ],{cwd: yfilesLibPath})
+    }
+
     if (this.props.usePackageJSON) {
       this.installDependencies({
         bower: false,
