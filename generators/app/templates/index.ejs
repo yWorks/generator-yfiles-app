@@ -53,11 +53,11 @@ else if (language === "typescript") {
 } else {
   if (!useBundlingTool) {
     if (loadingType === "script-tags") { %>
-<script src="<%= libPath %>impl/lang.js"></script>
+<script src="<%= libPath %>yfiles/impl/lang.js"></script>
 <% } else { %>
 <script src="<%= libPath %>yfiles/lang.js"></script>
 <% } %>
-<% modules.forEach(function (module) { %><script src="<%= libPath %><%= module %>.js"></script>
+<% modules.forEach(function (module) { %><script src="<%= libPath %>yfiles/<%= module %>.js"></script>
 <% });
   } else { %>
 <script src="<%= libPath %>yfiles.js"></script>

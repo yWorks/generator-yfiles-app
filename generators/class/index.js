@@ -49,7 +49,7 @@ module.exports = class extends Generator {
       layout: modules.indexOf('layout-hierarchic') >= 0 ? (useES6Modules ? 'HierarchicLayout' : 'yfiles.hierarchic.HierarchicLayout') : false,
       useShapeNodeStyle: useES6Modules ? modules.indexOf('styles-other') >= 0 : true,
       useGraphEditorInputMode: modules.indexOf('view-editor') >= 0,
-      moduleList: useWebpack ? modules.map(function(module) { return '../lib/'+module.replace('yfiles/', '')}) : modules,
+      moduleList: useWebpack ? modules.map(function(module) { return '../lib/yfiles/'+module}) : modules,
       useTypeInfo: this.options.useTypeInfo,
       useVsCode: this.options.useVsCode,
       useWebpack: useWebpack,

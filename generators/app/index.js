@@ -418,7 +418,7 @@ module.exports = class extends Generator {
       } else {
         this.fs.copy(
           path.join(this.props.yfilesPath, "lib/umd/"),
-          this.destinationPath(libPath)
+          this.destinationPath(path.join(libPath, "yfiles"))
         );
       }
       this.fs.copy(
