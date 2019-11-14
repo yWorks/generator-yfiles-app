@@ -755,9 +755,8 @@ module.exports = class extends Generator {
         "\nCreating an .tgz npm package of the yFiles lib...\n"
       )
       const yfilesLibPath = path.join(this.props.yfilesPath, 'lib/es-modules')
-      this.spawnCommandSync("npm", [
-        "pack"
-      ],{cwd: yfilesLibPath})
+      const packageManager = this.props.buildChain === promptOptions.buildChain.NPM ? "npm" : "yarn"
+      this.spawnCommandSync(packageManager, ["pack"],{cwd: yfilesLibPath})
     }
 
     if (this.props.usePackageJSON) {
