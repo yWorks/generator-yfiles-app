@@ -687,7 +687,7 @@ module.exports = class extends Generator {
 
     if (this.props.useLocalNpm) {
       const yfilesLibPath = path.join(this.props.yfilesPath, 'lib/es-modules')
-      const yFilesPackageJson = require(path.join(yfilesLibPath, 'package.json'))
+      const yFilesPackageJson = require(path.resolve(path.join(yfilesLibPath, 'package.json')))
       const yFilesNpmVersion = yFilesPackageJson.version
       let yFilesDepPath = path.resolve(yfilesLibPath, 'yfiles-' + yFilesNpmVersion + '.tgz')
       extend(pkg, {
