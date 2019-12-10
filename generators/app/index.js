@@ -575,7 +575,7 @@ module.exports = class extends Generator {
     if (this.props.useLoader) {
       pkg.dependencies = pkg.dependencies || (pkg.dependencies = {});
       if (this.props.loadingType === promptOptions.loadingType.AMD) {
-        pkg.dependencies["requirejs"] = "^2.3.5";
+        pkg.dependencies["requirejs"] = "^2.3.6";
       }
     }
 
@@ -592,7 +592,7 @@ module.exports = class extends Generator {
           watch: "tsc -w"
         },
         devDependencies: {
-          typescript: "^2.7.2"
+          typescript: "^3.7.3"
         }
       });
 
@@ -606,21 +606,22 @@ module.exports = class extends Generator {
         productionParam: "--mode production",
         devParam: "--mode development",
         deps: {
-          "@yworks/optimizer": "^0.1.12",
-          webpack: "^4.22.0",
-          "webpack-cli": "^3.1.2",
-          "webpack-dev-server": "^3.1.10",
-          "css-loader": "^2.1.1",
-          "mini-css-extract-plugin": "^0.5.0",
-          "babel-loader": "^8.0.5",
-          "@babel/core": "^7.4.0",
-          "@babel/preset-env": "^7.4.2",
-          "@babel/polyfill": "^7.4.0"
+          "@yworks/optimizer": "^1.0.5",
+          webpack: "^4.41.2",
+          "webpack-cli": "^3.3.10",
+          "webpack-dev-server": "^3.9.0",
+          "css-loader": "^3.3.0",
+          "mini-css-extract-plugin": "^0.8.0",
+          "babel-loader": "^8.0.6",
+          "@babel/core": "^7.7.5",
+          "@babel/preset-env": "^7.7.6",
+          "core-js": "^3.4.8",
+          "regenerator-runtime": "^0.13.3"
         },
         tsDeps: {
-          "@babel/preset-typescript": "^7.3.2",
-          "ts-loader": "^4.0.1",
-          typescript: "^2.7.2"
+          "@babel/preset-typescript": "^7.7.4",
+          "ts-loader": "^6.2.1",
+          typescript: "^3.7.3"
         }
       };
     }
