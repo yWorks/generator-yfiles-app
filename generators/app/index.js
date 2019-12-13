@@ -19,6 +19,13 @@ const promptOptions = require("./promptOptions");
 module.exports = class extends Generator {
   initializing() {
     this.minimumModules = [];
+    // Unless this is enabled, installation errors will just be swallowed.
+    this.options["force-install"] = true
+
+    this.on('error', function(e) {
+      this.env.error(e)
+      return false
+    })
   }
 
   prompting() {
@@ -690,7 +697,7 @@ module.exports = class extends Generator {
       const yfilesLibPath = path.join(this.props.yfilesPath, 'lib/es-modules')
       const yFilesPackageJson = require(path.resolve(path.join(yfilesLibPath, 'package.json')))
       const yFilesNpmVersion = yFilesPackageJson.version
-      let yFilesDepPath = path.resolve(yfilesLibPath, 'yfiles-' + yFilesNpmVersion + '.tgz')
+      let yFilesDepPath = path.resolve(yfilesLibPath, `yfiles-${this.props.useYarn ? 'v' : ''}${yFilesNpmVersion}.tgz`)
       extend(pkg, {
         dependencies: {
           yfiles: yFilesDepPath

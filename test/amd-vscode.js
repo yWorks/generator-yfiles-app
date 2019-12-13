@@ -10,6 +10,8 @@ const util = require('./support/util');
 const defaultAnswers = require('./support/defaultPromptAnswers');
 const promptOptions = require("../generators/app/promptOptions");
 const defaultInit = require('./support/defaultInit');
+const initTest = require('./support/initTest');
+
 
 const answers = Object.assign({},defaultAnswers, {
   "buildTool": promptOptions.buildTool.NONE,
@@ -24,6 +26,8 @@ const answers = Object.assign({},defaultAnswers, {
 describe('AMD + VS Code', function () {
 
   this.timeout(125000)
+
+  before(initTest(answers))
 
   before(function(done) {
     const that = this;

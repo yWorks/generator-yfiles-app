@@ -35,11 +35,6 @@ describe('Validate Prompts', function () {
     const validateLicenseResult = validatePrompts.isValidYfilesLicense(licensePath)
     assert((typeof validateLicenseResult) !== "string", validateLicenseResult)
   })
-  /*it('runs in some directory', function(done){
-    console.log("this dir" + this.dir);
-    assert(this.dir);
-    done();
-  })*/
 })
 
 module.exports = answers;

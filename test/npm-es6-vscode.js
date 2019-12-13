@@ -10,6 +10,7 @@ const util = require('./support/util');
 const defaultAnswers = require('./support/defaultPromptAnswers');
 const promptOptions = require("../generators/app/promptOptions");
 const defaultInit = require('./support/defaultInit');
+const initTest = require('./support/initTest');
 
 const answers = Object.assign({},defaultAnswers, {
   "moduleType": promptOptions.moduleType.NPM,
@@ -24,6 +25,8 @@ const answers = Object.assign({},defaultAnswers, {
 describe('Local NPM module + ES6 + VSCode', function () {
 
   this.timeout(125000)
+
+  before(initTest(answers))
 
   before(function(done) {
     const that = this;

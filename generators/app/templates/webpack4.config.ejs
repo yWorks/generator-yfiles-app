@@ -28,6 +28,7 @@ const config = {
         exclude: /(node_modules|lib[/\\]yfiles)/,
         loader: 'babel-loader',
         options: {
+          compact: true,
           presets: ['@babel/preset-env', '@babel/preset-typescript']
         }
       },
@@ -45,6 +46,7 @@ const config = {
         exclude: /(node_modules|bower_components|lib)/,
         loader: 'babel-loader',
         options: {
+          compact: true,
           presets: ['@babel/preset-env']
         }
       },
@@ -70,7 +72,11 @@ const config = {
       filename: '[name].css',
       chunkFilename: '[id].css'
     })
-  ]
+  ],
+  performance: {
+    // don't complain about large chunks/assets
+    hints: false
+  }
 };
 
 module.exports = function (env, options) {

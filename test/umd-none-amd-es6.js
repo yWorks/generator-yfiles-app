@@ -10,6 +10,7 @@ const util = require('./support/util');
 const defaultAnswers = require('./support/defaultPromptAnswers');
 const promptOptions = require("../generators/app/promptOptions");
 const defaultInit = require('./support/defaultInit');
+const initTest = require('./support/initTest');
 
 const answers = Object.assign({},defaultAnswers, {
   "moduleType": promptOptions.moduleType.UMD,
@@ -25,6 +26,8 @@ const answers = Object.assign({},defaultAnswers, {
 describe('UMD + None + AMD + ES6', function () {
 
   this.timeout(125000)
+
+  before(initTest(answers))
 
   before(function(done) {
     const that = this;

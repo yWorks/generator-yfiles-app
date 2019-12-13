@@ -10,6 +10,7 @@ const util = require('./support/util');
 const defaultAnswers = require('./support/defaultPromptAnswers');
 const promptOptions = require("../generators/app/promptOptions");
 const defaultInit = require('./support/defaultInit');
+const initTest = require('./support/initTest');
 
 const answers = Object.assign({},defaultAnswers, {
   "moduleType": promptOptions.moduleType.ES6_MODULES,
@@ -25,6 +26,8 @@ describe('ES Modules + ES6 + vscode', function () {
 
   this.timeout(125000)
 
+  before(initTest(answers))
+
   before(function(done) {
     const that = this;
     this.app = helpers
@@ -35,7 +38,9 @@ describe('ES Modules + ES6 + vscode', function () {
         'skip-message': true,
         'skip-install': false
       })
-      .withPrompts(answers).then(function(dir) {return defaultInit(__filename, dir)}).then(function(dir) {
+      .withPrompts(answers).then(function(dir) {
+        return defaultInit(__filename, dir)
+      }).then(function(dir) {
         that.dir = dir;
         done();
       })
