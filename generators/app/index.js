@@ -11,6 +11,7 @@ const yfilesScriptModules = require("./yfiles-script-modules.json");
 const utils = require("../utils");
 const validatePrompts = require("./validatePrompts");
 const toSlugCase = require("to-slug-case");
+const Git = require("nodegit");
 
 const Generator = require("yeoman-generator");
 
@@ -44,6 +45,19 @@ module.exports = class extends Generator {
 
     const prompts = [
       {
+        type: "list",
+        name: "projectType",
+        message: "Which framework do you want to use?",
+        choices: [
+          promptOptions.projectType.PLAIN,
+          promptOptions.projectType.ANGULAR,
+          promptOptions.projectType.REACT,
+          promptOptions.projectType.VUE
+        ],
+        default: promptOptions.projectType.PLAIN,
+        store: true
+      },
+      {
         type: "input",
         name: "applicationName",
         message: "Application name",
@@ -52,7 +66,10 @@ module.exports = class extends Generator {
           name = utils.camelCase(name);
           return name.charAt(0).toUpperCase() + name.slice(1);
         },
-        validate: utils.isValidName
+        validate: utils.isValidName,
+        when: function(props) {
+          return props.projectType === promptOptions.projectType.PLAIN;
+        },
       },
       {
         type: "input",
@@ -97,7 +114,10 @@ module.exports = class extends Generator {
           promptOptions.moduleType.UMD
         ],
         default: promptOptions.moduleType.NPM,
-        store: true
+        store: true,
+        when: function(props) {
+          return props.projectType === promptOptions.projectType.PLAIN;
+        },
       },
       {
         type: "checkbox",
@@ -128,7 +148,7 @@ module.exports = class extends Generator {
           promptOptions.buildTool.WEBPACK
         ],
         when: function(props) {
-          return props.moduleType === promptOptions.moduleType.UMD;
+          return props.moduleType === promptOptions.moduleType.UMD && props.projectType === promptOptions.projectType.PLAIN;
         },
         default: promptOptions.buildTool.NONE,
         store: true
@@ -146,7 +166,7 @@ module.exports = class extends Generator {
         when: function(props) {
           return (
             props.moduleType === promptOptions.moduleType.UMD &&
-            props.buildTool === promptOptions.buildTool.NONE
+            props.buildTool === promptOptions.buildTool.NONE && props.projectType === promptOptions.projectType.PLAIN
           );
         }
       },
@@ -170,7 +190,10 @@ module.exports = class extends Generator {
           }
         },
         default: promptOptions.language.ES6,
-        store: true
+        store: true,
+        when: function(props) {
+          return props.projectType === promptOptions.projectType.PLAIN;
+        },
       },
       {
         type: "checkbox",
@@ -184,7 +207,10 @@ module.exports = class extends Generator {
             checked: false
           }
         ],
-        store: true
+        store: true,
+        when: function(props) {
+          return props.projectType === promptOptions.projectType.PLAIN;
+        },
       },
       {
         type: "list",
@@ -199,6 +225,10 @@ module.exports = class extends Generator {
     return this.prompt(prompts).then(
       function(answers) {
         this.props = answers;
+
+        if (this.props.projectType !== promptOptions.projectType.PLAIN) {
+          return
+        }
 
         this.props.useES6Modules =
           answers.moduleType === promptOptions.moduleType.ES6_MODULES;
@@ -339,7 +369,9 @@ module.exports = class extends Generator {
           : ""
     });
 
-    this.composeWith(require.resolve("../class/"), options);
+    if (this.props.projectType === promptOptions.projectType.PLAIN) {
+      this.composeWith(require.resolve("../class/"), options);
+    }
   }
 
   _getTypingsFilename() {
@@ -357,7 +389,47 @@ module.exports = class extends Generator {
     }
   }
 
+  _getStarterKitPath(projectType) {
+    switch (projectType) {
+      case promptOptions.projectType.ANGULAR:
+        return 'https://github.com/yWorks/yfiles-angular-integration-basic'
+      case promptOptions.projectType.REACT:
+        return 'https://github.com/yWorks/yfiles-react-integration-basic'
+      case promptOptions.projectType.VUE:
+        return 'https://github.com/yWorks/yfiles-vue-integration-basic'
+    }
+  }
+
   writing() {
+    if (this.props.projectType !== promptOptions.projectType.PLAIN) {
+      // copy necessary yfiles stuff beside it (to satisfy starter-kit requirements)
+      const userLibraryBaseName = path.basename(this.props.yfilesPath)
+      this.fs.copy(
+        path.join(this.props.yfilesPath, "/lib/es-modules/**/*"),
+        this.destinationPath(path.join(userLibraryBaseName, '/lib/es-modules'))
+      )
+      this.fs.copy(
+        path.join(this.props.yfilesPath, "/lib/license.json"),
+        this.destinationPath(path.join(userLibraryBaseName, '/lib/license.json'))
+      )
+      this.fs.copy(
+        path.join(this.props.yfilesPath, "/ide-support/yfiles-typeinfo.js"),
+        this.destinationPath(path.join(userLibraryBaseName, '/ide-support/yfiles-typeinfo.js'))
+      )
+
+      // clone starter kit
+      const gitPath = this._getStarterKitPath(this.props.projectType)
+      const repositoryName = gitPath.substring(gitPath.lastIndexOf('/') + 1)
+      this.$cloneDest = this.destinationPath(repositoryName)
+
+      this.log(chalk.green(`\nDownloading starter-kit for ${this.props.projectType}\n`));
+      return Git.Clone(gitPath, this.$cloneDest).then(() => {
+        this.log(chalk.green(`Successfully cloned ${gitPath} to ${this.$cloneDest}`));
+      }).catch(e => {
+        this.log(chalk.yellow(`Could not clone ${gitPath}:\n${e.message}`));
+      })
+    }
+
     const appPath = "app";
     const scriptsPath = path.join(appPath, "scripts");
     const libPath = path.join(appPath, "lib");
@@ -756,7 +828,54 @@ module.exports = class extends Generator {
     }
   }
 
+  _getPackageVersion(packageJsonStr) {
+    const packageJson = JSON.parse(packageJsonStr)
+    return packageJson.version
+  }
+
   install() {
+    if (this.props.projectType !== promptOptions.projectType.PLAIN) {
+
+      // adjust the references to the user's environment
+      const userLibraryBaseName = path.basename(this.props.yfilesPath)
+      const libraryPackage = fs.readFileSync(this.destinationPath(path.join(userLibraryBaseName, '/lib/es-modules/package.json')), 'utf8')
+      const libraryPackageName = `yfiles-${this._getPackageVersion(libraryPackage)}.tgz`
+
+      const packageJsonPath = path.join(this.$cloneDest, '/package.json')
+      const starterKitPackage = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'))
+
+      const starterKitPreinstall = starterKitPackage.scripts.preinstall
+      let starterKitLibraryReference
+      const match = /cd\s?\.\.\/(.*)\/lib\/es-modules\s*&&/gm.exec(starterKitPreinstall)
+      if (match && match.length > 1) {
+        starterKitLibraryReference = match[1]
+      }
+
+      if (starterKitLibraryReference) {
+        const modifiedPackage = Object.assign({}, starterKitPackage)
+        modifiedPackage.scripts.preinstall = starterKitPackage.scripts.preinstall.replace(new RegExp(starterKitLibraryReference, 'g'), userLibraryBaseName)
+        modifiedPackage.scripts.postinstall = starterKitPackage.scripts.postinstall.replace(new RegExp(starterKitLibraryReference, 'g'), userLibraryBaseName)
+        modifiedPackage.dependencies.yfiles = `../${userLibraryBaseName}/lib/es-modules/${libraryPackageName}`
+        fs.writeFileSync(packageJsonPath, JSON.stringify(modifiedPackage, null, ' '), 'utf8')
+
+        if (this.props.projectType === promptOptions.projectType.VUE) {
+          // we need to replace one more reference in a .vue file for this project
+          const graphComponentVuePath = path.join(this.$cloneDest, '/src/components/GraphComponent.vue')
+          const graphComponentVueData = fs.readFileSync(graphComponentVuePath, 'utf8')
+          const modifiedVue = graphComponentVueData.replace(new RegExp(starterKitLibraryReference, 'g'), userLibraryBaseName)
+          fs.writeFileSync(graphComponentVuePath, modifiedVue, 'utf8')
+        }
+      }
+
+      this.log(chalk.green(
+        "\nInstalling dependencies of starter-kit...\n"
+      ))
+      const gitPath = this._getStarterKitPath(this.props.projectType)
+      const cloneDest = this.destinationPath(gitPath.substring(gitPath.lastIndexOf('/') + 1))
+      const packageManager = this.props.buildChain === promptOptions.buildChain.NPM ? "npm" : "yarn"
+      this.spawnCommandSync(packageManager, ["install"],{cwd: cloneDest}) // TODO
+    }
+
 
     if (this.props.useLocalNpm) {
       chalk.green(
@@ -777,6 +896,23 @@ module.exports = class extends Generator {
   }
 
   end() {
+    if (this.props.projectType !== promptOptions.projectType.PLAIN) {
+      const gitPath = this._getStarterKitPath(this.props.projectType)
+      const cloneDest = this.destinationPath(gitPath.substring(gitPath.lastIndexOf('/') + 1))
+      const startupScript = this.props.projectType === promptOptions.projectType.VUE ? 'serve' : 'start'
+      this.log(
+        chalk.green(
+          "\nFinished your scaffold. Running '" +
+          startupScript +
+          "' for you...\n"
+        )
+      );
+      this.spawnCommandSync(this.props.useYarn ? "yarn" : "npm", [
+        "run",
+        startupScript
+      ], {cwd: cloneDest});
+    }
+
     if (this.props.usePackageJSON) {
       if (this.props.runScript) {
         this.log(

@@ -59,6 +59,14 @@ programming languages (ECMAScript 5, ECMAScript 6 (+Babel) and TypeScript).
 
 Here is a rundown of the options you have:
 
+#### Which framework do you want to use?
+You can choose between a pre-build starter kit with framework integration (Angular, React, Vue.js), or create a plain project where the generator prompts you for further options.
+
+* No framework
+* Angular
+* React
+* Vue.js
+
 #### Application name
 The name of the app and of the first class. Only valid JavaScript identifiers (consisting of \[a-zA-Z$_]) are accepted.
 

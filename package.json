@@ -41,6 +41,7 @@
     "file-url": "^2.0.2",
     "generator-node": "latest",
     "lodash": "latest",
+    "nodegit": "^0.26.4",
     "to-slug-case": "^1.0.0",
     "yeoman-generator": "^3.2.0",
     "yosay": "^1.2.1"

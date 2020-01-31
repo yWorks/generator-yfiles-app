@@ -10,6 +10,7 @@ const promptOptions = require("../../generators/app/promptOptions")
 const yfilesPath = localConfig.yfilesPath
 const licensePath = path.resolve(yfilesPath, 'lib/license.json')
 const answers = {
+  "projectType": promptOptions.projectType.PLAIN,
   "applicationName": "testApp",
   "yfilesPath": localConfig.yfilesPath,
   "licensePath": path.resolve(localConfig.yfilesPath, 'lib/license.json'),

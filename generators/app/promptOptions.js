@@ -25,5 +25,11 @@ module.exports = {
     TYPEINFO: "Use yfiles-typeinfo.js",
     VSCODE: "Visual Studio Code integration",
     WEBSTORM: "WebStorm/PHP-Storm/Intellij IDEA Ultimate Project files"
+  },
+  projectType: {
+    PLAIN: "No framework",
+    ANGULAR: "Angular",
+    REACT: "React",
+    VUE: "Vue.js"
   }
 }
