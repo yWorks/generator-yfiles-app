@@ -873,7 +873,7 @@ module.exports = class extends Generator {
       const gitPath = this._getStarterKitPath(this.props.projectType)
       const cloneDest = this.destinationPath(gitPath.substring(gitPath.lastIndexOf('/') + 1))
       const packageManager = this.props.buildChain === promptOptions.buildChain.NPM ? "npm" : "yarn"
-      this.spawnCommandSync(packageManager, ["install"],{cwd: cloneDest}) // TODO
+      this.spawnCommandSync(packageManager, ["install"],{cwd: cloneDest})
     }
 
 
@@ -897,20 +897,13 @@ module.exports = class extends Generator {
 
   end() {
     if (this.props.projectType !== promptOptions.projectType.PLAIN) {
-      const gitPath = this._getStarterKitPath(this.props.projectType)
-      const cloneDest = this.destinationPath(gitPath.substring(gitPath.lastIndexOf('/') + 1))
-      const startupScript = this.props.projectType === promptOptions.projectType.VUE ? 'serve' : 'start'
+      const startCommand = this.props.projectType === promptOptions.projectType.VUE ? 'serve' : 'start'
+      const startPrefix = this.props.buildChain === promptOptions.buildChain.NPM ? 'npm run' : 'yarn'
       this.log(
         chalk.green(
-          "\nFinished your scaffold. Running '" +
-          startupScript +
-          "' for you...\n"
+          `\nFinished your scaffold. Type '${startPrefix} ${startCommand}' to start the development server and serve the application.\n`
         )
       );
-      this.spawnCommandSync(this.props.useYarn ? "yarn" : "npm", [
-        "run",
-        startupScript
-      ], {cwd: cloneDest});
     }
 
     if (this.props.usePackageJSON) {
