@@ -400,6 +400,26 @@ module.exports = class extends Generator {
     }
   }
 
+  _checkOutTag(repo, tag) {
+    // https://stackoverflow.com/a/46140283
+    return Git.Reference
+      .dwim(repo, "refs/tags/" + tag)
+      .then(function (ref) {
+        return ref.peel(Git.Object.TYPE.COMMIT);
+      })
+      .then(function (ref) {
+        return repo.getCommit(ref);
+      })
+      .then(function (commit) {
+        return Git.Checkout
+          .tree(repo, commit, {checkoutStrategy: Git.Checkout.STRATEGY.SAFE})
+          .then(function () {
+            return repo.setHeadDetached(commit, repo.defaultSignature,
+              "Checkout: HEAD " + commit.id());
+          })
+      });
+  }
+
   writing() {
     if (this.props.projectType !== promptOptions.projectType.PLAIN) {
       // copy necessary yfiles stuff beside it (to satisfy starter-kit requirements)
@@ -423,7 +443,9 @@ module.exports = class extends Generator {
       this.$cloneDest = this.destinationPath(repositoryName)
 
       this.log(chalk.green(`\nDownloading starter-kit for ${this.props.projectType}\n`));
-      return Git.Clone(gitPath, this.$cloneDest).then(() => {
+      return Git.Clone(gitPath, this.$cloneDest).then(repo => {
+        return this._checkOutTag(repo, "yFiles-for-HTML-2.2")
+      }).then(() => {
         this.log(chalk.green(`Successfully cloned ${gitPath} to ${this.$cloneDest}`));
       }).catch(e => {
         this.log(chalk.yellow(`Could not clone ${gitPath}:\n${e.message}`));
