@@ -16,7 +16,7 @@ const answers = Object.assign({},defaultAnswers, {
   "moduleType": promptOptions.moduleType.NPM,
   "language": promptOptions.language.ES6,
   "advancedOptions": [
-    promptOptions.advanced.TYPEINFO,
+    promptOptions.advanced.DEVLIB,
     promptOptions.advanced.VSCODE
   ]
 });
@@ -49,7 +49,6 @@ describe('Local NPM module + ES6 + VSCode', function () {
       assert.file([
         'app/index.html',
         'app/scripts/app.js',
-        'app/scripts/yfiles-typeinfo.js',
         'jsconfig.json',
         'package.json',
         'webpack.config.js',

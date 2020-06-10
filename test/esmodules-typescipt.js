@@ -60,8 +60,7 @@ describe('ES Modules + TypeScript', function () {
         'app/styles/yfiles.css',
         'jsconfig.json',
         'app/scripts/license.json',
-        'Gruntfile.js',
-        'app/scripts/yfiles-typeinfo.js'
+        'Gruntfile.js'
       ]);
     });
 

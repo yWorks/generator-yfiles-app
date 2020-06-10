@@ -18,7 +18,7 @@ const answers = Object.assign({},defaultAnswers, {
   "loadingType": promptOptions.loadingType.AMD,
   "language": promptOptions.language.ES6,
   "advancedOptions": [
-    "Use yfiles-typeinfo.js"
+    promptOptions.advanced.DEVLIB
   ]
 });
 

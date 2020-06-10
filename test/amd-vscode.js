@@ -18,7 +18,7 @@ const answers = Object.assign({},defaultAnswers, {
   "loadingType": promptOptions.loadingType.AMD,
   "advancedOptions": [
     promptOptions.advanced.VSCODE,
-    promptOptions.advanced.TYPEINFO
+    promptOptions.advanced.DEVLIB
   ]
 });
 
@@ -52,8 +52,7 @@ describe('AMD + VS Code', function () {
         'app/scripts/app.js',
         'app/styles/yfiles.css',
         'jsconfig.json',
-        'package.json',
-        'app/scripts/yfiles-typeinfo.js'
+        'package.json'
       ]);
       assert.noFile([
         'bower.json',

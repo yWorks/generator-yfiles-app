@@ -83,9 +83,7 @@ module.exports = function (env, options) {
 
   console.log("Running webpack...");
 
-  if (options.mode === 'development') {<% if (useTypeInfo) { %>
-    config.entry.app.unshift(path.resolve('<%= scriptsPath%>yfiles-typeinfo.js'))
-    <% } %>
+  if (options.mode === 'development') {
     config.devServer = {
       contentBase: [path.join(__dirname, './app')],
       compress: true,

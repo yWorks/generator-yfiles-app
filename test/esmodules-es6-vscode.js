@@ -16,7 +16,7 @@ const answers = Object.assign({},defaultAnswers, {
   "moduleType": promptOptions.moduleType.ES6_MODULES,
   "language": promptOptions.language.ES6,
   "advancedOptions": [
-    promptOptions.advanced.TYPEINFO,
+    promptOptions.advanced.DEVLIB,
     promptOptions.advanced.VSCODE
   ]
 });
@@ -55,8 +55,7 @@ describe('ES Modules + ES6 + vscode', function () {
         'app/typings/yfiles-api-es-modules-vscode.d.ts',
         'package.json',
         'webpack.config.js',
-        'app/lib/yfiles/yfiles.js',
-        'app/scripts/yfiles-typeinfo.js',
+        'app/lib/yfiles/yfiles.js'
       ]);
       assert.noFile([
         'app/lib/es2015-shim.js',

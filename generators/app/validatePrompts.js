@@ -11,9 +11,10 @@ const validations = {
       const hasES6Modules = fs.existsSync(path.join(p, "lib", "es-modules"))
       const hasOldModules = fs.existsSync(path.join(p, "lib", "umd"))
       const hasTools = fs.existsSync(path.join(p, "tools"))
+      const hasPreparePackage = fs.existsSync(path.join(p, "tools", "prepare-package"))
       const hasIdeSupport = fs.existsSync(path.join(p, "ide-support"))
-      if (!hasES6Modules && hasOldModules) {
-        return "This generator works with yFiles 2.2 packages (or later). For older packages, use a previous release of the generator."
+      if (!hasPreparePackage && !hasES6Modules && hasOldModules) {
+        return "This generator works with yFiles 2.3 packages (or later). For older packages, use a previous release of the generator."
       } else if (!(hasES6Modules && hasOldModules && hasTools && hasIdeSupport)) {
         return "Not a valid yFiles package"
       }

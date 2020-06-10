@@ -18,7 +18,7 @@ const answers = Object.assign({},defaultAnswers, {
   "loadingType": promptOptions.loadingType.SCRIPT_TAGS,
   "language": promptOptions.language.ES5,
   "advancedOptions": [
-    "Use yfiles-typeinfo.js"
+    promptOptions.advanced.DEVLIB
   ],
   "modules": ["complete"]
 });
@@ -50,7 +50,6 @@ describe('Script Tags', function () {
       assert.file([
         'app/index.html',
         'app/scripts/app.js',
-        'app/scripts/yfiles-typeinfo.js',
         'app/styles/yfiles.css'
       ]);
       assert.noFile([

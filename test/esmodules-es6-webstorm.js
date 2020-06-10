@@ -16,7 +16,7 @@ const answers = Object.assign({},defaultAnswers, {
   "moduleType": promptOptions.moduleType.ES6_MODULES,
   "language": promptOptions.language.ES6,
   "advancedOptions": [
-    promptOptions.advanced.TYPEINFO,
+    promptOptions.advanced.DEVLIB,
     promptOptions.advanced.WEBSTORM
   ]
 });
@@ -53,7 +53,6 @@ describe('ES Modules + ES6 + WebStorm', function () {
         'package.json',
         'webpack.config.js',
         'app/lib/yfiles/yfiles.js',
-        'app/scripts/yfiles-typeinfo.js',
         '.idea/libraries/yFiles_for_HTML.xml',
         '.idea/jsLibraryMappings.xml',
         '.idea/testApp.iml',

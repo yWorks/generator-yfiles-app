@@ -13,7 +13,9 @@ require('../lib/yfiles/yfiles.css');
   });
 } %>
 
-yfiles.license = <%-licenseContent%>;
+const { <% if (useShapeNodeStyle) { %>Fill, <% } %>GraphComponent, <% if (useGraphEditorInputMode) { %>GraphEditorInputMode, <% } %>License, Rect<% if (useShapeNodeStyle) { %>, ShinyPlateNodeStyle<% } %> } = yfiles
+
+License.value = <%-licenseContent%>;
 
 /**
  * <% if(description) { %><%- description %><% } else { %>A yfiles class.<% } %>
@@ -21,11 +23,11 @@ yfiles.license = <%-licenseContent%>;
 class <%- name %> {
   initialize() {
     // create a GraphComponent
-    const graphComponent = new yfiles.view.GraphComponent('#graphComponent');
+    const graphComponent = new GraphComponent('#graphComponent');
   <% if (useShapeNodeStyle) { %>
     // create and configure a default node style
-    graphComponent.graph.nodeDefaults.style = new yfiles.styles.ShinyPlateNodeStyle({
-      fill: yfiles.view.Fill.ORANGE,
+    graphComponent.graph.nodeDefaults.style = new ShinyPlateNodeStyle({
+      fill: Fill.ORANGE,
       drawShadow: true
     });
   <%}%>
@@ -33,14 +35,14 @@ class <%- name %> {
     // get the IGraph
     const graph = graphComponent.graph;
     // create some nodes
-    const node1 = graph.createNode(new yfiles.geometry.Rect(50, 50, 30, 30));
+    const node1 = graph.createNode(new Rect(50, 50, 30, 30));
     const node2 = graph.createNode();
 
     // create an edge
     graph.createEdge(node1, node2);
   <% if (useGraphEditorInputMode) { %>
     // create an input mode
-    graphComponent.inputMode = new yfiles.input.GraphEditorInputMode();
+    graphComponent.inputMode = new GraphEditorInputMode();
   <% }%>
     <% if (layout) { %>
     // execute a layout

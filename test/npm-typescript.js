@@ -16,7 +16,7 @@ const answers = Object.assign({},defaultAnswers, {
   "moduleType": promptOptions.moduleType.NPM,
   "language": promptOptions.language.TypeScript,
   "advancedOptions": [
-    promptOptions.advanced.TYPEINFO
+    promptOptions.advanced.DEVLIB
   ]
 });
 
@@ -48,7 +48,6 @@ describe('Local NPM module + TypeScript', function () {
       assert.file([
         'app/index.html',
         'app/scripts/app.ts',
-        'app/scripts/yfiles-typeinfo.js',
         'package.json',
         'tsconfig.json',
         'webpack.config.js',

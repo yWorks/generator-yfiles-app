@@ -200,7 +200,7 @@ module.exports = class extends Generator {
         name: "advancedOptions",
         message: "What else do you want?",
         choices: [
-          { name: "Use yfiles-typeinfo.js", checked: true },
+          { name: "Use development library", checked: true },
           { name: "Visual Studio Code integration", checked: false },
           {
             name: "WebStorm/PHP-Storm/Intellij IDEA Ultimate Project files",
@@ -246,16 +246,15 @@ module.exports = class extends Generator {
         this.props.useTypeScript = answers.language === "TypeScript";
         this.props.useEs6 = answers.language === promptOptions.language.ES6;
         this.props.useEs5 = answers.language === promptOptions.language.ES5;
-        this.props.useTypeInfo =
-          answers.advancedOptions.indexOf("Use yfiles-typeinfo.js") >= 0;
+        this.props.useDevLib = answers.projectType !== promptOptions.projectType.PLAIN ||
+          answers.advancedOptions.indexOf(promptOptions.advanced.DEVLIB) >= 0;
         this.props.useIdeaProject =
           answers.advancedOptions.indexOf(
-            "WebStorm/PHP-Storm/Intellij IDEA Ultimate Project files"
+            promptOptions.advanced.WEBSTORM
           ) >= 0;
 
         this.props.useVsCode =
-          answers.advancedOptions.indexOf("Visual Studio Code integration") >=
-          0;
+          answers.advancedOptions.indexOf(promptOptions.advanced.VSCODE) >= 0;
 
         this.props.licensePath = answers.licensePath;
         this.props.language = this.props.useTypeScript
@@ -425,16 +424,24 @@ module.exports = class extends Generator {
       // copy necessary yfiles stuff beside it (to satisfy starter-kit requirements)
       const userLibraryBaseName = path.basename(this.props.yfilesPath)
       this.fs.copy(
-        path.join(this.props.yfilesPath, "/lib/es-modules/**/*"),
-        this.destinationPath(path.join(userLibraryBaseName, '/lib/es-modules'))
+        path.join(this.props.yfilesPath, "package.json"),
+        this.destinationPath(path.join(userLibraryBaseName, 'package.json'))
       )
       this.fs.copy(
-        path.join(this.props.yfilesPath, "/lib/license.json"),
+        path.join(this.props.yfilesPath, "demos-js/package.json"),
+        this.destinationPath(path.join(userLibraryBaseName, 'demos-js/package.json'))
+      )
+      this.fs.copy(
+        path.join(this.props.yfilesPath, "tools/**/*"),
+        this.destinationPath(path.join(userLibraryBaseName, 'tools'))
+      )
+      this.fs.copy(
+        path.join(this.props.yfilesPath, "/lib/**/*"),
+        this.destinationPath(path.join(userLibraryBaseName, 'lib'))
+      )
+      this.fs.copy(
+        this.props.licensePath,
         this.destinationPath(path.join(userLibraryBaseName, '/lib/license.json'))
-      )
-      this.fs.copy(
-        path.join(this.props.yfilesPath, "/ide-support/yfiles-typeinfo.js"),
-        this.destinationPath(path.join(userLibraryBaseName, '/ide-support/yfiles-typeinfo.js'))
       )
 
       // clone starter kit
@@ -444,7 +451,7 @@ module.exports = class extends Generator {
 
       this.log(chalk.green(`\nDownloading starter-kit for ${this.props.projectType}\n`));
       return Git.Clone(gitPath, this.$cloneDest).then(repo => {
-        return this._checkOutTag(repo, "yFiles-for-HTML-2.2")
+        return this._checkOutTag(repo, "yFiles-for-HTML-2.3")
       }).then(() => {
         this.log(chalk.green(`Successfully cloned ${gitPath} to ${this.$cloneDest}`));
       }).catch(e => {
@@ -452,6 +459,7 @@ module.exports = class extends Generator {
       })
     }
 
+    const libSrcBase = path.join(this.props.yfilesPath, this.props.useDevLib ? "lib-dev" : "lib")
     const appPath = "app";
     const scriptsPath = path.join(appPath, "scripts");
     const libPath = path.join(appPath, "lib");
@@ -481,7 +489,7 @@ module.exports = class extends Generator {
       yFilesUrl: toFileUrl(this.props.yfilesPath),
       modules: this.props.modules,
       useES6: this.props.useEs6,
-      useTypeInfo: this.props.useTypeInfo,
+      useDevLib: this.props.useDevLib,
       useYarn: this.props.useYarn,
       useIdeaProject: this.props.useIdeaProject,
       useVsCode: this.props.useVsCode,
@@ -503,22 +511,33 @@ module.exports = class extends Generator {
       templateVars
     );
 
+    if (!this.fs.exists(libSrcBase)) {
+      chalk.green(
+        "\nPreparing yFiles library...\n"
+      )
+      const packageManager = this.props.buildChain === promptOptions.buildChain.NPM ? "npm" : "yarn"
+      const preparePackagePath = path.join(this.props.yfilesPath, "tools/prepare-package")
+      this.spawnCommandSync(packageManager, ["install"],{ cwd: preparePackagePath })
+      this.spawnCommandSync(packageManager, ["run", "prepare-package"],{ cwd: preparePackagePath })
+    }
+
     if (!this.props.useLocalNpm) {
+      // copy the yFiles library files to the app/lib folder
       if (this.props.useES6Modules) {
         this.fs.copy(
-          path.join(this.props.yfilesPath, "lib/es-modules/**/*"),
+          path.join(libSrcBase, "es-modules/**/*"),
           this.destinationPath(path.join(libPath, "yfiles"))
         );
         if (!this.props.useWebpack) {
           // with webpack, we use babel-polyfill instead
           this.fs.copy(
-            path.join(this.props.yfilesPath, "lib/umd/es2015-shim.js"),
+            path.join(libSrcBase, "umd/es2015-shim.js"),
             this.destinationPath(path.join(libPath, "es2015-shim.js"))
           );
         }
       } else {
         this.fs.copy(
-          path.join(this.props.yfilesPath, "lib/umd/"),
+          path.join(libSrcBase, "umd/"),
           this.destinationPath(path.join(libPath, "yfiles"))
         );
       }
@@ -607,15 +626,8 @@ module.exports = class extends Generator {
 
     if (!this.props.useWebpack) {
       this.fs.copy(
-        path.join(this.props.yfilesPath, "lib/es-modules/yfiles.css"),
+        path.join(libSrcBase, "es-modules/yfiles.css"),
         this.destinationPath(path.join(stylesPath, "yfiles.css"))
-      );
-    }
-
-    if (this.props.useTypeInfo) {
-      this.fs.copy(
-        path.join(this.props.yfilesPath, "ide-support/yfiles-typeinfo.js"),
-        this.destinationPath(path.join(scriptsPath, "yfiles-typeinfo.js"))
       );
     }
 
@@ -693,7 +705,7 @@ module.exports = class extends Generator {
           watch: "tsc -w"
         },
         devDependencies: {
-          typescript: "^3.7.3"
+          typescript: "~3.7.5"
         }
       });
 
@@ -707,22 +719,22 @@ module.exports = class extends Generator {
         productionParam: "--mode production",
         devParam: "--mode development",
         deps: {
-          "@yworks/optimizer": "^1.0.5",
-          webpack: "^4.41.2",
-          "webpack-cli": "^3.3.10",
-          "webpack-dev-server": "^3.9.0",
-          "css-loader": "^3.3.0",
-          "mini-css-extract-plugin": "^0.8.0",
-          "babel-loader": "^8.0.6",
-          "@babel/core": "^7.7.5",
-          "@babel/preset-env": "^7.7.6",
-          "core-js": "^3.4.8",
-          "regenerator-runtime": "^0.13.3"
+          "@yworks/optimizer": "^1.3.2",
+          webpack: "^4.43.0",
+          "webpack-cli": "^3.3.11",
+          "webpack-dev-server": "^3.11.0",
+          "css-loader": "^3.5.3",
+          "mini-css-extract-plugin": "^0.9.0",
+          "babel-loader": "^8.1.0",
+          "@babel/core": "^7.10.2",
+          "@babel/preset-env": "^7.10.2",
+          "core-js": "^3.6.5",
+          "regenerator-runtime": "^0.13.5"
         },
         tsDeps: {
-          "@babel/preset-typescript": "^7.7.4",
+          "@babel/preset-typescript": "^7.10.1",
           "ts-loader": "^6.2.1",
-          typescript: "^3.7.3"
+          typescript: "~3.7.5"
         }
       };
     }
@@ -788,10 +800,10 @@ module.exports = class extends Generator {
     }
 
     if (this.props.useLocalNpm) {
-      const yfilesLibPath = path.join(this.props.yfilesPath, 'lib/es-modules')
+      const yfilesLibPath = path.join(libSrcBase, 'es-modules')
       const yFilesPackageJson = require(path.resolve(path.join(yfilesLibPath, 'package.json')))
       const yFilesNpmVersion = yFilesPackageJson.version
-      let yFilesDepPath = path.resolve(yfilesLibPath, `yfiles-${this.props.useYarn ? 'v' : ''}${yFilesNpmVersion}.tgz`)
+      let yFilesDepPath = path.resolve(yfilesLibPath, `yfiles-${yFilesNpmVersion}.tgz`)
       extend(pkg, {
         dependencies: {
           yfiles: yFilesDepPath
@@ -861,14 +873,14 @@ module.exports = class extends Generator {
       // adjust the references to the user's environment
       const userLibraryBaseName = path.basename(this.props.yfilesPath)
       const libraryPackage = fs.readFileSync(this.destinationPath(path.join(userLibraryBaseName, '/lib/es-modules/package.json')), 'utf8')
-      const libraryPackageName = `yfiles-${this._getPackageVersion(libraryPackage)}.tgz`
+      const libraryPackageName = `yfiles-${this._getPackageVersion(libraryPackage)}-dev.tgz`
 
       const packageJsonPath = path.join(this.$cloneDest, '/package.json')
       const starterKitPackage = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'))
 
       const starterKitPreinstall = starterKitPackage.scripts.preinstall
       let starterKitLibraryReference
-      const match = /cd\s?\.\.\/(.*)\/lib\/es-modules\s*&&/gm.exec(starterKitPreinstall)
+      const match = /cd\s+\.\.\/([^\s]*)\s*&&/.exec(starterKitPreinstall)
       if (match && match.length > 1) {
         starterKitLibraryReference = match[1]
       }
@@ -877,16 +889,8 @@ module.exports = class extends Generator {
         const modifiedPackage = Object.assign({}, starterKitPackage)
         modifiedPackage.scripts.preinstall = starterKitPackage.scripts.preinstall.replace(new RegExp(starterKitLibraryReference, 'g'), userLibraryBaseName)
         modifiedPackage.scripts.postinstall = starterKitPackage.scripts.postinstall.replace(new RegExp(starterKitLibraryReference, 'g'), userLibraryBaseName)
-        modifiedPackage.dependencies.yfiles = `../${userLibraryBaseName}/lib/es-modules/${libraryPackageName}`
-        fs.writeFileSync(packageJsonPath, JSON.stringify(modifiedPackage, null, ' '), 'utf8')
-
-        if (this.props.projectType === promptOptions.projectType.VUE) {
-          // we need to replace one more reference in a .vue file for this project
-          const graphComponentVuePath = path.join(this.$cloneDest, '/src/components/GraphComponent.vue')
-          const graphComponentVueData = fs.readFileSync(graphComponentVuePath, 'utf8')
-          const modifiedVue = graphComponentVueData.replace(new RegExp(starterKitLibraryReference, 'g'), userLibraryBaseName)
-          fs.writeFileSync(graphComponentVuePath, modifiedVue, 'utf8')
-        }
+        modifiedPackage.dependencies.yfiles = `../${userLibraryBaseName}/lib-dev/es-modules/${libraryPackageName}`
+        fs.writeFileSync(packageJsonPath, JSON.stringify(modifiedPackage, null, 2), 'utf8')
       }
 
       this.log(chalk.green(
@@ -896,16 +900,6 @@ module.exports = class extends Generator {
       const cloneDest = this.destinationPath(gitPath.substring(gitPath.lastIndexOf('/') + 1))
       const packageManager = this.props.buildChain === promptOptions.buildChain.NPM ? "npm" : "yarn"
       this.spawnCommandSync(packageManager, ["install"],{cwd: cloneDest})
-    }
-
-
-    if (this.props.useLocalNpm) {
-      chalk.green(
-        "\nCreating an .tgz npm package of the yFiles lib...\n"
-      )
-      const yfilesLibPath = path.join(this.props.yfilesPath, 'lib/es-modules')
-      const packageManager = this.props.buildChain === promptOptions.buildChain.NPM ? "npm" : "yarn"
-      this.spawnCommandSync(packageManager, ["pack"],{cwd: yfilesLibPath})
     }
 
     if (this.props.usePackageJSON) {

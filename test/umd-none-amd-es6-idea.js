@@ -18,7 +18,7 @@ const answers = Object.assign({},defaultAnswers, {
   "loadingType": promptOptions.loadingType.AMD,
   "language": promptOptions.language.ES6,
   "advancedOptions": [
-    promptOptions.advanced.TYPEINFO,
+    promptOptions.advanced.DEVLIB,
     promptOptions.advanced.WEBSTORM
   ]
 });
@@ -57,8 +57,7 @@ describe('AMD + Pure ES6 + IDEA', function () {
         '.idea/modules.xml',
         '.idea/testApp.iml',
         '.idea/libraries/yFiles_for_HTML.xml',
-        'package.json',
-        'app/scripts/yfiles-typeinfo.js'
+        'package.json'
       ]);
       assert.noFile([
         'bower.json',

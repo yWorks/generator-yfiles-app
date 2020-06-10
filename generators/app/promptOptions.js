@@ -22,7 +22,7 @@ module.exports = {
     TypeScript: "TypeScript"
   },
   advanced: {
-    TYPEINFO: "Use yfiles-typeinfo.js",
+    DEVLIB: "Use development library",
     VSCODE: "Visual Studio Code integration",
     WEBSTORM: "WebStorm/PHP-Storm/Intellij IDEA Ultimate Project files"
   },

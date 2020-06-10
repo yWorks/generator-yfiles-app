@@ -59,8 +59,7 @@ describe('UMD + Webpack + ES6', function () {
         '.idea/misc.xml',
         '.idea/modules.xml',
         '.idea/testApp.iml',
-        '.idea/libraries/yFiles_for_HTML.xml',
-        'app/scripts/yfiles-typeinfo.js'
+        '.idea/libraries/yFiles_for_HTML.xml'
       ]);
     });
 

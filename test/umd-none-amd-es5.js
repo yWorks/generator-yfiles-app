@@ -18,7 +18,7 @@ const answers = Object.assign({},defaultAnswers, {
   "loadingType": promptOptions.loadingType.AMD,
   "language": promptOptions.language.ES5,
   "advancedOptions": [
-    "Use yfiles-typeinfo.js"
+    promptOptions.advanced.DEVLIB
   ],
   "modules": ["complete"]
 });
@@ -52,7 +52,6 @@ describe('UMD + ES5', function () {
       assert.file([
         'app/index.html',
         'app/scripts/app.js',
-        'app/scripts/yfiles-typeinfo.js',
         'app/styles/yfiles.css',
         'package.json',
       ]);

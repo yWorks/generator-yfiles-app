@@ -6,7 +6,7 @@ Watch [this Youtube screencast](https://www.youtube.com/watch?v=Pj0yd1iFp9g) to 
 ## Installation
 
 First, install [Yeoman](http://yeoman.io) and generator-yfiles-app using [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/) (we assume you have pre-installed [node.js](https://nodejs.org/)). 
-The current version scaffolds yFiles for HTML 2.2 projects.
+The current version scaffolds yFiles for HTML 2.3 projects.
 
 ```bash
 npm install -g yo
@@ -46,10 +46,16 @@ To scaffold a **yFiles for HTML 2.0** project, please install v1.2.0 of the gene
 npm install -g generator-yfiles-app@1.2.0
 ```
 
-To scaffold a **yFiles for HTML 2.1** project, please install v1.2.0 of the generator-yfiles-app, i.e:
+To scaffold a **yFiles for HTML 2.1** project, please install v2.2.2 of the generator-yfiles-app, i.e:
 
 ```bash
 npm install -g generator-yfiles-app@2.2.2
+```
+
+To scaffold a **yFiles for HTML 2.2** project, please install v3.0.6 of the generator-yfiles-app, i.e:
+
+```bash
+npm install -g generator-yfiles-app@3.0.6
 ```
 
 ## About this generator
@@ -132,9 +138,9 @@ This option will not be available for those variants where no third party softwa
 for transpiling or loading the app.
 
 #### What else do you want?
- * **Use yfiles-typeinfo.js** Includes the yfiles-typeinfo.js file which provides runtime type checking 
- during development time. Remember to remove this file for production releases.
- Further information can be found [here](http://docs.yworks.com/yfileshtml/#/dguide/DevelopmentSupport#DevelopmentSupport-Checks).
+ * **Use development library** Uses the yFiles development library with runtime type checking. Remember to use the
+  production library for production releases.
+ Further information can be found [here](http://docs.yworks.com/yfileshtml/#/dguide/yfiles_development_mode).
  * **Visual Studio Code integration** Creates additional files required for [Visual Studio Codes'](https://code.visualstudio.com/) IntelliSense as well as a task runner if applicable.
  * **WebStorm/PHP-Storm/Intellij IDEA Ultimate Project files** Creates a simple project file structure for [JetBrains' IDEs](https://www.jetbrains.com/)' with libraries and directories set up correctly.
 
