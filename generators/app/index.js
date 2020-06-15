@@ -12,6 +12,7 @@ const utils = require("../utils");
 const validatePrompts = require("./validatePrompts");
 const toSlugCase = require("to-slug-case");
 const Git = require("nodegit");
+const config = require("../config.js")
 
 const Generator = require("yeoman-generator");
 
@@ -33,7 +34,9 @@ module.exports = class extends Generator {
     // Have Yeoman greet the user.
     this.log(
       yosay(
-        "Welcome to the " + chalk.cyan("yFiles") + "-application generator!"
+        `Welcome to the ${chalk.cyan("yFiles")}-application generator for yFiles for HTML ${config.yFilesHTMLVersion}!
+
+Generator Version: ${config.generatorVersion}`
       )
     );
 
@@ -451,7 +454,7 @@ module.exports = class extends Generator {
 
       this.log(chalk.green(`\nDownloading starter-kit for ${this.props.projectType}\n`));
       return Git.Clone(gitPath, this.$cloneDest).then(repo => {
-        return this._checkOutTag(repo, "yFiles-for-HTML-2.3")
+        return this._checkOutTag(repo, config.starterKitTag)
       }).then(() => {
         this.log(chalk.green(`Successfully cloned ${gitPath} to ${this.$cloneDest}`));
       }).catch(e => {
