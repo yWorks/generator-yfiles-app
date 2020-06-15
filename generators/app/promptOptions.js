@@ -12,10 +12,6 @@ module.exports = {
     ES6_MODULES: "ES Modules",
     NPM: "Local NPM dependency (recommended)"
   },
-  buildTool: {
-    NONE: "none",
-    WEBPACK: "webpack"
-  },
   language: {
     ES5: "ES5",
     ES6: "ES6",

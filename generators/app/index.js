@@ -144,20 +144,6 @@ Generator Version: ${config.generatorVersion}`
       },
       {
         type: "list",
-        name: "buildTool",
-        message: "Which build tool do you want to use?",
-        choices: [
-          promptOptions.buildTool.NONE,
-          promptOptions.buildTool.WEBPACK
-        ],
-        when: function(props) {
-          return props.moduleType === promptOptions.moduleType.UMD && props.projectType === promptOptions.projectType.PLAIN;
-        },
-        default: promptOptions.buildTool.NONE,
-        store: true
-      },
-      {
-        type: "list",
         name: "loadingType",
         message: "Module loading method",
         choices: [
@@ -168,8 +154,7 @@ Generator Version: ${config.generatorVersion}`
         store: true,
         when: function(props) {
           return (
-            props.moduleType === promptOptions.moduleType.UMD &&
-            props.buildTool === promptOptions.buildTool.NONE && props.projectType === promptOptions.projectType.PLAIN
+            props.moduleType === promptOptions.moduleType.UMD && props.projectType === promptOptions.projectType.PLAIN
           );
         }
       },
@@ -178,12 +163,7 @@ Generator Version: ${config.generatorVersion}`
         name: "language",
         message: "Which language variant do you want to use?",
         choices: function(props) {
-          if (props.moduleType === promptOptions.moduleType.ES6_MODULES) {
-            return [
-              promptOptions.language.ES6,
-              promptOptions.language.TypeScript
-            ];
-          } else if (props.buildTool === promptOptions.buildTool.NONE) {
+          if (props.moduleType === promptOptions.moduleType.UMD) {
             return [promptOptions.language.ES5, promptOptions.language.ES6];
           } else {
             return [
@@ -238,7 +218,6 @@ Generator Version: ${config.generatorVersion}`
         this.props.useLocalNpm =
           answers.moduleType === promptOptions.moduleType.NPM;
         this.props.useWebpack =
-          answers.buildTool === "webpack" ||
           this.props.useES6Modules ||
           this.props.useLocalNpm;
         this.props.useYarn =
@@ -341,7 +320,6 @@ Generator Version: ${config.generatorVersion}`
     this.config.set("scriptsPath", "app/scripts");
     this.config.set("libPath", "app/lib");
     this.config.set("stylesPath", "app/styles");
-    this.config.set("buildTool", this.props.buildTool);
     this.config.set("language", this.props.language);
     this.config.set("modules", this.props.modules);
     this.config.set("licenseContent", this.props.licenseContent);

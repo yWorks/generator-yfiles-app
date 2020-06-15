@@ -7,11 +7,6 @@ module.exports = class extends Generator {
   writing() {
     const appPath = this.options.appPath || this.config.get("appPath") || "app";
     const scriptsPath = this.options.scriptsPath || this.config.get("scriptsPath") || path.join(appPath, "scripts");
-    const libPath = this.options.libPath || this.config.get("libPath") || path.join(appPath, "lib");
-    const stylesPath = this.options.stylesPath || this.config.get("stylesPath") || path.join(appPath, "styles");
-
-    const buildTool = this.options.buildTool || this.config.get("buildTool") || "none";
-
     const language = this.options.language || this.config.get("language") || "javascript";
 
     const useWebpack = this.options.useWebpack;
