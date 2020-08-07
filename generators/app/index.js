@@ -409,10 +409,6 @@ Generator Version: ${config.generatorVersion}`
         this.destinationPath(path.join(userLibraryBaseName, 'package.json'))
       )
       this.fs.copy(
-        path.join(this.props.yfilesPath, "demos-js/package.json"),
-        this.destinationPath(path.join(userLibraryBaseName, 'demos-js/package.json'))
-      )
-      this.fs.copy(
         path.join(this.props.yfilesPath, "tools/**/*"),
         this.destinationPath(path.join(userLibraryBaseName, 'tools'))
       )
