@@ -4,7 +4,6 @@ const fs = require('fs');
 const exec = require('child_process').exec;
 const helpers = require('yeoman-test');
 const assert = require('yeoman-assert');
-const opn = require('opn');
 
 const util = require('./support/util');
 const defaultAnswers = require('./support/defaultPromptAnswers');
@@ -14,7 +13,6 @@ const initTest = require('./support/initTest');
 
 const answers = Object.assign({},defaultAnswers, {
   "moduleType": promptOptions.moduleType.UMD,
-  "buildTool": promptOptions.buildTool.NONE,
   "loadingType": promptOptions.loadingType.SCRIPT_TAGS,
   "language": promptOptions.language.ES5,
   "advancedOptions": [

@@ -15,7 +15,6 @@ const answers = {
   "yfilesPath": localConfig.yfilesPath,
   "licensePath": path.resolve(localConfig.yfilesPath, 'lib/license.json'),
   "moduleType": promptOptions.moduleType.UMD,
-  "buildTool": promptOptions.buildTool.NONE,
   "buildChain": promptOptions.buildChain.YARN,
   "modules": [
     "layout-hierarchic",

@@ -96,17 +96,7 @@ Choose whether you want to consume the yFiles library as a local NPM dependency,
  Selecting this option *skips most of the following prompts*, as these are not applicable when using ES Modules. 
  The resulting project will use webpack, so the resulting application will work in most browsers. 
  * **[UMD](https://github.com/umdjs/umd)** Use the "traditional" modules that work with AMD/require.js, 
- commonjs (NodeJS) and as browser-globals. 
-
-#### Which build tool do you want to use?
-You can choose between those build tools:
- * **none**: No build file is provided and you can run your ES5/ES6 app on supported browsers directly without the 
- need of a compile step.
- * **[Webpack](https://github.com/webpack/webpack)** Adds a production build step that obfuscates and minifies all 
- JavaScript sources (using the yFiles optimizer plugin for Webpack), and bundles them to a single file using 
- webpack (`npm run production`). For development, a 
- [webpack-dev-server](https://webpack.js.org/configuration/dev-server/) configuration is 
- provided that enables fast turnaround times during development (`npm start`).
+ commonjs (NodeJS) and as browser-globals.
 
 #### Module loading method
 Decide whether you want to load the library via

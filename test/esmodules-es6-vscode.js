@@ -4,7 +4,6 @@ const fs = require('fs');
 const exec = require('child_process').exec;
 const helpers = require('yeoman-test');
 const assert = require('yeoman-assert');
-const opn = require('opn');
 
 const util = require('./support/util');
 const defaultAnswers = require('./support/defaultPromptAnswers');
@@ -93,7 +92,7 @@ describe('ES Modules + ES6 + vscode', function () {
 
     it('succeeds to run production build', function (done) {
       const dir = this.dir;
-      const child = exec('npm run production', {cwd: dir}, function(error, stdout, stderr) {
+      const child = exec('npm run production', {cwd: dir.cwd}, function(error, stdout, stderr) {
         console.log("\nbuild done!")
         assert.ok(error === null, "Production build failed: "+error);
         util.maybeOpenInBrowser(dir,done);
