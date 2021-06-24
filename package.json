@@ -37,23 +37,23 @@
   },
   "dependencies": {
     "chalk": "^4.1.0",
-    "deep-extend": "latest",
+    "deep-extend": "^0.6.0",
     "file-url": "^3.0.0",
-    "generator-node": "latest",
-    "lodash": "latest",
+    "lodash": "^4.17.21",
     "nodegit": "^0.27.0",
     "to-slug-case": "^1.0.0",
-    "yeoman-generator": "^4.12.0",
+    "yeoman-generator": "^5.3.0",
     "yosay": "^2.0.2"
   },
   "devDependencies": {
     "babel-plugin-uglify": "^1.0.2",
     "cross-env": "^7.0.3",
-    "eslint-config-xo-space": "^0.26.0",
-    "mocha": "^8.2.1",
-    "open": "^7.3.0",
+    "eslint-config-xo-space": "^0.28.0",
+    "mocha": "^9.0.1",
+    "open": "^8.2.1",
     "yeoman-assert": "^3.1.1",
-    "yeoman-test": "^4.0.0"
+    "yeoman-environment": "^3.4.1",
+    "yeoman-test": "^6.1.0"
   },
   "eslintConfig": {
     "extends": "xo-space",

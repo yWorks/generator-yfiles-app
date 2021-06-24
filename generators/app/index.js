@@ -13,8 +13,12 @@ const validatePrompts = require("./validatePrompts");
 const toSlugCase = require("to-slug-case");
 const Git = require("nodegit");
 const config = require("../config.js")
+const _ = require("lodash")
 
 const Generator = require("yeoman-generator");
+// installDependencies was removed in yeoman 5, this is a quick workaround to bring it back:
+// https://github.com/yeoman/generator/releases/tag/v5.0.0
+_.extend(Generator.prototype, require('yeoman-generator/lib/actions/install'));
 
 const promptOptions = require("./promptOptions");
 
