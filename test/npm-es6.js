@@ -50,7 +50,7 @@ describe('Local NPM module + ES6', function () {
         'package.json',
         'webpack.config.js',
         'node_modules/yfiles/yfiles.js',
-        'node_modules/yfiles/typings/yfiles-api-npm.d.ts'
+        'node_modules/yfiles/typings/yfiles-api-ts43.d.ts'
       ]);
       assert.noFile([
         'bower.json',
@@ -59,10 +59,10 @@ describe('Local NPM module + ES6', function () {
         'tsconfig.json',
         'jsconfig.json',
         'app/scripts/license.json',
-        'app/typings/yfiles-api-umd-vscode.d.ts',
-        'app/typings/yfiles-api-umd-webstorm.d.ts',
-        'app/typings/yfiles-api-es-modules-vscode.d.ts',
-        'app/typings/yfiles-api-es-modules-webstorm.d.ts',
+        'app/typings/yfiles-api-umd-ts43-vscode.d.ts',
+        'app/typings/yfiles-api-umd-ts43-webstorm.d.ts',
+        'app/typings/yfiles-api-modules-ts43-vscode.d.ts',
+        'app/typings/yfiles-api-modules-ts43-webstorm.d.ts',
         'Gruntfile.js',
         'app/lib/yfiles/yfiles.js',
       ]);

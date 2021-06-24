@@ -47,7 +47,7 @@ describe('ES Modules + TypeScript', function () {
       assert.file([
         'app/index.html',
         'app/scripts/app.ts',
-        'app/typings/yfiles-api-es-modules-vscode.d.ts',
+        'app/typings/yfiles-api-modules-ts43-vscode.d.ts',
         'package.json',
         'tsconfig.json',
         'webpack.config.js',

@@ -364,12 +364,12 @@ Generator Version: ${config.generatorVersion}`
       (this.props.useTypeScript && !this.props.useIdeaProject);
     if (this.props.useES6Modules) {
       return useVSCode
-        ? "yfiles-api-es-modules-vscode.d.ts"
-        : "yfiles-api-es-modules-webstorm.d.ts";
+        ? "yfiles-api-modules-ts43-vscode.d.ts"
+        : "yfiles-api-modules-ts43-webstorm.d.ts";
     } else {
       return useVSCode
-        ? "yfiles-api-umd-vscode.d.ts"
-        : "yfiles-api-umd-webstorm.d.ts";
+        ? "yfiles-api-umd-ts43-vscode.d.ts"
+        : "yfiles-api-umd-ts43-webstorm.d.ts";
     }
   }
 
@@ -686,7 +686,7 @@ Generator Version: ${config.generatorVersion}`
           watch: "tsc -w"
         },
         devDependencies: {
-          typescript: "~3.7.5"
+          typescript: "~4.3.4"
         }
       });
 

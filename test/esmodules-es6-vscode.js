@@ -51,7 +51,7 @@ describe('ES Modules + ES6 + vscode', function () {
         'app/index.html',
         'app/scripts/app.js',
         'jsconfig.json',
-        'app/typings/yfiles-api-es-modules-vscode.d.ts',
+        'app/typings/yfiles-api-modules-ts43-vscode.d.ts',
         'package.json',
         'webpack.config.js',
         'app/lib/yfiles/yfiles.js'
@@ -63,9 +63,9 @@ describe('ES Modules + ES6 + vscode', function () {
         'bower.json',
         'tsconfig.json',
         'app/scripts/license.json',
-        'app/typings/yfiles-api-umd-vscode.d.ts',
-        'app/typings/yfiles-api-umd-webstorm.d.ts',
-        'app/typings/yfiles-api-es-modules-webstorm.d.ts',
+        'app/typings/yfiles-api-umd-ts43-vscode.d.ts',
+        'app/typings/yfiles-api-umd-ts43-webstorm.d.ts',
+        'app/typings/yfiles-api-modules-ts43-webstorm.d.ts',
         'Gruntfile.js'
       ]);
     });

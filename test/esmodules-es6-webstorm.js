@@ -48,7 +48,7 @@ describe('ES Modules + ES6 + WebStorm', function () {
       assert.file([
         'app/index.html',
         'app/scripts/app.js',
-        'app/typings/yfiles-api-es-modules-webstorm.d.ts',
+        'app/typings/yfiles-api-modules-ts43-webstorm.d.ts',
         'package.json',
         'webpack.config.js',
         'app/lib/yfiles/yfiles.js',
@@ -66,8 +66,8 @@ describe('ES Modules + ES6 + WebStorm', function () {
         'bower.json',
         'tsconfig.json',
         'app/scripts/license.json',
-        'app/typings/yfiles-api-umd-vscode.d.ts',
-        'app/typings/yfiles-api-umd-webstorm.d.ts',
+        'app/typings/yfiles-api-umd-ts43-vscode.d.ts',
+        'app/typings/yfiles-api-umd-ts43-webstorm.d.ts',
         'Gruntfile.js'
       ]);
     });

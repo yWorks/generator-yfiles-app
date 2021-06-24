@@ -6,7 +6,7 @@ Watch [this Youtube screencast](https://www.youtube.com/watch?v=fgY4ezIfVjI&t=11
 ## Installation
 
 First, install [Yeoman](http://yeoman.io) and generator-yfiles-app using [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/) (we assume you have pre-installed [node.js](https://nodejs.org/)). 
-The current version scaffolds yFiles for HTML 2.3 projects.
+The current version scaffolds yFiles for HTML 2.4 projects.
 
 ```bash
 npm install -g yo
@@ -56,6 +56,12 @@ To scaffold a **yFiles for HTML 2.2** project, please install v3.0.6 of the gene
 
 ```bash
 npm install -g generator-yfiles-app@3.0.6
+```
+
+To scaffold a **yFiles for HTML 2.3** project, please install v4.0.2 of the generator-yfiles-app, i.e:
+
+```bash
+npm install -g generator-yfiles-app@4.0.2
 ```
 
 ## About this generator
