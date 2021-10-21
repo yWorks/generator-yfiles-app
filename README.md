@@ -3,7 +3,26 @@
 
 Watch [this Youtube screencast](https://www.youtube.com/watch?v=fgY4ezIfVjI&t=1160s) to see the generator in action.
 
-## Installation
+## Alternative ways to scaffold yFiles for HTML applications
+
+Besides this Yeoman generator, there are more ways to scaffold yFiles for HTML applications with different features and
+frameworks:
+
+#### yFiles Dev Suite
+
+The [yFiles Dev Suite](https://www.npmjs.com/package/yfiles-dev-suite) is a graphical interface that facilitates working with a [yFiles for HTML](https://www.yworks.com/products/yfiles-for-html) software package:
+
+* Integration with [my.yworks.com](https://my.yworks.com/) for a simplified evaluation process and direct communication with the yWorks support team.
+* Create your own yFiles app with just a few clicks.
+* Browse and adapt the plethora of [demo applications](https://live.yworks.com/demos/), manage your changes through integrated diffing, and spawn your own projects from one of the samples as a starting point.
+
+See how it works, in [this video](https://www.youtube.com/watch?v=yzRAB-oP_uw) on YouTube.
+
+#### App Generator
+
+The [App Generator](https://www.yworks.com/products/app-generator) is a tool that lets you interactively create a diagram application prototype to visualize your data with very little programming knowledge. It generates and exports the source code of configurable prototype applications with different frameworks (e.g. React, Vue.js or Angular) with features like editing, context menu, graph search, printing and graph editing capabilities.
+
+## Installation of this Yeoman generator
 
 First, install [Yeoman](http://yeoman.io) and generator-yfiles-app using [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/) (we assume you have pre-installed [node.js](https://nodejs.org/)). 
 The current version scaffolds yFiles for HTML 2.4 projects.
@@ -139,7 +158,6 @@ for transpiling or loading the app.
  Further information can be found [here](http://docs.yworks.com/yfileshtml/#/dguide/yfiles_development_mode).
  * **Visual Studio Code integration** Creates additional files required for [Visual Studio Codes'](https://code.visualstudio.com/) IntelliSense as well as a task runner if applicable.
  * **WebStorm/PHP-Storm/Intellij IDEA Ultimate Project files** Creates a simple project file structure for [JetBrains' IDEs](https://www.jetbrains.com/)' with libraries and directories set up correctly.
-
 
 ## License
 MIT © [yWorks GmbH](https://www.yworks.com)
