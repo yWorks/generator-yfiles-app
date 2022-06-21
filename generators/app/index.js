@@ -528,63 +528,19 @@ Generator Version: ${config.generatorVersion}`
         path.relative("./", this.props.yfilesPath),
         "tools/create-npm-typings/"
       );
-      if (this.props.useVsCode) {
-        // we need to build the vscode typings for local npm modules
-        this.log(chalk.green("\nBuilding yFiles typings for VSCode ...\n"));
-        if (this.props.useYarn) {
-          this.spawnCommandSync("yarn", [
-            "--cwd",
-            createNpmTypingsPath,
-            "install"
-          ]);
-          this.spawnCommandSync("yarn", [
-            "--cwd",
-            createNpmTypingsPath,
-            "npm-module-vscode"
-          ]);
-        } else {
-          this.spawnCommandSync("npm", [
-            "--prefix",
-            createNpmTypingsPath,
-            "install",
-            createNpmTypingsPath
-          ]);
-          this.spawnCommandSync("npm", [
-            "--prefix",
-            createNpmTypingsPath,
-            "run",
-            "npm-module-vscode"
-          ]);
-        }
-      } else {
-        // build the webstorm npm typings (there may be the vscode typings currently)
-        this.log(chalk.green("\nBuilding yFiles typings for WebStorm ...\n"));
-        if (this.props.useYarn) {
-          this.spawnCommandSync("yarn", [
-            "--cwd",
-            createNpmTypingsPath,
-            "install"
-          ]);
-          this.spawnCommandSync("yarn", [
-            "--cwd",
-            createNpmTypingsPath,
-            "npm-module-webstorm"
-          ]);
-        } else {
-          this.spawnCommandSync("npm", [
-            "--prefix",
-            createNpmTypingsPath,
-            "install",
-            createNpmTypingsPath
-          ]);
-          this.spawnCommandSync("npm", [
-            "--prefix",
-            createNpmTypingsPath,
-            "run",
-            "npm-module-webstorm"
-          ]);
-        }
-      }
+
+      const packageMan = this.props.useYarn ? 'yarn' : 'npm'
+      const typingsArg = this.props.useVsCode ? 'npm-module-vscode' : 'npm-module-webstorm'
+
+      this.log(chalk.green("\nBuilding yFiles typings...\n"));
+
+      this.spawnCommandSync(packageMan, [
+        'install'
+      ], {cwd: createNpmTypingsPath})
+      this.spawnCommandSync(packageMan, [
+        'run',
+        typingsArg
+      ], {cwd: createNpmTypingsPath})
 
       if (!this.props.useWebpack) {
         // with webpack, we use babel-polyfill instead

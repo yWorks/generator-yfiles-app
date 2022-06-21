@@ -14,8 +14,10 @@ const initTest = require('./support/initTest');
 const answers = Object.assign({},defaultAnswers, {
   "moduleType": promptOptions.moduleType.NPM,
   "language": promptOptions.language.TypeScript,
+  "buildChain": promptOptions.buildChain.NPM,
   "advancedOptions": [
-    promptOptions.advanced.DEVLIB
+    promptOptions.advanced.DEVLIB,
+    promptOptions.advanced.VSCODE
   ]
 });
 
