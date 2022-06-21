@@ -11,7 +11,8 @@ const yfilesScriptModules = require("./yfiles-script-modules.json");
 const utils = require("../utils");
 const validatePrompts = require("./validatePrompts");
 const toSlugCase = require("to-slug-case");
-const Git = require("nodegit");
+const AdmZip = require("adm-zip");
+const got = require("got")
 const config = require("../config.js")
 const _ = require("lodash")
 
@@ -373,17 +374,6 @@ Generator Version: ${config.generatorVersion}`
     }
   }
 
-  _getStarterKitPath(projectType) {
-    switch (projectType) {
-      case promptOptions.projectType.ANGULAR:
-        return 'https://github.com/yWorks/yfiles-angular-integration-basic'
-      case promptOptions.projectType.REACT:
-        return 'https://github.com/yWorks/yfiles-react-integration-basic'
-      case promptOptions.projectType.VUE:
-        return 'https://github.com/yWorks/yfiles-vue-integration-basic'
-    }
-  }
-
   _checkOutTag(repo, tag) {
     // https://stackoverflow.com/a/46140283
     return Git.Reference
@@ -426,17 +416,19 @@ Generator Version: ${config.generatorVersion}`
       )
 
       // clone starter kit
-      const gitPath = this._getStarterKitPath(this.props.projectType)
-      const repositoryName = gitPath.substring(gitPath.lastIndexOf('/') + 1)
-      this.$cloneDest = this.destinationPath(repositoryName)
+      const starterKitName = utils.getStarterKitName(this.props.projectType)
+      this.$starterKitDest = this.destinationPath(starterKitName)
+      const destRoot = this.destinationPath()
 
       this.log(chalk.green(`\nDownloading starter-kit for ${this.props.projectType}\n`));
-      return Git.Clone(gitPath, this.$cloneDest).then(repo => {
-        return this._checkOutTag(repo, config.starterKitTag)
-      }).then(() => {
-        this.log(chalk.green(`Successfully cloned ${gitPath} to ${this.$cloneDest}`));
-      }).catch(e => {
-        this.log(chalk.yellow(`Could not clone ${gitPath}:\n${e.message}`));
+
+      const starterKitUrl = `https://github.com/yWorks/${starterKitName}/archive/refs/heads/master.zip`
+
+      return got(starterKitUrl, { responseType: "buffer"}).then((response) => {
+        new AdmZip(response.body).extractAllTo(destRoot, true)
+        const extractedFolder = this.destinationPath(`${starterKitName}-master`)
+        fs.renameSync(extractedFolder, this.$starterKitDest)
+        this.log(chalk.green(`Successfully downloaded ${starterKitUrl} to ${this.$starterKitDest}`));
       })
     }
 
@@ -856,7 +848,7 @@ Generator Version: ${config.generatorVersion}`
       const libraryPackage = fs.readFileSync(this.destinationPath(path.join(userLibraryBaseName, '/lib/es-modules/package.json')), 'utf8')
       const libraryPackageName = `yfiles-${this._getPackageVersion(libraryPackage)}-dev.tgz`
 
-      const packageJsonPath = path.join(this.$cloneDest, '/package.json')
+      const packageJsonPath = path.join(this.$starterKitDest, '/package.json')
       const starterKitPackage = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'))
 
       const starterKitPreinstall = starterKitPackage.scripts.preinstall
@@ -877,9 +869,10 @@ Generator Version: ${config.generatorVersion}`
       this.log(chalk.green(
         "\nInstalling dependencies of starter-kit...\n"
       ))
-      const gitPath = this._getStarterKitPath(this.props.projectType)
-      const cloneDest = this.destinationPath(gitPath.substring(gitPath.lastIndexOf('/') + 1))
+      const cloneDest = this.destinationPath(utils.getStarterKitName(this.props.projectType))
       const packageManager = this.props.buildChain === promptOptions.buildChain.NPM ? "npm" : "yarn"
+      // Workaround for npm >= 7 not running preinstall prior to install :/
+      this.spawnCommandSync(packageManager, ["run", "preinstall"],{cwd: cloneDest})
       this.spawnCommandSync(packageManager, ["install"],{cwd: cloneDest})
     }
 
@@ -930,3 +923,4 @@ Generator Version: ${config.generatorVersion}`
     }
   }
 };
+

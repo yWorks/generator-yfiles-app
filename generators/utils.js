@@ -1,5 +1,7 @@
 const path = require("path");
 const fs = require('fs')
+const https = require('https')
+const promptOptions = require('./app/promptOptions.js')
 
 module.exports = {
   joinArrays: function (a, b) {
@@ -78,6 +80,17 @@ module.exports = {
       return JSON.parse(fs.readFileSync(path, 'utf8'))
     } catch (e) {
       return null;
+    }
+  },
+
+  getStarterKitName: function(projectType) {
+    switch (projectType) {
+      case promptOptions.projectType.ANGULAR:
+        return 'yfiles-angular-integration-basic'
+      case promptOptions.projectType.REACT:
+        return 'yfiles-react-integration-basic'
+      case promptOptions.projectType.VUE:
+        return 'yfiles-vue-integration-basic'
     }
   }
 };

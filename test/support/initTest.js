@@ -4,6 +4,7 @@ const {exec} = require('child_process');
 
 module.exports = function (answers) {
   return function (done) {
+    console.log("initTest")
     const packagePath = answers.yfilesPath
     if (fs.existsSync(packagePath)) {
       const libPath = path.join(packagePath, 'lib/es-modules')
