@@ -1,5 +1,8 @@
 # generator-yfiles-app [![NPM version][npm-image]][npm-url]
-> A yeoman generator that scaffolds a [yFiles for HTML](https://www.yworks.com/yfileshtml) powered application. Requires a local yFiles for HTML package which can be [obtained and evaluated here](https://www.yworks.com/products/yfiles-for-html/evaluate).
+> **Warning** <br>
+> This yeoman generator is deprecated. Instead, please see [Alternative ways to scaffold yFiles for HTML applications](#alternative-ways-to-scaffold-yfiles-for-html-applications) for better ways to bootstrap [yFiles for HTML](https://www.yworks.com/yfileshtml) applications.
+
+> A yeoman generator that scaffolds a [yFiles for HTML](https://www.yworks.com/yfileshtml) powered application (up to yFiles for HTML 2.4). Requires a local yFiles for HTML package which can be [obtained and evaluated here](https://www.yworks.com/products/yfiles-for-html/evaluate).
 
 Watch [this Youtube screencast](https://www.youtube.com/watch?v=fgY4ezIfVjI&t=1160s) to see the generator in action.
 

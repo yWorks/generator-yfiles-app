@@ -51,6 +51,16 @@ Generator Version: ${config.generatorVersion}`
       )
     );
 
+    this.log('');
+
+    this.log(
+      chalk.bgRedBright(
+        `Looking for a generator for ${chalk.bold('yFiles for HTML 2.5')} or newer? Please visit ${chalk.underline.black('yworks.com/app-generator')} for a browser based alternative.`
+      )
+    );
+
+    this.log('');
+
     const prompts = [
       {
         type: "list",
